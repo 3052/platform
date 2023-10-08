@@ -1,8 +1,8 @@
-package media
+package stream
 
 import (
-   "154.pages.dev/http/hls"
    "154.pages.dev/http/option"
+   "154.pages.dev/stream/hls"
    "fmt"
    "io"
    "net/http"

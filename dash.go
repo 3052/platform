@@ -1,9 +1,9 @@
-package media
+package stream
 
 import (
-   "154.pages.dev/http/dash"
    "154.pages.dev/http/option"
-   "154.pages.dev/mp4"
+   "154.pages.dev/stream/dash"
+   "154.pages.dev/stream/mp4"
    "154.pages.dev/widevine"
    "errors"
    "fmt"

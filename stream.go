@@ -1,8 +1,6 @@
-package media
+package stream
 
 import (
-   "encoding/json"
-   "os"
    "strconv"
    "strings"
    "time"
