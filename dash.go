@@ -1,7 +1,6 @@
 package stream
 
 import (
-   "154.pages.dev/http/option"
    "154.pages.dev/stream/dash"
    "154.pages.dev/stream/mp4"
    "154.pages.dev/widevine"
@@ -10,6 +9,7 @@ import (
    "net/http"
    "net/url"
    "os"
+   option "154.pages.dev/http"
 )
 
 type Stream struct {

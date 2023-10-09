@@ -1,12 +1,12 @@
 package stream
 
 import (
-   "154.pages.dev/http/option"
    "154.pages.dev/stream/hls"
    "fmt"
    "io"
    "net/http"
    "os"
+   option "154.pages.dev/http"
 )
 
 func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
@@ -102,6 +102,7 @@ func (s Stream) HLS_Streams(items []hls.Stream, index int) error {
 func (s Stream) HLS_Media(items []hls.Media, index int) error {
    return hls_get(s, items, index)
 }
+
 func (s *Stream) HLS(ref string) (*hls.Master, error) {
    res, err := http.Get(ref)
    if err != nil {
