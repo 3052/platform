@@ -16,7 +16,7 @@ type Stream struct {
    Base *url.URL
    Client_ID string
    Info bool
-   Namer Namer
+   Name string
    Poster widevine.Poster
    Private_Key string
 }
@@ -33,16 +33,12 @@ func (s Stream) DASH_Get(items []dash.Representation, index int) error {
       return nil
    }
    item := items[index]
-   file_name, err := Name(s.Namer)
-   if err != nil {
-      return err
-   }
    file, err := func() (*os.File, error) {
       ext, ok := item.Ext()
       if !ok {
          return nil, errors.New("extension")
       }
-      return os.Create(file_name + ext)
+      return os.Create(s.Name + ext)
    }()
    if err != nil {
       return err
