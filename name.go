@@ -31,7 +31,6 @@ type Episode_Name interface {
    Title() string
 }
 
-// wikipedia.org/wiki/Ozymandias_(Breaking_Bad)
 func Episode(e Episode_Name) (string, error) {
    var b []byte
    b = append(b, e.Series()...)
@@ -58,7 +57,6 @@ type Film_Name interface {
    Date() (time.Time, error)
 }
 
-// wikipedia.org/wiki/The_Godfather_Part_II
 func Film(f Film_Name) (string, error) {
    var b []byte
    b = append(b, f.Title()...)
