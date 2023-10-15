@@ -2,14 +2,12 @@ package stream
 
 import "time"
 
-type Episode interface {
-   Series() string
-   Season() (int64, error)
-   Episode() (int64, error)
-   Title() string
-}
-
-type Film interface {
-   Title() string
-   Date() (time.Time, error)
+// youtube.com/watch?v=_ET7kEnDpyk
+type video struct {
+   season int64
+   episode int64
+   author string
+   series string
+   time time.Time
+   title string
 }
