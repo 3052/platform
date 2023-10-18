@@ -1,6 +1,7 @@
 package stream
 
 import (
+   "154.pages.dev/net"
    "154.pages.dev/stream/dash"
    "154.pages.dev/stream/mp4"
    "154.pages.dev/widevine"
@@ -9,7 +10,6 @@ import (
    "net/http"
    "net/url"
    "os"
-   option "154.pages.dev/http"
 )
 
 type Stream struct {
@@ -84,9 +84,9 @@ func (s Stream) DASH_Get(items []dash.Representation, index int) error {
    if err != nil {
       return err
    }
-   option.Silent()
+   net.Silent()
    media := item.Media()
-   pro := option.Progress_Parts(len(media))
+   pro := net.Progress_Parts(len(media))
    for _, ref := range media {
       req.URL, err = s.Base.Parse(ref)
       if err != nil {

@@ -2,8 +2,10 @@
 154.pages.dev/encoding v1.13.4/go.mod h1:KHWBwxsigaRVpDqFu8UgUcJzvEW3qJveq9YfVV90OiY=
 154.pages.dev/http v1.2.0 h1:QNHsgkYnTipXehMI9CwUwokjplHnFWfL0aRXKbxEaz8=
 154.pages.dev/http v1.2.0/go.mod h1:RcEoCgSJOps8lza3slrsTElQDnb1rmmEfzpUOVvRV3k=
-154.pages.dev/protobuf v1.0.2 h1:YvHUJwl1sn21UspsCVnE2gN0stcSyACUrvJI+eta97M=
-154.pages.dev/protobuf v1.0.2/go.mod h1:NDDaN/avhls0mBQT6u7oJQMI1PWt11v7fD9bxAWubH4=
+154.pages.dev/net v1.0.1 h1:LGveZRNjx0Msxtn8vtojAEePFmuZ0ocP2bMY0jLCIBc=
+154.pages.dev/net v1.0.1/go.mod h1:YAENzh1m8h8ilWAU5DaIavfj56cS3rDBdKxdHnLwG2Q=
+154.pages.dev/protobuf v1.0.1 h1:yJ5en1WQxAX3RHSza0OPZlNMs5lUtDL7DkwHOh2RAxY=
+154.pages.dev/protobuf v1.0.1/go.mod h1:NDDaN/avhls0mBQT6u7oJQMI1PWt11v7fD9bxAWubH4=
 154.pages.dev/widevine v1.1.4 h1:tMTIGE3BzKUu0oC9q3rZyUkm23awIwlaqc/fS8q3WIY=
 154.pages.dev/widevine v1.1.4/go.mod h1:wkEsvmSMoAPcZ/wB6hKlDO+0o8QxCLQi3lOn4tUDReU=
 github.com/Eyevinn/mp4ff v0.39.0 h1:WV2Omq57y1BvcVPayjyuiIK8/pF5Tb/H/cgPY+wFZMQ=
