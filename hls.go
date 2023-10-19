@@ -1,12 +1,12 @@
 package stream
 
 import (
+   "154.pages.dev/net"
    "154.pages.dev/stream/hls"
    "fmt"
    "io"
    "net/http"
    "os"
-   option "154.pages.dev/http"
 )
 
 func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
@@ -56,9 +56,9 @@ func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
          return err
       }
    }
-   option.Location()
-   option.Silent()
-   pro := option.Progress_Parts(len(seg.URI))
+   net.Location()
+   net.Silent()
+   pro := net.Progress_Parts(len(seg.URI))
    req.Host = ""
    for _, ref := range seg.URI {
       req.URL, err = str.Base.Parse(ref)

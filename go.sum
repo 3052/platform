@@ -1,7 +1,5 @@
 154.pages.dev/encoding v1.13.4 h1:s7rkaD1j/4a7X7ew5E94PtSjDk/n1CwyJ1cruLGFn9A=
 154.pages.dev/encoding v1.13.4/go.mod h1:KHWBwxsigaRVpDqFu8UgUcJzvEW3qJveq9YfVV90OiY=
-154.pages.dev/http v1.2.0 h1:QNHsgkYnTipXehMI9CwUwokjplHnFWfL0aRXKbxEaz8=
-154.pages.dev/http v1.2.0/go.mod h1:RcEoCgSJOps8lza3slrsTElQDnb1rmmEfzpUOVvRV3k=
 154.pages.dev/net v1.0.1 h1:LGveZRNjx0Msxtn8vtojAEePFmuZ0ocP2bMY0jLCIBc=
 154.pages.dev/net v1.0.1/go.mod h1:YAENzh1m8h8ilWAU5DaIavfj56cS3rDBdKxdHnLwG2Q=
 154.pages.dev/protobuf v1.0.1 h1:yJ5en1WQxAX3RHSza0OPZlNMs5lUtDL7DkwHOh2RAxY=
