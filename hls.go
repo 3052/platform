@@ -1,12 +1,13 @@
 package stream
 
 import (
-   "154.pages.dev/net"
    "154.pages.dev/stream/hls"
+   "errors"
    "fmt"
    "io"
    "net/http"
    "os"
+   option "154.pages.dev/http"
 )
 
 func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
@@ -36,6 +37,9 @@ func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
       return err
    }
    defer res.Body.Close()
+   if res.StatusCode != http.StatusOK {
+      return errors.New(res.Status)
+   }
    seg, err := hls.New_Scanner(res.Body).Segment()
    if err != nil {
       return err
@@ -47,6 +51,9 @@ func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
          return err
       }
       defer res.Body.Close()
+      if res.StatusCode != http.StatusOK {
+         return errors.New(res.Status)
+      }
       key, err := io.ReadAll(res.Body)
       if err != nil {
          return err
@@ -56,35 +63,43 @@ func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
          return err
       }
    }
-   net.Location()
-   net.Silent()
-   pro := net.Progress_Parts(len(seg.URI))
-   req.Host = ""
+   option.Location()
+   option.Silent()
+   pro := option.Progress_Parts(len(seg.URI))
    for _, ref := range seg.URI {
-      req.URL, err = str.Base.Parse(ref)
+      // with HLS, the segment URL is relative to the master URL, and the
+      // fragment URL is relative to the segment URL.
+      req.URL, err = req.URL.Parse(ref)
       if err != nil {
          return err
       }
-      res, err := http.DefaultClient.Do(req)
+      err := func() error {
+         res, err := http.DefaultClient.Do(req)
+         if err != nil {
+            return err
+         }
+         defer res.Body.Close()
+         if res.StatusCode != http.StatusOK {
+            return errors.New(res.Status)
+         }
+         if block != nil {
+            data, err := io.ReadAll(pro.Reader(res))
+            if err != nil {
+               return err
+            }
+            data = block.Decrypt_Key(data)
+            if _, err := file.Write(data); err != nil {
+               return err
+            }
+         } else {
+            _, err := file.ReadFrom(pro.Reader(res))
+            if err != nil {
+               return err
+            }
+         }
+         return nil
+      }()
       if err != nil {
-         return err
-      }
-      if block != nil {
-         data, err := io.ReadAll(pro.Reader(res))
-         if err != nil {
-            return err
-         }
-         data = block.Decrypt_Key(data)
-         if _, err := file.Write(data); err != nil {
-            return err
-         }
-      } else {
-         _, err := io.Copy(file, pro.Reader(res))
-         if err != nil {
-            return err
-         }
-      }
-      if err := res.Body.Close(); err != nil {
          return err
       }
    }
@@ -105,7 +120,9 @@ func (s *Stream) HLS(ref string) (*hls.Master, error) {
       return nil, err
    }
    defer res.Body.Close()
+   if res.StatusCode != http.StatusOK {
+      return nil, errors.New(res.Status)
+   }
    s.Base = res.Request.URL
    return hls.New_Scanner(res.Body).Master()
 }
-
