@@ -9,8 +9,8 @@ require (
 )
 
 require (
-	154.pages.dev/encoding v1.14.3 // indirect
-	154.pages.dev/protobuf v1.0.2 // indirect
+	154.pages.dev/encoding v1.14.4 // indirect
+	154.pages.dev/protobuf v1.0.3 // indirect
 	github.com/chmike/cmac-go v1.1.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 )

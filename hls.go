@@ -66,6 +66,7 @@ func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
    option.Location()
    option.Silent()
    pro := option.Progress_Parts(len(seg.URI))
+   req.Host = ""
    for _, ref := range seg.URI {
       // with HLS, the segment URL is relative to the master URL, and the
       // fragment URL is relative to the segment URL.
