@@ -36,7 +36,7 @@ func (d Decrypt) Segment(r io.Reader, w io.Writer, key []byte) error {
                }
                switch sinf.Schm.SchemeType {
                case "cenc":
-                  err = mp4.DecryptSampleCenc(sample.Data, key, iv, sub)
+                  err = mp4.CryptSampleCenc(sample.Data, key, iv, sub)
                case "cbcs":
                   err = mp4.DecryptSampleCbcs(sample.Data, key, iv, sub, tenc)
                }

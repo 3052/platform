@@ -5,7 +5,7 @@ go 1.21.0
 require (
 	154.pages.dev/http v1.2.2
 	154.pages.dev/widevine v1.1.4
-	github.com/Eyevinn/mp4ff v0.39.0
+	github.com/Eyevinn/mp4ff v0.40.0
 )
 
 require (
