@@ -84,9 +84,10 @@ func (s Stream) DASH_Get(items []dash.Representation, index int) error {
    if err != nil {
       return err
    }
-   option.Silent()
    media := item.Media()
    pro := option.Progress_Parts(len(media))
+   f := option.Silent()
+   defer f()
    for _, ref := range media {
       // with DASH, initialization and media URLs are relative to the MPD URL
       req.URL, err = s.Base.Parse(ref)
