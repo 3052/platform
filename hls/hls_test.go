@@ -47,21 +47,21 @@ func Test_Block(t *testing.T) {
       }
       fmt.Println(req.URL)
       req.URL = res.Request.URL.ResolveReference(req.URL)
-      res, err := new(http.Transport).RoundTrip(req)
-      if err != nil {
-         t.Fatal(err)
-      }
-      text, err := io.ReadAll(res.Body)
-      if err != nil {
-         t.Fatal(err)
-      }
-      text = block.Decrypt_Key(text)
-      if _, err := file.Write(text); err != nil {
-         t.Fatal(err)
-      }
-      if err := res.Body.Close(); err != nil {
-         t.Fatal(err)
-      }
+      func() {
+         res, err := new(http.Transport).RoundTrip(req)
+         if err != nil {
+            t.Fatal(err)
+         }
+         defer res.Body.Close()
+         text, err := io.ReadAll(res.Body)
+         if err != nil {
+            t.Fatal(err)
+         }
+         text = block.Decrypt_Key(text)
+         if _, err := file.Write(text); err != nil {
+            t.Fatal(err)
+         }
+      }()
    }
 }
 
