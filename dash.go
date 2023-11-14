@@ -72,11 +72,11 @@ func (s Stream) DASH_Get(items []dash.Representation, index int) error {
    if err != nil {
       return err
    }
-   pssh, err := item.Widevine()
+   kid, pssh, err := item.KID_PSSH()
    if err != nil {
       return err
    }
-   mod, err := widevine.New_Module(private_key, client_ID, pssh)
+   mod, err := widevine.New_Module(private_key, client_ID, kid, pssh)
    if err != nil {
       return err
    }

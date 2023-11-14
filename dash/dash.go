@@ -2,12 +2,40 @@ package dash
 
 import (
    "encoding/base64"
+   "encoding/hex"
    "encoding/xml"
-   "errors"
    "io"
    "strconv"
    "strings"
 )
+
+func (r Representation) KID_PSSH() ([]byte, []byte, error) {
+   var kid []byte
+   var pssh []byte
+   for _, c := range r.Content_Protection {
+      var err error
+      switch c.Scheme_ID_URI {
+      case "urn:mpeg:dash:mp4protection:2011":
+         c.Default_KID = strings.ReplaceAll(c.Default_KID, "-", "")
+         kid, err = hex.DecodeString(c.Default_KID)
+         if err != nil {
+            return nil, nil, err
+         }
+      case "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed":
+         pssh, err = base64.StdEncoding.DecodeString(c.PSSH)
+         if err != nil {
+            return nil, nil, err
+         }
+      }
+   }
+   return kid, pssh, nil
+}
+
+type Content_Protection struct {
+   Default_KID string `xml:"default_KID,attr"`
+   PSSH string `xml:"pssh"`
+   Scheme_ID_URI string `xml:"schemeIdUri,attr"`
+} 
 
 func (r Representation) Initialization() (string, bool) {
    if s := r.Segment_Template; s != nil {
@@ -90,21 +118,6 @@ type Adaptation struct {
    Role *struct {
       Value string `xml:"value,attr"`
    }
-}
-
-// roku.com
-type Content_Protection struct {
-   PSSH string `xml:"pssh"`
-   Scheme_ID_URI string `xml:"schemeIdUri,attr"`
-}
-
-func (r Representation) Widevine() ([]byte, error) {
-   for _, c := range r.Content_Protection {
-      if c.Scheme_ID_URI == "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed" {
-         return base64.StdEncoding.DecodeString(c.PSSH)
-      }
-   }
-   return nil, errors.New("Widevine Content Protection not found")
 }
 
 func Audio(r Representation) bool {
