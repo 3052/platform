@@ -9,6 +9,24 @@ import (
    "strings"
 )
 
+type Representation struct {
+   Adaptation *Adaptation
+   Bandwidth int `xml:"bandwidth,attr"`
+   Base_URL string `xml:"BaseURL"`
+   Codecs string `xml:"codecs,attr"`
+   Content_Protection []Content_Protection `xml:"ContentProtection"`
+   Height int `xml:"height,attr"`
+   ID string `xml:"id,attr"`
+   MIME_Type string `xml:"mimeType,attr"`
+   // zero-indexed & inclusive
+   // developer.mozilla.org/docs/Web/HTTP/Headers/Range
+   Segment_Base struct {
+      Index_Range string `xml:"indexRange,attr"`
+   } `xml:"SegmentBase"`
+   Segment_Template *Segment_Template `xml:"SegmentTemplate"`
+   Width int `xml:"width,attr"`
+} 
+
 func (r Representation) KID_PSSH() ([]byte, []byte, error) {
    var kid []byte
    var pssh []byte
@@ -56,106 +74,10 @@ func (r Representation) Ext() (string, bool) {
    return "", false
 }
 
-func Representations(r io.Reader) ([]Representation, error) {
-   var s struct {
-      Period struct {
-         Adaptation_Set []Adaptation `xml:"AdaptationSet"`
-      }
-   }
-   err := xml.NewDecoder(r).Decode(&s)
-   if err != nil {
-      return nil, err
-   }
-   var reps []Representation
-   for _, ada := range s.Period.Adaptation_Set {
-      ada := ada
-      for _, rep := range ada.Representation {
-         rep := rep
-         rep.Adaptation = &ada
-         if rep.Content_Protection == nil {
-            rep.Content_Protection = ada.Content_Protection
-         }
-         if rep.MIME_Type == nil {
-            rep.MIME_Type = &ada.MIME_Type
-         }
-         if rep.Segment_Template == nil {
-            rep.Segment_Template = ada.Segment_Template
-         }
-         reps = append(reps, rep)
-      }
-   }
-   return reps, nil
-}
-
-type Representation struct {
-   // roku.com
-   Adaptation *Adaptation
-   // roku.com
-   Bandwidth int `xml:"bandwidth,attr"`
-   // roku.com
-   Codecs string `xml:"codecs,attr"`
-   // roku.com
-   Content_Protection []Content_Protection `xml:"ContentProtection"`
-   // roku.com
-   Height int `xml:"height,attr"`
-   // roku.com
-   ID string `xml:"id,attr"`
-   // paramountplus.com
-   MIME_Type *string `xml:"mimeType,attr"`
-   // roku.com
-   Segment_Template *Segment_Template `xml:"SegmentTemplate"`
-   // roku.com
-   Width int `xml:"width,attr"`
-}
-
-// amcplus.com
-type Adaptation struct {
-   Content_Protection []Content_Protection `xml:"ContentProtection"`
-   Lang string `xml:"lang,attr"`
-   MIME_Type string `xml:"mimeType,attr"`
-   Segment_Template *Segment_Template `xml:"SegmentTemplate"`
-   Representation []Representation
-   Role *struct {
-      Value string `xml:"value,attr"`
-   }
-}
-
-func Audio(r Representation) bool {
-   return *r.MIME_Type == "audio/mp4"
-}
-
 func Not[E any](fn func(E) bool) func(E) bool {
    return func(value E) bool {
       return !fn(value)
    }
-}
-
-func Video(r Representation) bool {
-   return *r.MIME_Type == "video/mp4"
-}
-
-func (r Representation) String() string {
-   var s []string
-   if r.Width >= 1 {
-      s = append(s, "width: " + strconv.Itoa(r.Width))
-   }
-   if r.Height >= 1 {
-      s = append(s, "height: " + strconv.Itoa(r.Height))
-   }
-   if r.Bandwidth >= 1 {
-      s = append(s, "bandwidth: " + strconv.Itoa(r.Bandwidth))
-   }
-   if r.Codecs != "" {
-      s = append(s, "codecs: " + r.Codecs)
-   }
-   s = append(s, "type: " + *r.MIME_Type)
-   if r.Adaptation.Role != nil {
-      s = append(s, "role: " + r.Adaptation.Role.Value)
-   }
-   if r.Adaptation.Lang != "" {
-      s = append(s, "language: " + r.Adaptation.Lang)
-   }
-   return strings.Join(s, "\n")
 }
 
 func (r Representation) Media() []string {
@@ -180,7 +102,6 @@ func (r Representation) Media() []string {
    return media
 }
 
-// roku.com
 type Segment_Template struct {
    Initialization string `xml:"initialization,attr"`
    Media string `xml:"media,attr"`
@@ -192,4 +113,78 @@ type Segment_Template struct {
       }
    } `xml:"SegmentTimeline"`
    Start_Number int `xml:"startNumber,attr"`
+}
+
+type Adaptation struct {
+   Content_Protection []Content_Protection `xml:"ContentProtection"`
+   Lang string `xml:"lang,attr"`
+   MIME_Type string `xml:"mimeType,attr"`
+   Segment_Template *Segment_Template `xml:"SegmentTemplate"`
+   Representation []Representation
+   Role *struct {
+      Value string `xml:"value,attr"`
+   }
+}
+
+func Audio(r Representation) bool {
+   return r.MIME_Type == "audio/mp4"
+}
+
+func Video(r Representation) bool {
+   return r.MIME_Type == "video/mp4"
+}
+
+func (r Representation) String() string {
+   var s []string
+   if r.Width >= 1 {
+      s = append(s, "width: " + strconv.Itoa(r.Width))
+   }
+   if r.Height >= 1 {
+      s = append(s, "height: " + strconv.Itoa(r.Height))
+   }
+   if r.Bandwidth >= 1 {
+      s = append(s, "bandwidth: " + strconv.Itoa(r.Bandwidth))
+   }
+   if r.Codecs != "" {
+      s = append(s, "codecs: " + r.Codecs)
+   }
+   s = append(s, "type: " + r.MIME_Type)
+   if r.Adaptation.Role != nil {
+      s = append(s, "role: " + r.Adaptation.Role.Value)
+   }
+   if r.Adaptation.Lang != "" {
+      s = append(s, "language: " + r.Adaptation.Lang)
+   }
+   return strings.Join(s, "\n")
+}
+
+func Representations(r io.Reader) ([]Representation, error) {
+   var s struct {
+      Period struct {
+         Adaptation_Set []Adaptation `xml:"AdaptationSet"`
+      }
+   }
+   err := xml.NewDecoder(r).Decode(&s)
+   if err != nil {
+      return nil, err
+   }
+   var reps []Representation
+   for _, ada := range s.Period.Adaptation_Set {
+      ada := ada
+      for _, rep := range ada.Representation {
+         rep := rep
+         rep.Adaptation = &ada
+         if rep.Content_Protection == nil {
+            rep.Content_Protection = ada.Content_Protection
+         }
+         if rep.Segment_Template == nil {
+            rep.Segment_Template = ada.Segment_Template
+         }
+         if rep.MIME_Type == "" {
+            rep.MIME_Type = ada.MIME_Type
+         }
+         reps = append(reps, rep)
+      }
+   }
+   return reps, nil
 }

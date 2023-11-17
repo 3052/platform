@@ -5,6 +5,30 @@ import (
    "io"
 )
 
+func (d Decrypt) Init(r io.Reader, w io.Writer) error {
+   file, err := mp4.DecodeFile(r)
+   if err != nil {
+      return err
+   }
+   // need for VLC media player
+   for _, trak := range file.Init.Moov.Traks {
+      for _, child := range trak.Mdia.Minf.Stbl.Stsd.Children {
+         switch box := child.(type) {
+         case *mp4.AudioSampleEntryBox:
+            d[trak.Tkhd.TrackID], err = box.RemoveEncryption()
+         case *mp4.VisualSampleEntryBox:
+            d[trak.Tkhd.TrackID], err = box.RemoveEncryption()
+         }
+         if err != nil {
+            return err
+         }
+      }
+   }
+   // need for Mozilla Firefox
+   file.Init.Moov.RemovePsshs()
+   return file.Init.Encode(w)
+}
+
 func (d Decrypt) Segment(r io.Reader, w io.Writer, key []byte) error {
    file, err := mp4.DecodeFile(r)
    if err != nil {
@@ -69,27 +93,3 @@ func (d Decrypt) Segment(r io.Reader, w io.Writer, key []byte) error {
 
 // progress is only needed after Init, so keep io.Writer out of the type
 type Decrypt map[uint32]*mp4.SinfBox
-
-func (d Decrypt) Init(r io.Reader, w io.Writer) error {
-   file, err := mp4.DecodeFile(r)
-   if err != nil {
-      return err
-   }
-   // need for VLC media player
-   for _, trak := range file.Init.Moov.Traks {
-      for _, child := range trak.Mdia.Minf.Stbl.Stsd.Children {
-         switch box := child.(type) {
-         case *mp4.AudioSampleEntryBox:
-            d[trak.Tkhd.TrackID], err = box.RemoveEncryption()
-         case *mp4.VisualSampleEntryBox:
-            d[trak.Tkhd.TrackID], err = box.RemoveEncryption()
-         }
-         if err != nil {
-            return err
-         }
-      }
-   }
-   // need for Mozilla Firefox
-   file.Init.Moov.RemovePsshs()
-   return file.Init.Encode(w)
-}
