@@ -9,6 +9,53 @@ import (
    "strings"
 )
 
+type Adaptation struct {
+   Lang string `xml:"lang,attr"`
+   Role *struct {
+      Value string `xml:"value,attr"`
+   }
+   Representation []Representation
+   Content_Type string `xml:"contentType,attr"`
+   MIME_Type string `xml:"mimeType,attr"`
+   Content_Protection []Content_Protection `xml:"ContentProtection"`
+   Segment_Template *Segment_Template `xml:"SegmentTemplate"`
+}
+
+type Representation struct {
+   Bandwidth int `xml:"bandwidth,attr"`
+   Codecs string `xml:"codecs,attr"`
+   Height int `xml:"height,attr"`
+   ID string `xml:"id,attr"`
+   Width int `xml:"width,attr"`
+   Base_URL string `xml:"BaseURL"`
+   Segment_Base *Segment_Base `xml:"SegmentBase"`
+   Content_Protection []Content_Protection `xml:"ContentProtection"`
+   Segment_Template *Segment_Template `xml:"SegmentTemplate"`
+}
+
+type Segment_Base struct {
+   Index_Range string `xml:"indexRange,attr"`
+}
+
+type Content_Protection struct {
+   Default_KID string `xml:"default_KID,attr"`
+   PSSH string `xml:"pssh"`
+   Scheme_ID_URI string `xml:"schemeIdUri,attr"`
+} 
+
+type Segment_Template struct {
+   Initialization string `xml:"initialization,attr"`
+   Media string `xml:"media,attr"`
+   Start_Number int `xml:"startNumber,attr"`
+   Segment_Timeline struct {
+      S []struct {
+         D int `xml:"d,attr"` // duration
+         R int `xml:"r,attr"` // repeat
+         T int `xml:"t,attr"` // time
+      }
+   } `xml:"SegmentTimeline"`
+}
+
 func (a Adaptation) Type() string {
    if a.MIME_Type != "" {
       return a.MIME_Type
@@ -48,29 +95,6 @@ func (a Adaptation) String() string {
 func (s Segment_Base) Start() (int64, error) {
    i := strings.Index(s.Index_Range, "-")
    return strconv.ParseInt(s.Index_Range[:i], 10, 64)
-}
-
-type Segment_Base struct {
-   Index_Range string `xml:"indexRange,attr"`
-}
-
-type Content_Protection struct {
-   Default_KID string `xml:"default_KID,attr"`
-   PSSH string `xml:"pssh"`
-   Scheme_ID_URI string `xml:"schemeIdUri,attr"`
-} 
-
-type Segment_Template struct {
-   Initialization string `xml:"initialization,attr"`
-   Media string `xml:"media,attr"`
-   Start_Number int `xml:"startNumber,attr"`
-   Segment_Timeline struct {
-      S []struct {
-         D int `xml:"d,attr"` // duration
-         R int `xml:"r,attr"` // repeat
-         T int `xml:"t,attr"` // time
-      }
-   } `xml:"SegmentTimeline"`
 }
 
 func (a Adaptation) Audio() bool {
@@ -169,28 +193,3 @@ func (r Representation) Media() []string {
    return media
 }
 
-type Adaptation struct {
-   Lang string `xml:"lang,attr"`
-   Role *struct {
-      Value string `xml:"value,attr"`
-   }
-   Representation []Representation
-   Content_Type string `xml:"contentType,attr"`
-   MIME_Type string `xml:"mimeType,attr"`
-   
-   Content_Protection []Content_Protection `xml:"ContentProtection"`
-   Segment_Template *Segment_Template `xml:"SegmentTemplate"`
-}
-
-type Representation struct {
-   Bandwidth int `xml:"bandwidth,attr"`
-   Codecs string `xml:"codecs,attr"`
-   Height int `xml:"height,attr"`
-   ID string `xml:"id,attr"`
-   Width int `xml:"width,attr"`
-   Base_URL string `xml:"BaseURL"`
-   Segment_Base *Segment_Base `xml:"SegmentBase"`
-   
-   Content_Protection []Content_Protection `xml:"ContentProtection"`
-   Segment_Template *Segment_Template `xml:"SegmentTemplate"`
-}
