@@ -10,14 +10,38 @@ import (
    "strings"
 )
 
-type SegmentBase struct {
-   Index_Range string `xml:"indexRange,attr"`
+type Adaptation struct {
+   ContentType string `xml:"contentType,attr"`
+   Lang string `xml:"lang,attr"`
+   MimeType string `xml:"mimeType,attr"`
+   Representation []Representation
+   Role *struct {
+      Value string `xml:"value,attr"`
+   }
+   SegmentTemplate *SegmentTemplate
+   ContentProtection []ContentProtection
+}
+
+type Representation struct {
+   Bandwidth int `xml:"bandwidth,attr"`
+   BaseURL string
+   Codecs string `xml:"codecs,attr"`
+   Height int `xml:"height,attr"`
+   ID string `xml:"id,attr"`
+   SegmentBase *SegmentBase
+   Width int `xml:"width,attr"`
+   SegmentTemplate *SegmentTemplate
+   ContentProtection []ContentProtection
 }
 
 type ContentProtection struct {
    Default_KID string `xml:"default_KID,attr"`
    PSSH string `xml:"pssh"`
    Scheme_ID_URI string `xml:"schemeIdUri,attr"`
+}
+
+type SegmentBase struct {
+   Index_Range string `xml:"indexRange,attr"`
 }
 
 type SegmentTemplate struct {
@@ -170,26 +194,3 @@ func (r Representation) Default_KID() ([]byte, error) {
    return nil, errors.New("default_KID")
 }
 
-type Adaptation struct {
-   ContentProtection []ContentProtection
-   ContentType string `xml:"contentType,attr"`
-   Lang string `xml:"lang,attr"`
-   MimeType string `xml:"mimeType,attr"`
-   Representation []Representation
-   Role *struct {
-      Value string `xml:"value,attr"`
-   }
-   SegmentTemplate *SegmentTemplate
-}
-
-type Representation struct {
-   Bandwidth int `xml:"bandwidth,attr"`
-   BaseURL string
-   Codecs string `xml:"codecs,attr"`
-   ContentProtection []ContentProtection
-   Height int `xml:"height,attr"`
-   ID string `xml:"id,attr"`
-   SegmentBase *SegmentBase
-   SegmentTemplate *SegmentTemplate
-   Width int `xml:"width,attr"`
-}
