@@ -79,31 +79,6 @@ type Content_Protection struct {
    Scheme_ID_URI string `xml:"schemeIdUri,attr"`
 }
 
-type Adaptation struct {
-   Lang string `xml:"lang,attr"`
-   Role *struct {
-      Value string `xml:"value,attr"`
-   }
-   Content_Type string `xml:"contentType,attr"`
-   MIME_Type string `xml:"mimeType,attr"`
-   Representation []Representation
-   Segment_Template *Segment_Template `xml:"SegmentTemplate"`
-   Content_Protection []Content_Protection `xml:"ContentProtection"`
-}
-
-func Adaptations(r io.Reader) ([]Adaptation, error) {
-   var s struct {
-      Period struct {
-         Adaptation_Set []Adaptation `xml:"AdaptationSet"`
-      }
-   }
-   err := xml.NewDecoder(r).Decode(&s)
-   if err != nil {
-      return nil, err
-   }
-   return s.Period.Adaptation_Set, nil
-}
-
 type Segment_Template struct {
    Start_Number int `xml:"startNumber,attr"`
    Segment_Timeline struct {
@@ -121,30 +96,11 @@ type Initialization string
 
 type Media string
 
-type Representation struct {
-   Bandwidth int `xml:"bandwidth,attr"`
-   Codecs string `xml:"codecs,attr"`
-   Height int `xml:"height,attr"`
-   ID string `xml:"id,attr"`
-   Width int `xml:"width,attr"`
-   Base_URL string `xml:"BaseURL"`
-   Segment_Base *Segment_Base `xml:"SegmentBase"`
-   Segment_Template *Segment_Template `xml:"SegmentTemplate"`
-   Content_Protection []Content_Protection `xml:"ContentProtection"`
-}
-
 func (i Initialization) Replace(id string) string {
    return strings.Replace(string(i), "$RepresentationID$", id, 1)
 }
 
-func (r Representation) PSSH() ([]byte, error) {
-   for _, c := range r.Content_Protection {
-      if c.Scheme_ID_URI == "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed" {
-         return base64.StdEncoding.DecodeString(c.PSSH)
-      }
-   }
-   return nil, errors.New("pssh")
-}
+const widevine = "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed"
 
 func (m Media) Replace(r Representation) []string {
    var refs []string
@@ -162,6 +118,70 @@ func (m Media) Replace(r Representation) []string {
       }
    }
    return refs
+}
+
+type Adaptation struct {
+   Content_Type string `xml:"contentType,attr"`
+   Lang string `xml:"lang,attr"`
+   MIME_Type string `xml:"mimeType,attr"`
+   Representation []Representation
+   Role *struct {
+      Value string `xml:"value,attr"`
+   }
+   Content_Protection []Content_Protection `xml:"ContentProtection"`
+   Segment_Template *Segment_Template `xml:"SegmentTemplate"`
+}
+
+type Representation struct {
+   Bandwidth int `xml:"bandwidth,attr"`
+   Codecs string `xml:"codecs,attr"`
+   Height int `xml:"height,attr"`
+   ID string `xml:"id,attr"`
+   Width int `xml:"width,attr"`
+   Base_URL string `xml:"BaseURL"`
+   Segment_Base *Segment_Base `xml:"SegmentBase"`
+   Content_Protection []Content_Protection `xml:"ContentProtection"`
+   Segment_Template *Segment_Template `xml:"SegmentTemplate"`
+}
+
+func Adaptations(r io.Reader) ([]Adaptation, error) {
+   var s struct {
+      Period struct {
+         Adaptation []Adaptation `xml:"AdaptationSet"`
+      }
+   }
+   err := xml.NewDecoder(r).Decode(&s)
+   if err != nil {
+      return nil, err
+   }
+   for i, a := range s.Period.Adaptation {
+      for j, r := range a.Representation {
+         k := &s.Period.Adaptation[i].Representation[j]
+         if len(r.Content_Protection) == 0 {
+            k.Content_Protection = a.Content_Protection
+         }
+         if r.Segment_Template == nil {
+            k.Segment_Template = a.Segment_Template
+         }
+      }
+   }
+   return s.Period.Adaptation, nil
+}
+
+func (a Adaptation) PSSH() ([]byte, error) {
+   for _, c := range a.Content_Protection {
+      if c.Scheme_ID_URI == widevine {
+         return base64.StdEncoding.DecodeString(c.PSSH)
+      }
+   }
+   for _, r := range a.Representation {
+      for _, c := range r.Content_Protection {
+         if c.Scheme_ID_URI == widevine {
+            return base64.StdEncoding.DecodeString(c.PSSH)
+         }
+      }
+   }
+   return nil, errors.New("pssh")
 }
 
 func (r Representation) Default_KID() ([]byte, error) {
