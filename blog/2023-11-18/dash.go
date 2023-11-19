@@ -1,15 +1,17 @@
 package dash
 
-type ContentProtection struct {
-   PSSH string `xml:"pssh"`
+type representation struct {
+   adaptationSet *adaptationSet
+   contentProtection []int
 }
 
-type Representation struct {
-   s struct {
-      ContentProtection []ContentProtection
+type adaptationSet struct {
+   contentProtection []int
+   representation []*representation
+}
+
+func (a adaptationSet) setContentProtection() {
+   for _, r := range a.representation {
+      r.contentProtection = a.contentProtection
    }
-}
-
-func (r Representation) ContentProtection() []ContentProtection {
-   return r.s.ContentProtection
 }
