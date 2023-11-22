@@ -1,7 +1,7 @@
 package stream
 
 import (
-   "154.pages.dev/stream/dash"
+   "154.pages.dev/dash"
    "154.pages.dev/stream/mp4"
    "154.pages.dev/widevine"
    "errors"
