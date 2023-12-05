@@ -1,13 +1,14 @@
 package stream
 
 import (
-   "154.pages.dev/dash"
+   "154.pages.dev/encoding/dash"
+   "154.pages.dev/log"
    "154.pages.dev/stream/mp4"
    "154.pages.dev/widevine"
    "io"
+   "log/slog"
    "net/http"
    "os"
-   option "154.pages.dev/http"
 )
 
 func (s Stream) segment_base(ext string, item *dash.Representation) error {
@@ -53,8 +54,7 @@ func (s Stream) segment_base(ext string, item *dash.Representation) error {
    if err != nil {
       return err
    }
-   pro := option.Progress_Length(res.ContentLength)
-   f := option.Silent()
-   defer f()
-   return dec.Segment(pro.Reader(res), file, key)
+   log.Set_Transport(slog.LevelDebug)
+   defer log.Set_Transport(slog.LevelInfo)
+   return dec.Segment(log.New_Progress(1).Reader(res), file, key)
 }

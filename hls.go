@@ -1,13 +1,14 @@
 package stream
 
 import (
-   "154.pages.dev/stream/hls"
+   "154.pages.dev/encoding/hls"
+   "154.pages.dev/log"
    "errors"
    "fmt"
    "io"
+   "log/slog"
    "net/http"
    "os"
-   option "154.pages.dev/http"
 )
 
 func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
@@ -63,11 +64,10 @@ func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
          return err
       }
    }
-   f := option.Silent()
-   defer f()
-   option.Location()
-   pro := option.Progress_Parts(len(seg.URI))
    req.Host = ""
+   log.Set_Transport(slog.LevelDebug)
+   defer log.Set_Transport(slog.LevelInfo)
+   src := log.New_Progress(len(seg.URI))
    for _, ref := range seg.URI {
       // with HLS, the segment URL is relative to the master URL, and the
       // fragment URL is relative to the segment URL.
@@ -85,7 +85,7 @@ func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
             return errors.New(res.Status)
          }
          if block != nil {
-            data, err := io.ReadAll(pro.Reader(res))
+            data, err := io.ReadAll(src.Reader(res))
             if err != nil {
                return err
             }
@@ -94,7 +94,7 @@ func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
                return err
             }
          } else {
-            _, err := file.ReadFrom(pro.Reader(res))
+            _, err := file.ReadFrom(src.Reader(res))
             if err != nil {
                return err
             }

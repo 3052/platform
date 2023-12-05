@@ -1,14 +1,15 @@
 package stream
 
 import (
-   "154.pages.dev/dash"
+   "154.pages.dev/encoding/dash"
+   "154.pages.dev/log"
    "154.pages.dev/stream/mp4"
    "154.pages.dev/widevine"
    "errors"
    "fmt"
+   "log/slog"
    "net/http"
    "os"
-   option "154.pages.dev/http"
 )
 
 func (s Stream) segment_template(
@@ -61,9 +62,9 @@ func (s Stream) segment_template(
    if !ok {
       return errors.New("Media")
    }
-   pro := option.Progress_Parts(len(media))
-   f := option.Silent()
-   defer f()
+   log.Set_Transport(slog.LevelDebug)
+   defer log.Set_Transport(slog.LevelInfo)
+   src := log.New_Progress(len(media))
    for _, ref := range media {
       // with DASH, initialization and media URLs are relative to the MPD URL
       req.URL, err = s.Base.Parse(ref)
@@ -79,7 +80,7 @@ func (s Stream) segment_template(
          if res.StatusCode != http.StatusOK {
             return fmt.Errorf("%v %v", res.Status, req.URL)
          }
-         return dec.Segment(pro.Reader(res), file, key)
+         return dec.Segment(src.Reader(res), file, key)
       }()
       if err != nil {
          return err
