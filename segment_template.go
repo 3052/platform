@@ -58,7 +58,7 @@ func (s Stream) segment_template(
    if err != nil {
       return err
    }
-   slog.Info("*", "key", fmt.Sprintf("%x", key))
+   slog.Debug("*", "key", fmt.Sprintf("%x", key))
    media, ok := item.Media()
    if !ok {
       return errors.New("Media")
