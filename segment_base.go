@@ -5,6 +5,7 @@ import (
    "154.pages.dev/log"
    "154.pages.dev/stream/mp4"
    "154.pages.dev/widevine"
+   "encoding/hex"
    "io"
    "log/slog"
    "net/http"
@@ -54,6 +55,7 @@ func (s Stream) segment_base(ext string, item *dash.Representation) error {
    if err != nil {
       return err
    }
+   slog.Debug("*", "key", hex.EncodeToString(key))
    log.Set_Transport(slog.LevelDebug)
    defer log.Set_Transport(slog.LevelInfo)
    return dec.Segment(log.New_Progress(1).Reader(res), file, key)

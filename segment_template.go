@@ -5,8 +5,8 @@ import (
    "154.pages.dev/log"
    "154.pages.dev/stream/mp4"
    "154.pages.dev/widevine"
+   "encoding/hex"
    "errors"
-   "fmt"
    "log/slog"
    "net/http"
    "os"
@@ -58,7 +58,7 @@ func (s Stream) segment_template(
    if err != nil {
       return err
    }
-   slog.Info("*", "key", fmt.Sprintf("%x", key))
+   slog.Debug("*", "key", hex.EncodeToString(key))
    media, ok := item.Media()
    if !ok {
       return errors.New("Media")
@@ -79,7 +79,7 @@ func (s Stream) segment_template(
          }
          defer res.Body.Close()
          if res.StatusCode != http.StatusOK {
-            return fmt.Errorf("%v %v", res.Status, req.URL)
+            return errors.New(res.Status)
          }
          return dec.Segment(src.Reader(res), file, key)
       }()
