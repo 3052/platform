@@ -26,16 +26,17 @@ func (s Stream) DASH_Get(items []*dash.Representation, index int) error {
          }
          fmt.Println(item)
       }
-      return nil
+   } else if index >= 0 {
+      item := items[index]
+      ext, ok := item.Ext()
+      if !ok {
+         return errors.New("extension")
+      }
+      initialization, ok := item.Initialization()
+      if ok {
+         return s.segment_template(ext, initialization, item)
+      }
+      return s.segment_base(ext, item)
    }
-   item := items[index]
-   ext, ok := item.Ext()
-   if !ok {
-      return errors.New("extension")
-   }
-   initialization, ok := item.Initialization()
-   if ok {
-      return s.segment_template(ext, initialization, item)
-   }
-   return s.segment_base(ext, item)
+   return nil
 }
