@@ -17,6 +17,30 @@ type Stream struct {
    Private_Key string
 }
 
+func (s Stream) DASH_Sofia(items []*dash.Representation, index int) error {
+   if s.Info {
+      for i, item := range items {
+         fmt.Println()
+         if i == index {
+            fmt.Print("!")
+         }
+         fmt.Println(item)
+      }
+   } else if index >= 0 {
+      item := items[index]
+      ext, ok := item.Ext()
+      if !ok {
+         return errors.New("extension")
+      }
+      initialization, ok := item.Initialization()
+      if ok {
+         return s.segment_template_sofia(ext, initialization, item)
+      }
+      return s.segment_base(ext, item)
+   }
+   return nil
+}
+
 func (s Stream) DASH_Get(items []*dash.Representation, index int) error {
    if s.Info {
       for i, item := range items {
