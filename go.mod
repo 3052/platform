@@ -7,7 +7,6 @@ require (
 	154.pages.dev/log v1.0.7
 	154.pages.dev/sofia v1.0.2
 	154.pages.dev/widevine v1.1.7
-	github.com/Eyevinn/mp4ff v0.40.2
 )
 
 require (
