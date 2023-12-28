@@ -4,8 +4,8 @@
 154.pages.dev/log v1.0.7/go.mod h1:K6mJGITyxwyDnXnoyRrsRuqR+TyokLCr4MpGleLSWsg=
 154.pages.dev/protobuf v1.0.3 h1:fiCGyQU7gBAtxWBITbII8cwQ/VTbddovjGHFrtMSHEg=
 154.pages.dev/protobuf v1.0.3/go.mod h1:NDDaN/avhls0mBQT6u7oJQMI1PWt11v7fD9bxAWubH4=
-154.pages.dev/sofia v1.0.6 h1:AO+AT6XFMuHZdsDvSuk0VaXavmYluH282pMXIldvOjs=
-154.pages.dev/sofia v1.0.6/go.mod h1:42KjYiPl7Vy50qEETAFgjZrDdJyg1MpqiZh3JdxMEGY=
+154.pages.dev/sofia v1.0.7 h1:5mGshz+hO/9WpnxLSqt4aFdyhpI2F++cSm6nmq4EkgQ=
+154.pages.dev/sofia v1.0.7/go.mod h1:42KjYiPl7Vy50qEETAFgjZrDdJyg1MpqiZh3JdxMEGY=
 154.pages.dev/widevine v1.1.7 h1:bz2qfHT47ZxD0RLAfPR2XY0STVr//9awU8gAXjUZyh8=
 154.pages.dev/widevine v1.1.7/go.mod h1:S5FBy69ws/IXgerKbuVlhG0V8vv0IJ1e2vDbaGv4CNs=
 github.com/chmike/cmac-go v1.1.0 h1:aF73ZAEx9N2WdQc93DOJ2fMsBDAGqUtuenjMJMb3kEI=
