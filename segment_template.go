@@ -3,17 +3,15 @@ package stream
 import (
    "154.pages.dev/encoding/dash"
    "154.pages.dev/log"
-   "154.pages.dev/sofia"
    "154.pages.dev/widevine"
    "encoding/hex"
    "errors"
-   "io"
    "log/slog"
    "net/http"
    "os"
 )
 
-func (s Stream) segment_template_sofia(
+func (s Stream) segment_template(
    ext, initialization string, item *dash.Representation,
 ) error {
    file, err := os.Create(s.Name + ext)
@@ -21,19 +19,6 @@ func (s Stream) segment_template_sofia(
       return err
    }
    defer file.Close()
-   req, err := http.NewRequest("GET", initialization, nil)
-   if err != nil {
-      return err
-   }
-   req.URL = s.Base.ResolveReference(req.URL)
-   res, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return err
-   }
-   defer res.Body.Close()
-   if err := encode_init(file, res.Body); err != nil {
-      return err
-   }
    private_key, err := os.ReadFile(s.Private_Key)
    if err != nil {
       return err
@@ -59,6 +44,19 @@ func (s Stream) segment_template_sofia(
       return err
    }
    slog.Debug("*", "key", hex.EncodeToString(key))
+   req, err := http.NewRequest("GET", initialization, nil)
+   if err != nil {
+      return err
+   }
+   req.URL = s.Base.ResolveReference(req.URL)
+   res, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return err
+   }
+   defer res.Body.Close()
+   if err := encode_init(file, res.Body); err != nil {
+      return err
+   }
    media, ok := item.Media()
    if !ok {
       return errors.New("Media")
@@ -88,46 +86,4 @@ func (s Stream) segment_template_sofia(
       }
    }
    return nil
-}
-
-func encode_segment(dst io.Writer, src io.Reader, key []byte) error {
-   var f sofia.File
-   if err := f.Decode(src); err != nil {
-      return err
-   }
-   for i := range f.Mdat.Data {
-      sample := f.Mdat.Data[i]
-      enc := f.Moof.Traf.Senc.Samples[i]
-      err := sofia.CryptSampleCenc(sample, key, enc)
-      if err != nil {
-         return err
-      }
-   }
-   return f.Encode(dst)
-}
-
-func encode_init(dst io.Writer, src io.Reader) error {
-   var f sofia.File
-   if err := f.Decode(src); err != nil {
-      return err
-   }
-   for _, b := range f.Moov.Boxes {
-      if b.Header.Type() == "pssh" {
-         copy(b.Header.RawType[:], "free") // Firefox
-      }
-   }
-   stsd := &f.Moov.Trak.Mdia.Minf.Stbl.Stsd
-   copy(stsd.Enca.Header.RawType[:], "mp4a") // Firefox
-   copy(stsd.Encv.Header.RawType[:], "avc1") // Firefox
-   for _, b := range stsd.Enca.Boxes {
-      if b.Header.Type() == "sinf" {
-         copy(b.Header.RawType[:], "free") // Firefox
-      }
-   }
-   for _, b := range stsd.Encv.Boxes {
-      if b.Header.Type() == "sinf" {
-         copy(b.Header.RawType[:], "free") // Firefox
-      }
-   }
-   return f.Encode(dst)
 }
