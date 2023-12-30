@@ -11,6 +11,20 @@ import (
    "net/url"
 )
 
+func encode_segment(dst io.Writer, src io.Reader, key []byte) error {
+   var f sofia.File
+   if err := f.Decode(src); err != nil {
+      return err
+   }
+   for i, sample := range f.Mdat.Data {
+      err := f.Moof.Traf.Senc.Samples[i].Decrypt_CENC(sample, key)
+      if err != nil {
+         return err
+      }
+   }
+   return f.Encode(dst)
+}
+
 func encode_init(dst io.Writer, src io.Reader) error {
    var f sofia.File
    if err := f.Decode(src); err != nil {
@@ -67,22 +81,6 @@ func (s Stream) DASH_Sofia(items []*dash.Representation, index int) error {
       return s.segment_base(ext, item.BaseURL, item)
    }
    return nil
-}
-
-func encode_segment(dst io.Writer, src io.Reader, key []byte) error {
-   var f sofia.File
-   if err := f.Decode(src); err != nil {
-      return err
-   }
-   for i := range f.Mdat.Data {
-      sample := f.Mdat.Data[i]
-      enc := f.Moof.Traf.Senc.Samples[i]
-      err := sofia.CryptSampleCenc(sample, key, enc)
-      if err != nil {
-         return err
-      }
-   }
-   return f.Encode(dst)
 }
 
 func decode_sidx(base_URL string, sidx, moof uint32) ([][2]uint32, error) {
