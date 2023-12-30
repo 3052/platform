@@ -11,28 +11,63 @@ import (
    "net/url"
 )
 
+func decode_sidx(base_URL string, sidx, moof uint32) ([][2]uint32, error) {
+   req, err := http.NewRequest("GET", base_URL, nil)
+   if err != nil {
+      return nil, err
+   }
+   req.Header.Set("Range", fmt.Sprintf("bytes=%v-%v", sidx, moof-1))
+   res, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return nil, err
+   }
+   defer res.Body.Close()
+   var f sofia.File
+   if err := f.Decode(res.Body); err != nil {
+      return nil, err
+   }
+   return f.SegmentIndex.ByteRanges(moof), nil
+}
+
+func encode_segment(dst io.Writer, src io.Reader, key []byte) error {
+   var f sofia.File
+   if err := f.Decode(src); err != nil {
+      return err
+   }
+   for i, data := range f.MediaData.Data {
+      sample := f.MovieFragment.TrackFragment.SampleEncryption.Samples[i]
+      err := sample.Decrypt_CENC(data, key)
+      if err != nil {
+         return err
+      }
+   }
+   return f.Encode(dst)
+}
+
 func encode_init(dst io.Writer, src io.Reader) error {
    var f sofia.File
    if err := f.Decode(src); err != nil {
       return err
    }
-   for _, b := range f.Moov.Boxes {
+   for _, b := range f.Movie.Boxes {
       if b.Header.BoxType() == "pssh" {
          copy(b.Header.Type[:], "free") // Firefox
       }
    }
-   stsd := &f.Moov.Trak.Mdia.Minf.Stbl.Stsd
-   copy(stsd.Enca.Header.Type[:], "mp4a") // Firefox
-   copy(stsd.Encv.Header.Type[:], "avc1") // Firefox
-   for _, b := range stsd.Enca.Boxes {
-      if b.Header.BoxType() == "sinf" {
-         copy(b.Header.Type[:], "free") // Firefox
-      }
+   sd := &f.Movie.Track.Media.MediaInformation.SampleTable.SampleDescription
+   if as := sd.AudioSample; as != nil {
+      copy(as.ProtectionScheme.Header.Type[:], "free") // Firefox
+      copy(
+         as.Entry.Header.Type[:],
+         as.ProtectionScheme.OriginalFormat.DataFormat[:],
+      ) // Firefox
    }
-   for _, b := range stsd.Encv.Boxes {
-      if b.Header.BoxType() == "sinf" {
-         copy(b.Header.Type[:], "free") // Firefox
-      }
+   if vs := sd.VisualSample; vs != nil {
+      copy(vs.ProtectionScheme.Header.Type[:], "free") // Firefox
+      copy(
+         vs.Entry.Header.Type[:],
+         vs.ProtectionScheme.OriginalFormat.DataFormat[:],
+      ) // Firefox
    }
    return f.Encode(dst)
 }
@@ -45,6 +80,7 @@ type Stream struct {
    Poster widevine.Poster
    Private_Key string
 }
+
 func (s Stream) DASH_Sofia(items []*dash.Representation, index int) error {
    if s.Info {
       for i, item := range items {
@@ -67,38 +103,4 @@ func (s Stream) DASH_Sofia(items []*dash.Representation, index int) error {
       return s.segment_base(ext, item.BaseURL, item)
    }
    return nil
-}
-
-func encode_segment(dst io.Writer, src io.Reader, key []byte) error {
-   var f sofia.File
-   if err := f.Decode(src); err != nil {
-      return err
-   }
-   for i := range f.Mdat.Data {
-      sample := f.Mdat.Data[i]
-      enc := f.Moof.Traf.Senc.Samples[i]
-      err := sofia.CryptSampleCenc(sample, key, enc)
-      if err != nil {
-         return err
-      }
-   }
-   return f.Encode(dst)
-}
-
-func decode_sidx(base_URL string, sidx, moof uint32) ([][2]uint32, error) {
-   req, err := http.NewRequest("GET", base_URL, nil)
-   if err != nil {
-      return nil, err
-   }
-   req.Header.Set("Range", fmt.Sprintf("bytes=%v-%v", sidx, moof-1))
-   res, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return nil, err
-   }
-   defer res.Body.Close()
-   var f sofia.File
-   if err := f.Decode(res.Body); err != nil {
-      return nil, err
-   }
-   return f.Sidx.Byte_Ranges(moof), nil
 }
