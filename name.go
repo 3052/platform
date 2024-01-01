@@ -1,46 +1,46 @@
 package stream
 
-import (
-   "strconv"
-   "time"
-)
-
-func Format_Episode(e Episode) (string, error) {
-   b := []byte(e.Series())
-   b = append(b, " - S"...)
-   if v, err := e.Season(); err != nil {
-      return "", err
-   } else {
-      b = strconv.AppendInt(b, v, 10)
-   }
-   b = append(b, " E"...)
-   if v, err := e.Episode(); err != nil {
-      return "", err
-   } else {
-      b = strconv.AppendInt(b, v, 10)
-   }
-   b = append(b, " - "...)
-   b = append(b, e.Title()...)
-   clean(b)
-   return string(b), nil
+type Namer interface {
+   Episode() (string, bool)
+   Owner() (string, bool)
+   Release_Date() (string, bool)
+   Season() (string, bool)
+   Show() (string, bool)
+   Title() (string, bool)
 }
 
-func Format_Film(f Film) (string, error) {
-   b := []byte(f.Title())
-   b = append(b, " - "...)
-   if v, err := f.Date(); err != nil {
-      return "", err
-   } else {
-      b = v.AppendFormat(b, "2006")
+func Name(n Namer) string {
+   var b []byte
+   date, date_ok := n.Release_Date()
+   show, show_ok := n.Show()
+   if !date_ok {
+      if v, ok := n.Owner(); ok {
+         b = append(b, v...)
+      }
    }
-   clean(b)
-   return string(b), nil
-}
-
-func Format_Video(v Video) string {
-   b := []byte(v.Author())
-   b = append(b, " - "...)
-   b = append(b, v.Title()...)
+   if show_ok {
+      b = append(b, show...)
+   }
+   if v, ok := n.Season(); ok {
+      b = append(b, ' ')
+      b = append(b, v...)
+   }
+   if v, ok := n.Episode(); ok {
+      b = append(b, ' ')
+      b = append(b, v...)
+   }
+   if v, ok := n.Title(); ok {
+      if b != nil {
+         b = append(b, " - "...)
+      }
+      b = append(b, v...)
+   }
+   if !show_ok {
+      if date_ok {
+         b = append(b, " - "...)
+         b = append(b, date...)
+      }
+   }
    clean(b)
    return string(b)
 }
@@ -62,21 +62,4 @@ func clean(path []byte) {
          path[k] = '-'
       }
    }
-}
-
-type Episode interface {
-   Series() string
-   Season() (int64, error)
-   Episode() (int64, error)
-   Title() string
-}
-
-type Film interface {
-   Title() string
-   Date() (time.Time, error)
-}
-
-type Video interface {
-   Author() string
-   Title() string
 }
