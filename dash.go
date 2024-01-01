@@ -11,7 +11,7 @@ import (
    "net/url"
 )
 
-func decode_sidx(base_URL string, sidx, moof uint32) ([][2]uint32, error) {
+func encode_sidx(base_URL string, sidx, moof uint32) ([][2]uint32, error) {
    req, err := http.NewRequest("GET", base_URL, nil)
    if err != nil {
       return nil, err
@@ -27,21 +27,6 @@ func decode_sidx(base_URL string, sidx, moof uint32) ([][2]uint32, error) {
       return nil, err
    }
    return f.SegmentIndex.ByteRanges(moof), nil
-}
-
-func encode_segment(dst io.Writer, src io.Reader, key []byte) error {
-   var f sofia.File
-   if err := f.Decode(src); err != nil {
-      return err
-   }
-   for i, data := range f.MediaData.Data {
-      sample := f.MovieFragment.TrackFragment.SampleEncryption.Samples[i]
-      err := sample.Decrypt_CENC(data, key)
-      if err != nil {
-         return err
-      }
-   }
-   return f.Encode(dst)
 }
 
 func encode_init(dst io.Writer, src io.Reader) error {
@@ -72,15 +57,6 @@ func encode_init(dst io.Writer, src io.Reader) error {
    return f.Encode(dst)
 }
 
-type Stream struct {
-   Base *url.URL
-   Client_ID string
-   Info bool
-   Name string
-   Poster widevine.Poster
-   Private_Key string
-}
-
 func (s Stream) DASH_Sofia(items []*dash.Representation, index int) error {
    if s.Info {
       for i, item := range items {
@@ -103,4 +79,28 @@ func (s Stream) DASH_Sofia(items []*dash.Representation, index int) error {
       return s.segment_base(ext, item.BaseURL, item)
    }
    return nil
+}
+
+func encode_segment(dst io.Writer, src io.Reader, key []byte) error {
+   var f sofia.File
+   if err := f.Decode(src); err != nil {
+      return err
+   }
+   for i, data := range f.MediaData.Data {
+      sample := f.MovieFragment.TrackFragment.SampleEncryption.Samples[i]
+      err := sample.Decrypt_CENC(data, key)
+      if err != nil {
+         return err
+      }
+   }
+   return f.Encode(dst)
+}
+
+type Stream struct {
+   Base *url.URL
+   Client_ID string
+   Info bool
+   Name string
+   Poster widevine.Poster
+   Private_Key string
 }

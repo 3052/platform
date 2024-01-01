@@ -3,9 +3,9 @@ module 154.pages.dev/stream
 go 1.21.0
 
 require (
-	154.pages.dev/encoding v1.15.4
+	154.pages.dev/encoding v1.15.6
 	154.pages.dev/log v1.0.7
-	154.pages.dev/sofia v1.1.0
+	154.pages.dev/sofia v1.1.1
 	154.pages.dev/widevine v1.1.7
 )
 

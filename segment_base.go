@@ -61,7 +61,7 @@ func (s Stream) segment_base(
    if err := encode_init(file, res.Body); err != nil {
       return err
    }
-   byte_ranges, err := decode_sidx(base_URL, sidx, moof)
+   byte_ranges, err := encode_sidx(base_URL, sidx, moof)
    if err != nil {
       return err
    }
@@ -88,4 +88,3 @@ func (s Stream) segment_base(
    }
    return nil
 }
-
