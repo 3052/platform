@@ -11,6 +11,30 @@ import (
    "net/url"
 )
 
+func (s Stream) DASH_Sofia(items []*dash.Representation, index int) error {
+   if s.Info {
+      for i, item := range items {
+         fmt.Println()
+         if i == index {
+            fmt.Print("!")
+         }
+         fmt.Println(item)
+      }
+   } else if index >= 0 {
+      item := items[index]
+      ext, ok := item.Ext()
+      if !ok {
+         return errors.New("extension")
+      }
+      initialization, ok := item.Initialization()
+      if ok {
+         return s.segment_template(ext, initialization, item)
+      }
+      return s.segment_base(ext, item.BaseURL, item)
+   }
+   return nil
+}
+
 func decode_sidx(base_URL string, sidx, moof uint32) ([][2]uint32, error) {
    req, err := http.NewRequest("GET", base_URL, nil)
    if err != nil {
@@ -79,28 +103,4 @@ type Stream struct {
    Name string
    Poster widevine.Poster
    Private_Key string
-}
-
-func (s Stream) DASH_Sofia(items []*dash.Representation, index int) error {
-   if s.Info {
-      for i, item := range items {
-         fmt.Println()
-         if i == index {
-            fmt.Print("!")
-         }
-         fmt.Println(item)
-      }
-   } else if index >= 0 {
-      item := items[index]
-      ext, ok := item.Ext()
-      if !ok {
-         return errors.New("extension")
-      }
-      initialization, ok := item.Initialization()
-      if ok {
-         return s.segment_template(ext, initialization, item)
-      }
-      return s.segment_base(ext, item.BaseURL, item)
-   }
-   return nil
 }

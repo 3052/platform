@@ -1,32 +1,36 @@
 package stream
 
 type Namer interface {
-   Episode() (string, bool)
    Owner() (string, bool)
-   Release_Date() (string, bool)
-   Season() (string, bool)
    Show() (string, bool)
+   Season() (string, bool)
+   Episode() (string, bool)
    Title() (string, bool)
+   Year() (string, bool)
 }
 
+// Owner - Show Season Episode - Title - Year
 func Name(n Namer) string {
    var b []byte
-   date, date_ok := n.Release_Date()
-   show, show_ok := n.Show()
-   if !date_ok {
-      if v, ok := n.Owner(); ok {
-         b = append(b, v...)
-      }
+   if v, ok := n.Owner(); ok {
+      b = append(b, v...)
    }
-   if show_ok {
-      b = append(b, show...)
+   if v, ok := n.Show(); ok {
+      if b != nil {
+         b = append(b, " - "...)
+      }
+      b = append(b, v...)
    }
    if v, ok := n.Season(); ok {
-      b = append(b, ' ')
+      if b != nil {
+         b = append(b, ' ')
+      }
       b = append(b, v...)
    }
    if v, ok := n.Episode(); ok {
-      b = append(b, ' ')
+      if b != nil {
+         b = append(b, ' ')
+      }
       b = append(b, v...)
    }
    if v, ok := n.Title(); ok {
@@ -35,11 +39,11 @@ func Name(n Namer) string {
       }
       b = append(b, v...)
    }
-   if !show_ok {
-      if date_ok {
+   if v, ok := n.Year(); ok {
+      if b != nil {
          b = append(b, " - "...)
-         b = append(b, date...)
       }
+      b = append(b, v...)
    }
    clean(b)
    return string(b)
