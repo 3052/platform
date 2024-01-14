@@ -6,7 +6,7 @@ require (
 	154.pages.dev/encoding v1.15.6
 	154.pages.dev/log v1.1.2
 	154.pages.dev/sofia v1.1.1
-	154.pages.dev/widevine v1.1.7
+	154.pages.dev/widevine v1.1.8
 )
 
 require (
