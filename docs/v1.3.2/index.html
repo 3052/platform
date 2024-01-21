@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="doc2go">
+    <link href="../_/css/main.css" rel="stylesheet" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../_/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../_/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../_/icons/favicon-16x16.png">
+    <link rel="shortcut icon" href="../_/icons/favicon.ico">
+    <title>stream</title>
+</head>
+  <body>
+    <nav>
+        154.pages.dev/stream<span class="navbar-right">
+          <a href="..">Root</a> | <a href="#pkg-index">Index</a>
+        </span>
+      </nav><main><h2 id="pkg-overview">package stream</h2>
+<pre class="chroma"><span class="kn">import</span> <span class="s">&#34;154.pages.dev/stream&#34;</span></pre>
+<h3 id="pkg-index">Index</h3>
+<ul>
+  <li><a href="#Name">func Name(n Namer) string</a></li>
+  <li>
+      <a href="#Namer">type Namer</a>
+      </li>
+  <li>
+      <a href="#Stream">type Stream</a>
+      <ul>
+          <li><a href="#Stream.DASH_Sofia">func (s Stream) DASH_Sofia(items []*dash.Representation, index int) error</a></li>
+          <li><a href="#Stream.HLS">func (s *Stream) HLS(ref string) (*hls.Master, error)</a></li>
+          <li><a href="#Stream.HLS_Media">func (s Stream) HLS_Media(items []hls.Media, index int) error</a></li>
+          <li><a href="#Stream.HLS_Streams">func (s Stream) HLS_Streams(items []hls.Stream, index int) error</a></li>
+          </ul>
+      </li>
+  </ul><h3 id="pkg-functions">Functions</h3>
+  <h3 id="Name">func Name</h3>
+    <pre class="chroma"><span class="kd">func</span> <span class="nf">Name</span><span class="p">(</span><span class="nx">n</span> <a href="#Namer"><span class="nx">Namer</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+    <p>Owner - Show Season Episode - Title - Year
+<h3 id="pkg-types">Types</h3>
+  <h3 id="Namer">type Namer</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Namer</span> <span class="kd">interface</span> <span class="p">{</span>
+	<span id="Namer.Owner"><span class="nf">Owner</span></span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span>
+	<span id="Namer.Show"><span class="nf">Show</span></span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span>
+	<span id="Namer.Season"><span class="nf">Season</span></span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span>
+	<span id="Namer.Episode"><span class="nf">Episode</span></span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span>
+	<span id="Namer.Title"><span class="nf">Title</span></span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span>
+	<span id="Namer.Year"><span class="nf">Year</span></span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span>
+<span class="p">}</span></pre>
+    <h3 id="Stream">type Stream</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Stream</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="Stream.Base"><span class="nx">Base</span></span>        <span class="o">*</span><a href="https://pkg.go.dev/net/url"><span class="nx">url</span></a><span class="p">.</span><a href="https://pkg.go.dev/net/url#URL"><span class="nx">URL</span></a>
+	<span id="Stream.Client_ID"><span class="nx">Client_ID</span></span>   <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="Stream.Info"><span class="nx">Info</span></span>        <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a>
+	<span id="Stream.Name"><span class="nx">Name</span></span>        <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="Stream.Poster"><span class="nx">Poster</span></span>      <a href="https://pkg.go.dev/154.pages.dev/widevine"><span class="nx">widevine</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/widevine#Poster"><span class="nx">Poster</span></a>
+	<span id="Stream.Private_Key"><span class="nx">Private_Key</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+<span class="p">}</span></pre>
+    <h4 id="Stream.DASH_Sofia">func (Stream) DASH_Sofia</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <a href="#Stream"><span class="nx">Stream</span></a><span class="p">)</span> <span class="nf">DASH_Sofia</span><span class="p">(</span><span class="nx">items</span> <span class="p">[]</span><span class="o">*</span><a href="https://pkg.go.dev/154.pages.dev/encoding/dash"><span class="nx">dash</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/encoding/dash#Representation"><span class="nx">Representation</span></a><span class="p">,</span> <span class="nx">index</span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  <h4 id="Stream.HLS">func (*Stream) HLS</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><a href="#Stream"><span class="nx">Stream</span></a><span class="p">)</span> <span class="nf">HLS</span><span class="p">(</span><span class="nx">ref</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <span class="p">(</span><span class="o">*</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls"><span class="nx">hls</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls#Master"><span class="nx">Master</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="Stream.HLS_Media">func (Stream) HLS_Media</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <a href="#Stream"><span class="nx">Stream</span></a><span class="p">)</span> <span class="nf">HLS_Media</span><span class="p">(</span><span class="nx">items</span> <span class="p">[]</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls"><span class="nx">hls</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls#Media"><span class="nx">Media</span></a><span class="p">,</span> <span class="nx">index</span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  <h4 id="Stream.HLS_Streams">func (Stream) HLS_Streams</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <a href="#Stream"><span class="nx">Stream</span></a><span class="p">)</span> <span class="nf">HLS_Streams</span><span class="p">(</span><span class="nx">items</span> <span class="p">[]</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls"><span class="nx">hls</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls#Stream"><span class="nx">Stream</span></a><span class="p">,</span> <span class="nx">index</span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  </main>
+    <hr>
+    <footer>
+      <small id="generated-by-footer">
+        Generated with <a href="https://abhinav.github.io/doc2go/">doc2go</a>
+      </small>
+    </footer>
+    <script src="../_/js/permalink.js"></script>
+  </body>
+</html>
