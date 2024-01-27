@@ -44,10 +44,6 @@ func (s Stream) segment_base(
       return err
    }
    defer file.Close()
-   sidx, moof, err := item.Sidx_Moof()
-   if err != nil {
-      return err
-   }
    req, err := http.NewRequest("GET", base_URL, nil)
    if err != nil {
       return err
