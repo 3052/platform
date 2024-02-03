@@ -1,9 +1,8 @@
-package stream
+package rosso
 
 import (
    "154.pages.dev/encoding/dash"
    "154.pages.dev/log"
-   "154.pages.dev/widevine"
    "encoding/hex"
    "errors"
    "log/slog"
@@ -12,34 +11,14 @@ import (
 )
 
 func (s Stream) segment_template(
-   ext, initialization string, item *dash.Representation,
+   ext, initialization string, point dash.Pointer,
 ) error {
    file, err := os.Create(s.Name + ext)
    if err != nil {
       return err
    }
    defer file.Close()
-   private_key, err := os.ReadFile(s.Private_Key)
-   if err != nil {
-      return err
-   }
-   client_ID, err := os.ReadFile(s.Client_ID)
-   if err != nil {
-      return err
-   }
-   kid, err := item.Default_KID()
-   if err != nil {
-      return err
-   }
-   pssh, err := item.PSSH()
-   if err != nil {
-      return err
-   }
-   mod, err := widevine.New_Module(private_key, client_ID, kid, pssh)
-   if err != nil {
-      return err
-   }
-   key, err := mod.Key(s.Poster)
+   key, err := s.key(point)
    if err != nil {
       return err
    }
@@ -57,10 +36,7 @@ func (s Stream) segment_template(
    if err := encode_init(file, res.Body); err != nil {
       return err
    }
-   media, ok := item.Media()
-   if !ok {
-      return errors.New("Media")
-   }
+   media := point.Media()
    src := log.New_Progress(len(media))
    log.Set_Transport(slog.LevelDebug)
    defer log.Set_Transport(slog.LevelInfo)

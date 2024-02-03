@@ -1,9 +1,8 @@
-package stream
+package rosso
 
 import (
    "154.pages.dev/encoding/dash"
    "154.pages.dev/log"
-   "154.pages.dev/widevine"
    "encoding/hex"
    "fmt"
    "log/slog"
@@ -12,29 +11,9 @@ import (
 )
 
 func (s Stream) segment_base(
-   ext, base_URL string, item *dash.Representation,
+   ext, base_URL string, point dash.Pointer,
 ) error {
-   private_key, err := os.ReadFile(s.Private_Key)
-   if err != nil {
-      return err
-   }
-   client_ID, err := os.ReadFile(s.Client_ID)
-   if err != nil {
-      return err
-   }
-   kid, err := item.Default_KID()
-   if err != nil {
-      return err
-   }
-   pssh, err := item.PSSH()
-   if err != nil {
-      return err
-   }
-   mod, err := widevine.New_Module(private_key, client_ID, kid, pssh)
-   if err != nil {
-      return err
-   }
-   key, err := mod.Key(s.Poster)
+   key, err := s.key(point)
    if err != nil {
       return err
    }
@@ -44,11 +23,13 @@ func (s Stream) segment_base(
       return err
    }
    defer file.Close()
+   sb := point.Representation.SegmentBase
+   // Initialization
    req, err := http.NewRequest("GET", base_URL, nil)
    if err != nil {
       return err
    }
-   req.Header.Set("Range", "bytes=0-" + fmt.Sprint(sidx-1))
+   req.Header.Set("Range", "bytes=" + string(sb.Initialization.Range))
    res, err := http.DefaultClient.Do(req)
    if err != nil {
       return err
@@ -57,7 +38,7 @@ func (s Stream) segment_base(
    if err := encode_init(file, res.Body); err != nil {
       return err
    }
-   byte_ranges, err := encode_sidx(base_URL, sidx, moof)
+   byte_ranges, err := encode_sidx(base_URL, sb.IndexRange)
    if err != nil {
       return err
    }
