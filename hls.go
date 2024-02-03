@@ -1,4 +1,4 @@
-package stream
+package rosso
 
 import (
    "154.pages.dev/encoding/hls"

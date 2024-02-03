@@ -1,38 +1,64 @@
-package stream
+package rosso
 
 import (
    "154.pages.dev/encoding/dash"
    "154.pages.dev/sofia"
    "154.pages.dev/widevine"
-   "errors"
-   "fmt"
    "io"
    "net/http"
    "net/url"
+   "os"
+   "text/template"
 )
 
-func (s Stream) DASH_Sofia(items []*dash.Representation, index int) error {
-   if s.Info {
-      for i, item := range items {
-         fmt.Println()
-         if i == index {
-            fmt.Print("!")
-         }
-         fmt.Println(item)
-      }
-   } else if index >= 0 {
-      item := items[index]
-      ext, ok := item.Ext()
-      if !ok {
-         return errors.New("extension")
-      }
-      initialization, ok := item.Initialization()
-      if ok {
-         return s.segment_template(ext, initialization, item)
-      }
-      return s.segment_base(ext, item.BaseURL, item)
+func encode_sidx(base_URL string, index dash.Range) ([][2]uint32, error) {
+   req, err := http.NewRequest("GET", base_URL, nil)
+   if err != nil {
+      return nil, err
    }
-   return nil
+   req.Header.Set("Range", "bytes=" + string(index))
+   res, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return nil, err
+   }
+   defer res.Body.Close()
+   var f sofia.File
+   if err := f.Decode(res.Body); err != nil {
+      return nil, err
+   }
+   _, sidx, err := index.Scan()
+   if err != nil {
+      return nil, err
+   }
+   return f.SegmentIndex.ByteRanges(uint32(sidx)+1), nil
+}
+
+func (s Stream) DASH_Sofia(media dash.MPD, id string) error {
+   if id != "" {
+      var err error
+      media.Some(func(p dash.Pointer) bool {
+         if p.Representation.ID == id {
+            return true
+         }
+         ext, ok := p.Ext()
+         if !ok {
+            return true
+         }
+         initial, ok := p.Initialization()
+         if ok {
+            err = s.segment_template(ext, initial, p)
+         } else {
+            err = s.segment_base(ext, p.Representation.BaseURL, p)
+         }
+         return false
+      })
+      return err
+   }
+   tmpl, err := new(template.Template).Parse(dash.Template)
+   if err != nil {
+      return err
+   }
+   return tmpl.Execute(os.Stdout, media)
 }
 
 func encode_init(dst io.Writer, src io.Reader) error {
@@ -85,22 +111,4 @@ type Stream struct {
    Name string
    Poster widevine.Poster
    Private_Key string
-}
-
-func encode_sidx(base_URL string, sidx, moof uint32) ([][2]uint32, error) {
-   req, err := http.NewRequest("GET", base_URL, nil)
-   if err != nil {
-      return nil, err
-   }
-   req.Header.Set("Range", fmt.Sprintf("bytes=%v-%v", sidx, moof-1))
-   res, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return nil, err
-   }
-   defer res.Body.Close()
-   var f sofia.File
-   if err := f.Decode(res.Body); err != nil {
-      return nil, err
-   }
-   return f.SegmentIndex.ByteRanges(moof), nil
 }

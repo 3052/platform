@@ -1,4 +1,4 @@
-package stream
+package rosso
 
 type Namer interface {
    Owner() (string, bool)

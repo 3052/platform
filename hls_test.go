@@ -1,4 +1,4 @@
-package stream
+package rosso
 
 import "testing"
 
