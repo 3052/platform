@@ -2,8 +2,8 @@
 154.pages.dev/encoding v1.16.8/go.mod h1:KHWBwxsigaRVpDqFu8UgUcJzvEW3qJveq9YfVV90OiY=
 154.pages.dev/log v1.1.3 h1:iiAe4h+alq/oJBnzaseGiS1PAdvDmiq8NL26Bjn1owI=
 154.pages.dev/log v1.1.3/go.mod h1:nopBF2oieijp+lBbRjqKzUKnMgJgL8JD3tnguQ9bFWg=
-154.pages.dev/protobuf v1.1.0 h1:PxvSfEMqJQeumuLGqFRSPDC8MBlANzamLQizgGW6zfk=
-154.pages.dev/protobuf v1.1.0/go.mod h1:SxW3gQj5yMXT+QHEd+8+XJ7gTDDSjfu53vkdyJ/9KlQ=
+154.pages.dev/protobuf v1.1.2 h1:na5S/BHyf1SsZBEl3fCM2ykJvZZHYOL1SChSWTd2W0Q=
+154.pages.dev/protobuf v1.1.2/go.mod h1:SxW3gQj5yMXT+QHEd+8+XJ7gTDDSjfu53vkdyJ/9KlQ=
 154.pages.dev/sofia v1.1.3 h1:pp1MPAkPOQS79BXQKqbawDy/vi7DF2YMcW231sjUaKQ=
 154.pages.dev/sofia v1.1.3/go.mod h1:42KjYiPl7Vy50qEETAFgjZrDdJyg1MpqiZh3JdxMEGY=
 154.pages.dev/widevine v1.2.5 h1:bbH9pB637ja8xTXXaPYbVmFz7LNXxa1/bLCp1x4crWg=
