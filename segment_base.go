@@ -17,7 +17,7 @@ func (s Stream) segment_base(
    if err != nil {
       return err
    }
-   slog.Debug("*", "key", hex.EncodeToString(key))
+   slog.Debug("hex", "key", hex.EncodeToString(key))
    file, err := os.Create(s.Name + ext)
    if err != nil {
       return err
@@ -42,9 +42,10 @@ func (s Stream) segment_base(
    if err != nil {
       return err
    }
-   src := log.New_Progress(len(byte_ranges))
-   log.Set_Transport(slog.LevelDebug)
-   defer log.Set_Transport(slog.LevelInfo)
+   var meter log.ProgressMeter
+   meter.Set(len(byte_ranges))
+   log.TransportDebug()
+   defer log.TransportInfo()
    for _, r := range byte_ranges {
       err := func() error {
          req, err := http.NewRequest("GET", base_URL, nil)
@@ -57,7 +58,7 @@ func (s Stream) segment_base(
             return err
          }
          defer res.Body.Close()
-         return encode_segment(file, src.Reader(res), key)
+         return encode_segment(file, meter.Reader(res), key)
       }()
       if err != nil {
          return err

@@ -6,7 +6,6 @@ import (
    "errors"
    "fmt"
    "io"
-   "log/slog"
    "net/http"
    "os"
 )
@@ -65,9 +64,10 @@ func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
       }
    }
    req.Host = ""
-   log.Set_Transport(slog.LevelDebug)
-   defer log.Set_Transport(slog.LevelInfo)
-   src := log.New_Progress(len(seg.URI))
+   log.TransportDebug()
+   defer log.TransportInfo()
+   var src log.ProgressMeter
+   src.Set(len(seg.URI))
    for _, ref := range seg.URI {
       // with HLS, the segment URL is relative to the master URL, and the
       // fragment URL is relative to the segment URL.

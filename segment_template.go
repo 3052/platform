@@ -37,9 +37,10 @@ func (s Stream) segment_template(
       return err
    }
    media := point.Media()
-   src := log.New_Progress(len(media))
-   log.Set_Transport(slog.LevelDebug)
-   defer log.Set_Transport(slog.LevelInfo)
+   var meter log.ProgressMeter
+   meter.Set(len(media))
+   log.TransportDebug()
+   defer log.TransportInfo()
    for _, ref := range media {
       // with DASH, initialization and media URLs are relative to the MPD URL
       req.URL, err = s.Base.Parse(ref)
@@ -55,7 +56,7 @@ func (s Stream) segment_template(
          if res.StatusCode != http.StatusOK {
             return errors.New(res.Status)
          }
-         return encode_segment(file, src.Reader(res), key)
+         return encode_segment(file, meter.Reader(res), key)
       }()
       if err != nil {
          return err
