@@ -12,7 +12,7 @@ import (
 )
 
 func (s Stream) key(point dash.Pointer) ([]byte, error) {
-   var module widevine.CDM
+   var module widevine.Cdm
    private_key, err := os.ReadFile(s.Private_Key)
    if err != nil {
       return nil, err
