@@ -14,7 +14,7 @@
   <body>
     <nav>
         154.pages.dev/rosso<span class="navbar-right">
-          v1.3.5 | <a href="">Root</a> | <a href="#pkg-index">Index</a></span>
+          v1.3.6 | <a href="">Root</a> | <a href="#pkg-index">Index</a></span>
       </nav>
     <main><h2 id="pkg-overview">package rosso</h2>
 <pre class="chroma"><span class="kn">import</span> <span class="s">&#34;154.pages.dev/rosso&#34;</span></pre>
@@ -28,9 +28,8 @@
       <a href="#Stream">type Stream</a>
       <ul>
           <li><a href="#Stream.DASH_Sofia">func (s Stream) DASH_Sofia(media dash.MPD, id string) error</a></li>
-          <li><a href="#Stream.HLS">func (s *Stream) HLS(ref string) (*hls.Master, error)</a></li>
-          <li><a href="#Stream.HLS_Media">func (s Stream) HLS_Media(items []hls.Media, index int) error</a></li>
-          <li><a href="#Stream.HLS_Streams">func (s Stream) HLS_Streams(items []hls.Stream, index int) error</a></li>
+          <li><a href="#Stream.HLS">func (s *Stream) HLS(uri string) (hls.MasterPlaylist, error)</a></li>
+          <li><a href="#Stream.HlsGet">func (s Stream) HlsGet(master hls.MasterPlaylist, index int) error</a></li>
           </ul>
       </li>
   </ul><h3 id="pkg-functions">Functions</h3>
@@ -59,11 +58,9 @@
     <h4 id="Stream.DASH_Sofia">func (Stream) DASH_Sofia</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <a href="#Stream"><span class="nx">Stream</span></a><span class="p">)</span> <span class="nf">DASH_Sofia</span><span class="p">(</span><span class="nx">media</span> <a href="https://pkg.go.dev/154.pages.dev/encoding/dash"><span class="nx">dash</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/encoding/dash#MPD"><span class="nx">MPD</span></a><span class="p">,</span> <span class="nx">id</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
   <h4 id="Stream.HLS">func (*Stream) HLS</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><a href="#Stream"><span class="nx">Stream</span></a><span class="p">)</span> <span class="nf">HLS</span><span class="p">(</span><span class="nx">ref</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <span class="p">(</span><span class="o">*</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls"><span class="nx">hls</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls#Master"><span class="nx">Master</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
-  <h4 id="Stream.HLS_Media">func (Stream) HLS_Media</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <a href="#Stream"><span class="nx">Stream</span></a><span class="p">)</span> <span class="nf">HLS_Media</span><span class="p">(</span><span class="nx">items</span> <span class="p">[]</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls"><span class="nx">hls</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls#Media"><span class="nx">Media</span></a><span class="p">,</span> <span class="nx">index</span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
-  <h4 id="Stream.HLS_Streams">func (Stream) HLS_Streams</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <a href="#Stream"><span class="nx">Stream</span></a><span class="p">)</span> <span class="nf">HLS_Streams</span><span class="p">(</span><span class="nx">items</span> <span class="p">[]</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls"><span class="nx">hls</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls#Stream"><span class="nx">Stream</span></a><span class="p">,</span> <span class="nx">index</span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><a href="#Stream"><span class="nx">Stream</span></a><span class="p">)</span> <span class="nf">HLS</span><span class="p">(</span><span class="nx">uri</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <span class="p">(</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls"><span class="nx">hls</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls#MasterPlaylist"><span class="nx">MasterPlaylist</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="Stream.HlsGet">func (Stream) HlsGet</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <a href="#Stream"><span class="nx">Stream</span></a><span class="p">)</span> <span class="nf">HlsGet</span><span class="p">(</span><span class="nx">master</span> <a href="https://pkg.go.dev/154.pages.dev/encoding/hls"><span class="nx">hls</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/encoding/hls#MasterPlaylist"><span class="nx">MasterPlaylist</span></a><span class="p">,</span> <span class="nx">index</span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
   </main>
     <hr>
     <footer>
