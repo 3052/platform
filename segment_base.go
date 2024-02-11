@@ -10,15 +10,15 @@ import (
    "os"
 )
 
-func (s Stream) segment_base(
+func (h HttpStream) segment_base(
    ext, base_URL string, point dash.Pointer,
 ) error {
-   key, err := s.key(point)
+   key, err := h.key(point)
    if err != nil {
       return err
    }
    slog.Debug("hex", "key", hex.EncodeToString(key))
-   file, err := os.Create(s.Name + ext)
+   file, err := os.Create(h.Name + ext)
    if err != nil {
       return err
    }

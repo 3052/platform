@@ -4,6 +4,7 @@ import (
    "154.pages.dev/encoding/dash"
    "154.pages.dev/sofia"
    "154.pages.dev/widevine"
+   "encoding/xml"
    "errors"
    "io"
    "net/http"
@@ -12,7 +13,60 @@ import (
    "text/template"
 )
 
-func (s Stream) key(point dash.Pointer) ([]byte, error) {
+// wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP
+// wikipedia.org/wiki/HTTP_Live_Streaming
+type HttpStream struct {
+   Base *url.URL
+   Client_ID string
+   Info bool
+   Name string
+   Poster widevine.Poster
+   Private_Key string
+}
+
+func (h *HttpStream) DashMedia(uri string) (*dash.MPD, error) {
+   res, err := http.Get(uri)
+   if err != nil {
+      return nil, err
+   }
+   defer res.Body.Close()
+   h.Base = res.Request.URL
+   media := new(dash.MPD)
+   if err := xml.NewDecoder(res.Body).Decode(media); err != nil {
+      return nil, err
+   }
+   return media, nil
+}
+
+func (h HttpStream) DASH(media dash.MPD, id string) error {
+   if id != "" {
+      var err error
+      media.Some(func(p dash.Pointer) bool {
+         if p.Representation.ID == id {
+            return true
+         }
+         ext, ok := p.Ext()
+         if !ok {
+            return true
+         }
+         initial, ok := p.Initialization()
+         if ok {
+            err = h.segment_template(ext, initial, p)
+         } else {
+            err = h.segment_base(ext, p.Representation.BaseURL, p)
+         }
+         return false
+      })
+      return err
+   }
+   tmpl, err := new(template.Template).Parse(dash.Template)
+   if err != nil {
+      return err
+   }
+   return tmpl.Execute(os.Stdout, media)
+}
+
+func (h HttpStream) key(point dash.Pointer) ([]byte, error) {
    var pssh widevine.Pssh
    data, err := point.PSSH()
    if err != nil {
@@ -27,11 +81,11 @@ func (s Stream) key(point dash.Pointer) ([]byte, error) {
          return nil, err
       }
    }
-   private_key, err := os.ReadFile(s.Private_Key)
+   private_key, err := os.ReadFile(h.Private_Key)
    if err != nil {
       return nil, err
    }
-   client_id, err := os.ReadFile(s.Client_ID)
+   client_id, err := os.ReadFile(h.Client_ID)
    if err != nil {
       return nil, err
    }
@@ -39,7 +93,7 @@ func (s Stream) key(point dash.Pointer) ([]byte, error) {
    if err != nil {
       return nil, err
    }
-   license, err := module.License(s.Poster)
+   license, err := module.License(h.Poster)
    if err != nil {
       return nil, err
    }
@@ -70,34 +124,6 @@ func encode_sidx(base_URL string, index dash.Range) ([][2]uint32, error) {
       return nil, err
    }
    return f.SegmentIndex.ByteRanges(uint32(sidx)+1), nil
-}
-
-func (s Stream) DASH_Sofia(media dash.MPD, id string) error {
-   if id != "" {
-      var err error
-      media.Some(func(p dash.Pointer) bool {
-         if p.Representation.ID == id {
-            return true
-         }
-         ext, ok := p.Ext()
-         if !ok {
-            return true
-         }
-         initial, ok := p.Initialization()
-         if ok {
-            err = s.segment_template(ext, initial, p)
-         } else {
-            err = s.segment_base(ext, p.Representation.BaseURL, p)
-         }
-         return false
-      })
-      return err
-   }
-   tmpl, err := new(template.Template).Parse(dash.Template)
-   if err != nil {
-      return err
-   }
-   return tmpl.Execute(os.Stdout, media)
 }
 
 func encode_init(dst io.Writer, src io.Reader) error {
@@ -141,13 +167,4 @@ func encode_segment(dst io.Writer, src io.Reader, key []byte) error {
       }
    }
    return f.Encode(dst)
-}
-
-type Stream struct {
-   Base *url.URL
-   Client_ID string
-   Info bool
-   Name string
-   Poster widevine.Poster
-   Private_Key string
 }

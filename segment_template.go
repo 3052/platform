@@ -10,15 +10,15 @@ import (
    "os"
 )
 
-func (s Stream) segment_template(
+func (h HttpStream) segment_template(
    ext, initialization string, point dash.Pointer,
 ) error {
-   file, err := os.Create(s.Name + ext)
+   file, err := os.Create(h.Name + ext)
    if err != nil {
       return err
    }
    defer file.Close()
-   key, err := s.key(point)
+   key, err := h.key(point)
    if err != nil {
       return err
    }
@@ -27,7 +27,7 @@ func (s Stream) segment_template(
    if err != nil {
       return err
    }
-   req.URL = s.Base.ResolveReference(req.URL)
+   req.URL = h.Base.ResolveReference(req.URL)
    res, err := http.DefaultClient.Do(req)
    if err != nil {
       return err
@@ -43,7 +43,7 @@ func (s Stream) segment_template(
    defer log.TransportInfo()
    for _, ref := range media {
       // with DASH, initialization and media URLs are relative to the MPD URL
-      req.URL, err = s.Base.Parse(ref)
+      req.URL, err = h.Base.Parse(ref)
       if err != nil {
          return err
       }
