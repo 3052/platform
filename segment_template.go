@@ -22,7 +22,7 @@ func (s Stream) segment_template(
    if err != nil {
       return err
    }
-   slog.Debug("*", "key", hex.EncodeToString(key))
+   slog.Debug("hex", "key", hex.EncodeToString(key))
    req, err := http.NewRequest("GET", initialization, nil)
    if err != nil {
       return err

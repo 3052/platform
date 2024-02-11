@@ -4,6 +4,7 @@ import (
    "154.pages.dev/encoding/dash"
    "154.pages.dev/sofia"
    "154.pages.dev/widevine"
+   "errors"
    "io"
    "net/http"
    "net/url"
@@ -12,32 +13,41 @@ import (
 )
 
 func (s Stream) key(point dash.Pointer) ([]byte, error) {
-   var module widevine.Cdm
+   var pssh widevine.Pssh
+   data, err := point.PSSH()
+   if err != nil {
+      key_id, err := point.Default_KID()
+      if err != nil {
+         return nil, err
+      }
+      pssh.Key_id = key_id
+   } else {
+      err := pssh.New(data)
+      if err != nil {
+         return nil, err
+      }
+   }
    private_key, err := os.ReadFile(s.Private_Key)
    if err != nil {
-      return nil, err
-   }
-   if err := module.New(private_key); err != nil {
       return nil, err
    }
    client_id, err := os.ReadFile(s.Client_ID)
    if err != nil {
       return nil, err
    }
-   pssh, err := point.PSSH()
+   module, err := pssh.Cdm(private_key, client_id)
    if err != nil {
-      kid, err := point.Default_KID()
-      if err != nil {
-         return nil, err
-      }
-      module.Key_ID(client_id, kid)
-   } else {
-      err := module.PSSH(client_id, pssh)
-      if err != nil {
-         return nil, err
-      }
+      return nil, err
    }
-   return module.Key(s.Poster)
+   license, err := module.License(s.Poster)
+   if err != nil {
+      return nil, err
+   }
+   key, ok := module.Key(license)
+   if !ok {
+      return nil, errors.New("widevine.Cdm.Key")
+   }
+   return key, nil
 }
 
 func encode_sidx(base_URL string, index dash.Range) ([][2]uint32, error) {

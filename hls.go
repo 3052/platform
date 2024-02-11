@@ -10,8 +10,8 @@ import (
    "os"
 )
 
-func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
-   if str.Info {
+func (s Stream) hls_get(items hls.MasterPlaylist, index int) error {
+   if s.Info {
       for i, item := range items {
          fmt.Println()
          if i == index {
@@ -22,16 +22,16 @@ func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
       return nil
    }
    item := items[index]
-   file, err := os.Create(str.Name + item.Ext())
+   file, err := os.Create(s.Name + item.Ext())
    if err != nil {
       return err
    }
    defer file.Close()
-   req, err := http.NewRequest("GET", item.URI(), nil)
+   req, err := http.NewRequest("", item.URI(), nil)
    if err != nil {
       return err
    }
-   req.URL = str.Base.ResolveReference(req.URL)
+   req.URL = s.Base.ResolveReference(req.URL)
    res, err := http.DefaultClient.Do(req)
    if err != nil {
       return err
@@ -44,24 +44,21 @@ func hls_get[T hls.Mixed](str Stream, items []T, index int) error {
    if err != nil {
       return err
    }
-   var block *hls.Block
-   if seg.Key != "" {
-      res, err := http.Get(seg.Key)
-      if err != nil {
-         return err
-      }
-      defer res.Body.Close()
-      if res.StatusCode != http.StatusOK {
-         return errors.New(res.Status)
-      }
-      key, err := io.ReadAll(res.Body)
-      if err != nil {
-         return err
-      }
-      block, err = hls.New_Block(key)
-      if err != nil {
-         return err
-      }
+   res, err := http.Get(seg.Key)
+   if err != nil {
+      return err
+   }
+   defer res.Body.Close()
+   if res.StatusCode != http.StatusOK {
+      return errors.New(res.Status)
+   }
+   key, err := io.ReadAll(res.Body)
+   if err != nil {
+      return err
+   }
+   block, err := hls.New_Block(key)
+   if err != nil {
+      return err
    }
    req.Host = ""
    log.TransportDebug()
