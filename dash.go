@@ -67,14 +67,14 @@ func (h HttpStream) DASH(media dash.MPD, id string) error {
 }
 
 func (h HttpStream) key(point dash.Pointer) ([]byte, error) {
-   var pssh widevine.Pssh
+   var pssh widevine.PSSH
    data, err := point.PSSH()
    if err != nil {
       key_id, err := point.Default_KID()
       if err != nil {
          return nil, err
       }
-      pssh.Key_id = key_id
+      pssh.Key_ID = key_id
    } else {
       err := pssh.New(data)
       if err != nil {
@@ -89,7 +89,7 @@ func (h HttpStream) key(point dash.Pointer) ([]byte, error) {
    if err != nil {
       return nil, err
    }
-   module, err := pssh.Cdm(private_key, client_id)
+   module, err := pssh.CDM(private_key, client_id)
    if err != nil {
       return nil, err
    }
@@ -99,7 +99,7 @@ func (h HttpStream) key(point dash.Pointer) ([]byte, error) {
    }
    key, ok := module.Key(license)
    if !ok {
-      return nil, errors.New("widevine.Cdm.Key")
+      return nil, errors.New("widevine.CDM.Key")
    }
    return key, nil
 }
@@ -161,7 +161,7 @@ func encode_segment(dst io.Writer, src io.Reader, key []byte) error {
    }
    for i, data := range f.MediaData.Data {
       sample := f.MovieFragment.TrackFragment.SampleEncryption.Samples[i]
-      err := sample.Decrypt_CENC(data, key)
+      err := sample.DecryptCenc(data, key)
       if err != nil {
          return err
       }
