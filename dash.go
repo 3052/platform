@@ -13,6 +13,32 @@ import (
    "text/template"
 )
 
+func (h HttpStream) DASH(media dash.MPD, id string) error {
+   var point dash.Pointer
+   ok := media.Contains(func(p dash.Pointer) bool {
+      if p.Representation.ID == id {
+         point = p
+         return true
+      }
+      return false
+   })
+   if ok {
+      ext, ok := point.Ext()
+      if !ok {
+         return errors.New("dash.Pointer.Ext")
+      }
+      if initial, ok := point.Initialization(); ok {
+         return h.segment_template(ext, initial, point)
+      }
+      return h.segment_base(ext, point.Representation.BaseURL, point)
+   }
+   line, err := new(template.Template).Parse(dash.ModeLine)
+   if err != nil {
+      return err
+   }
+   return line.Execute(os.Stdout, media)
+}
+
 // wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP
 // wikipedia.org/wiki/HTTP_Live_Streaming
 type HttpStream struct {
@@ -36,34 +62,6 @@ func (h *HttpStream) DashMedia(uri string) (*dash.MPD, error) {
       return nil, err
    }
    return media, nil
-}
-
-func (h HttpStream) DASH(media dash.MPD, id string) error {
-   if id != "" {
-      var err error
-      media.Some(func(p dash.Pointer) bool {
-         if p.Representation.ID == id {
-            return true
-         }
-         ext, ok := p.Ext()
-         if !ok {
-            return true
-         }
-         initial, ok := p.Initialization()
-         if ok {
-            err = h.segment_template(ext, initial, p)
-         } else {
-            err = h.segment_base(ext, p.Representation.BaseURL, p)
-         }
-         return false
-      })
-      return err
-   }
-   tmpl, err := new(template.Template).Parse(dash.Template)
-   if err != nil {
-      return err
-   }
-   return tmpl.Execute(os.Stdout, media)
 }
 
 func (h HttpStream) key(point dash.Pointer) ([]byte, error) {
