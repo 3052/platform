@@ -3,40 +3,21 @@ package rosso
 import (
    "154.pages.dev/encoding/hls"
    "154.pages.dev/log"
-   "fmt"
    "io"
    "net/http"
    "os"
+   "text/template"
 )
 
-func (s *HttpStream) HlsMaster(uri string) (hls.MasterPlaylist, error) {
-   res, err := http.Get(uri)
-   if err != nil {
-      return nil, err
-   }
-   defer res.Body.Close()
-   s.Base = res.Request.URL
-   text, err := io.ReadAll(res.Body)
-   if err != nil {
-      return nil, err
-   }
-   var master hls.MasterPlaylist
-   master.New(string(text))
-   return master, nil
-}
-
 func (s HttpStream) HLS(master hls.MasterPlaylist, index int) error {
-   if s.Info {
-      for i, variant := range master {
-         fmt.Println()
-         if i == index {
-            fmt.Print("!")
-         }
-         fmt.Println(variant)
+   variant, ok := master.Index(index)
+   if !ok {
+      line, err := new(template.Template).Parse(hls.ModeLine)
+      if err != nil {
+         return err
       }
-      return nil
+      return line.Execute(os.Stdout, master)
    }
-   variant := master[index]
    var segment hls.MediaSegment
    req, err := http.NewRequest("", variant.URI, nil)
    if err != nil {
@@ -112,4 +93,20 @@ func (s HttpStream) HLS(master hls.MasterPlaylist, index int) error {
       }
    }
    return nil
+}
+
+func (s *HttpStream) HlsMaster(uri string) (hls.MasterPlaylist, error) {
+   res, err := http.Get(uri)
+   if err != nil {
+      return nil, err
+   }
+   defer res.Body.Close()
+   s.Base = res.Request.URL
+   text, err := io.ReadAll(res.Body)
+   if err != nil {
+      return nil, err
+   }
+   var master hls.MasterPlaylist
+   master.New(string(text))
+   return master, nil
 }
