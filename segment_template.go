@@ -13,11 +13,6 @@ import (
 func (h HttpStream) segment_template(
    ext, initialization string, point dash.Pointer,
 ) error {
-   file, err := os.Create(h.Name + ext)
-   if err != nil {
-      return err
-   }
-   defer file.Close()
    key, err := h.key(point)
    if err != nil {
       return err
@@ -33,6 +28,11 @@ func (h HttpStream) segment_template(
       return err
    }
    defer res.Body.Close()
+   file, err := os.Create(Name(h.Name) + ext)
+   if err != nil {
+      return err
+   }
+   defer file.Close()
    if err := encode_init(file, res.Body); err != nil {
       return err
    }
