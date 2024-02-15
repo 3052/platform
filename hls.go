@@ -9,7 +9,7 @@ import (
    "text/template"
 )
 
-func (s HttpStream) HLS(master hls.MasterPlaylist, index int) error {
+func (h HttpStream) HLS(master hls.MasterPlaylist, index int) error {
    variant, ok := master.Index(index)
    if !ok {
       line, err := new(template.Template).Parse(hls.ModeLine)
@@ -23,7 +23,7 @@ func (s HttpStream) HLS(master hls.MasterPlaylist, index int) error {
    if err != nil {
       return err
    }
-   req.URL = s.Base.ResolveReference(req.URL)
+   req.URL = h.Base.ResolveReference(req.URL)
    err = func() error {
       res, err := http.DefaultClient.Do(req)
       if err != nil {
@@ -56,7 +56,7 @@ func (s HttpStream) HLS(master hls.MasterPlaylist, index int) error {
    if err != nil {
       return err
    }
-   file, err := os.Create(s.Name + variant.Ext())
+   file, err := os.Create(Name(h.Name) + variant.Ext())
    if err != nil {
       return err
    }
@@ -95,13 +95,13 @@ func (s HttpStream) HLS(master hls.MasterPlaylist, index int) error {
    return nil
 }
 
-func (s *HttpStream) HlsMaster(uri string) (hls.MasterPlaylist, error) {
+func (h *HttpStream) HlsMaster(uri string) (hls.MasterPlaylist, error) {
    res, err := http.Get(uri)
    if err != nil {
       return nil, err
    }
    defer res.Body.Close()
-   s.Base = res.Request.URL
+   h.Base = res.Request.URL
    text, err := io.ReadAll(res.Body)
    if err != nil {
       return nil, err

@@ -18,11 +18,6 @@ func (h HttpStream) segment_base(
       return err
    }
    slog.Debug("hex", "key", hex.EncodeToString(key))
-   file, err := os.Create(h.Name + ext)
-   if err != nil {
-      return err
-   }
-   defer file.Close()
    sb := point.Representation.SegmentBase
    // Initialization
    req, err := http.NewRequest("GET", base_URL, nil)
@@ -35,6 +30,11 @@ func (h HttpStream) segment_base(
       return err
    }
    defer res.Body.Close()
+   file, err := os.Create(Name(h.Name) + ext)
+   if err != nil {
+      return err
+   }
+   defer file.Close()
    if err := encode_init(file, res.Body); err != nil {
       return err
    }

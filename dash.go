@@ -18,7 +18,7 @@ import (
 type HttpStream struct {
    Base *url.URL
    Client_ID string
-   Name string
+   Name Namer
    Poster widevine.Poster
    Private_Key string
 }
