@@ -1,7 +1,7 @@
 package gem
 
 import (
-   "154.pages.dev/rosso"
+   "154.pages.dev/encoding"
    "fmt"
    "os"
    "testing"
@@ -24,7 +24,7 @@ func TestStream(t *testing.T) {
       item, ok := gem.Item()
       if ok {
          fmt.Printf("%+v\n", item)
-         fmt.Println(rosso.Name(gem.StructuredMetadata))
+         fmt.Println(encoding.Name(gem.StructuredMetadata))
       }
       time.Sleep(time.Second)
    }

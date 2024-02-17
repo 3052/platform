@@ -1,7 +1,7 @@
 package youtube
 
 import (
-   "154.pages.dev/rosso"
+   "154.pages.dev/encoding"
    "fmt"
    "testing"
    "time"
@@ -23,7 +23,7 @@ func TestNext(t *testing.T) {
       if err != nil {
          t.Fatal(err)
       }
-      fmt.Println(rosso.Name(next))
+      fmt.Println(encoding.Name(next))
       time.Sleep(99*time.Millisecond)
    }
 }

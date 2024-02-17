@@ -2,7 +2,7 @@ package main
 
 import (
    "154.pages.dev/log"
-   "154.pages.dev/media/youtube"
+   "154.pages.dev/platform/youtube"
    "flag"
    "strconv"
    "strings"

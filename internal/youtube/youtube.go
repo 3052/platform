@@ -1,9 +1,9 @@
 package main
 
 import (
+   "154.pages.dev/encoding"
    "154.pages.dev/log"
-   "154.pages.dev/media/youtube"
-   "154.pages.dev/rosso"
+   "154.pages.dev/platform/youtube"
    "fmt"
    "log/slog"
    "net/http"
@@ -32,7 +32,7 @@ func (f flags) loop() error {
    }
    for _, format := range formats {
       if _, ok := f.itag[format.Itag]; ok {
-         err := download(format, rosso.Name(next))
+         err := download(format, encoding.Name(next))
          if err != nil {
             return err
          }

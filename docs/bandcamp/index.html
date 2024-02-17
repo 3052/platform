@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="doc2go">
+    <link href="../_/css/main.css" rel="stylesheet" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../_/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../_/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../_/icons/favicon-16x16.png">
+    <link rel="shortcut icon" href="../_/icons/favicon.ico">
+    <title>bandcamp</title>
+</head>
+  <body>
+    <nav>
+        <a href="..">154.pages.dev/platform</a>/bandcamp<span class="navbar-right">
+          v1.4.4 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
+      </nav>
+    <main><h2 id="pkg-overview">package bandcamp</h2>
+<pre class="chroma"><span class="kn">import</span> <span class="s">&#34;154.pages.dev/platform/bandcamp&#34;</span></pre>
+<h3 id="pkg-index">Index</h3>
+<ul>
+  <li><a href="#pkg-constants">Constants</a></li><li><a href="#pkg-variables">Variables</a></li><li>
+      <a href="#Band">type Band</a>
+      </li>
+  <li>
+      <a href="#Image">type Image</a>
+      <ul>
+          <li><a href="#Image.URL">func (i Image) URL(art_id int64) string</a></li>
+          </ul>
+      </li>
+  <li>
+      <a href="#Item">type Item</a>
+      <ul>
+          <li><a href="#Item.Band">func (i Item) Band() (*Band, error)</a></li>
+          <li><a href="#Item.Tralbum">func (i Item) Tralbum() (*Tralbum, error)</a></li>
+          </ul>
+      </li>
+  <li>
+      <a href="#Params">type Params</a>
+      <ul>
+          <li><a href="#New_Params">func New_Params(ref string) (*Params, error)</a></li>
+          <li><a href="#Params.Band">func (p Params) Band() (*Band, error)</a></li>
+          <li><a href="#Params.Tralbum">func (p Params) Tralbum() (*Tralbum, error)</a></li>
+          </ul>
+      </li>
+  <li>
+      <a href="#Track">type Track</a>
+      <ul>
+          <li><a href="#Track.String">func (t Track) String() string</a></li>
+          </ul>
+      </li>
+  <li>
+      <a href="#Tralbum">type Tralbum</a>
+      <ul>
+          <li><a href="#Tralbum.Date">func (t Tralbum) Date() time.Time</a></li>
+          </ul>
+      </li>
+  </ul><h3 id="pkg-constants">Constants</h3>
+  <pre class="chroma"><span class="kd">const</span> <span class="p">(</span>
+	<span id="JPEG"><span class="nx">JPEG</span></span> <span class="p">=</span> <a href="https://pkg.go.dev/builtin#iota"><span class="kc">iota</span></a>
+	<span id="PNG"><span class="nx">PNG</span></span>
+<span class="p">)</span></pre>
+  <h3 id="pkg-variables">Variables</h3>
+  <pre class="chroma"><span class="kd">var</span> <span id="Images"><span class="nx">Images</span></span> <span class="p">=</span> <span class="p">[]</span><a href="#Image"><span class="nx">Image</span></a><span class="p">{</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#PNG"><span class="nx">PNG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">350</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">350</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">150</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">150</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">124</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">124</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">210</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">210</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">172</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">172</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">138</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">138</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">380</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">380</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">368</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">368</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">135</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">135</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">23</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">26</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">800</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">,</span> <span class="nx">Crop</span><span class="p">:</span> <a href="https://pkg.go.dev/builtin#true"><span class="kc">true</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">27</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">715</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">402</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">,</span> <span class="nx">Crop</span><span class="p">:</span> <a href="https://pkg.go.dev/builtin#true"><span class="kc">true</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">768</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">432</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">,</span> <span class="nx">Crop</span><span class="p">:</span> <a href="https://pkg.go.dev/builtin#true"><span class="kc">true</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">29</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">,</span> <span class="nx">Crop</span><span class="p">:</span> <a href="https://pkg.go.dev/builtin#true"><span class="kc">true</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#PNG"><span class="nx">PNG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">380</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">285</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">,</span> <span class="nx">Crop</span><span class="p">:</span> <a href="https://pkg.go.dev/builtin#true"><span class="kc">true</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">368</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">276</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">,</span> <span class="nx">Crop</span><span class="p">:</span> <a href="https://pkg.go.dev/builtin#true"><span class="kc">true</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">36</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">,</span> <span class="nx">Crop</span><span class="p">:</span> <a href="https://pkg.go.dev/builtin#true"><span class="kc">true</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">37</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">168</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">126</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">,</span> <span class="nx">Crop</span><span class="p">:</span> <a href="https://pkg.go.dev/builtin#true"><span class="kc">true</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">38</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">144</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">108</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">,</span> <span class="nx">Crop</span><span class="p">:</span> <a href="https://pkg.go.dev/builtin#true"><span class="kc">true</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">41</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">210</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">210</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">43</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">44</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">140</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">140</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">65</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">66</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">67</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">350</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">350</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">68</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">210</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">210</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">69</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
+<span class="p">}</span></pre>
+  <h3 id="pkg-types">Types</h3>
+  <h3 id="Band">type Band</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Band</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="Band.Name"><span class="nx">Name</span></span>        <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="Band.Discography"><span class="nx">Discography</span></span> <span class="p">[]</span><a href="#Item"><span class="nx">Item</span></a>
+<span class="p">}</span></pre>
+    <h3 id="Image">type Image</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Image</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="Image.Crop"><span class="nx">Crop</span></span>   <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a>
+	<span id="Image.Format"><span class="nx">Format</span></span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
+	<span id="Image.Height"><span class="nx">Height</span></span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
+	<span id="Image.ID"><span class="nx">ID</span></span>     <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>
+	<span id="Image.Width"><span class="nx">Width</span></span>  <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
+<span class="p">}</span></pre>
+    <h4 id="Image.URL">func (Image) URL</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">i</span> <a href="#Image"><span class="nx">Image</span></a><span class="p">)</span> <span class="nf">URL</span><span class="p">(</span><span class="nx">art_id</span> <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  <p>Extension is optional.
+<h3 id="Item">type Item</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Item</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="Item.Band_ID"><span class="nx">Band_ID</span></span>   <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
+	<span id="Item.Item_ID"><span class="nx">Item_ID</span></span>   <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
+	<span id="Item.Item_Type"><span class="nx">Item_Type</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+<span class="p">}</span></pre>
+    <h4 id="Item.Band">func (Item) Band</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">i</span> <a href="#Item"><span class="nx">Item</span></a><span class="p">)</span> <span class="nf">Band</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#Band"><span class="nx">Band</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="Item.Tralbum">func (Item) Tralbum</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">i</span> <a href="#Item"><span class="nx">Item</span></a><span class="p">)</span> <span class="nf">Tralbum</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#Tralbum"><span class="nx">Tralbum</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h3 id="Params">type Params</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Params</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="Params.A_ID"><span class="nx">A_ID</span></span>   <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
+	<span id="Params.I_ID"><span class="nx">I_ID</span></span>   <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
+	<span id="Params.I_Type"><span class="nx">I_Type</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+<span class="p">}</span></pre>
+    <h4 id="New_Params">func New_Params</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="nf">New_Params</span><span class="p">(</span><span class="nx">ref</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <span class="p">(</span><span class="o">*</span><a href="#Params"><span class="nx">Params</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="Params.Band">func (Params) Band</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#Params"><span class="nx">Params</span></a><span class="p">)</span> <span class="nf">Band</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#Band"><span class="nx">Band</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="Params.Tralbum">func (Params) Tralbum</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#Params"><span class="nx">Params</span></a><span class="p">)</span> <span class="nf">Tralbum</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#Tralbum"><span class="nx">Tralbum</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h3 id="Track">type Track</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Track</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="Track.Track_Num"><span class="nx">Track_Num</span></span>     <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>
+	<span id="Track.Title"><span class="nx">Title</span></span>         <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="Track.Band_Name"><span class="nx">Band_Name</span></span>     <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="Track.Streaming_URL"><span class="nx">Streaming_URL</span></span> <span class="o">*</span><span class="kd">struct</span> <span class="p">{</span>
+		<span id="Track.MP3_128"><span class="nx">MP3_128</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;mp3-128&#34;`</span>
+	<span class="p">}</span>
+<span class="p">}</span></pre>
+    <h4 id="Track.String">func (Track) String</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <a href="#Track"><span class="nx">Track</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  <h3 id="Tralbum">type Tralbum</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Tralbum</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="Tralbum.Art_ID"><span class="nx">Art_ID</span></span>         <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>
+	<span id="Tralbum.Release_Date"><span class="nx">Release_Date</span></span>   <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>
+	<span id="Tralbum.Title"><span class="nx">Title</span></span>          <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="Tralbum.Tralbum_Artist"><span class="nx">Tralbum_Artist</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="Tralbum.Tracks"><span class="nx">Tracks</span></span>         <span class="p">[]</span><a href="#Track"><span class="nx">Track</span></a>
+<span class="p">}</span></pre>
+    <h4 id="Tralbum.Date">func (Tralbum) Date</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <a href="#Tralbum"><span class="nx">Tralbum</span></a><span class="p">)</span> <span class="nf">Date</span><span class="p">()</span> <a href="https://pkg.go.dev/time"><span class="nx">time</span></a><span class="p">.</span><a href="https://pkg.go.dev/time#Time"><span class="nx">Time</span></a></pre>
+  </main>
+    <hr>
+    <footer>
+      <small id="generated-by-footer">
+        Generated with <a href="https://abhinav.github.io/doc2go/">doc2go</a>
+      </small>
+    </footer>
+    <script src="../_/js/permalink.js"></script>
+  </body>
+</html>

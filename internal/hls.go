@@ -1,13 +1,21 @@
-package rosso
+package internal
 
 import (
+   "154.pages.dev/encoding"
    "154.pages.dev/encoding/hls"
    "154.pages.dev/log"
    "io"
    "net/http"
+   "net/url"
    "os"
    "text/template"
 )
+
+// wikipedia.org/wiki/HTTP_Live_Streaming
+type HttpStream struct {
+   Base *url.URL
+   Name encoding.Namer
+}
 
 func (h HttpStream) HLS(master hls.MasterPlaylist, index int) error {
    variant, ok := master.Index(index)
@@ -56,7 +64,7 @@ func (h HttpStream) HLS(master hls.MasterPlaylist, index int) error {
    if err != nil {
       return err
    }
-   file, err := os.Create(Name(h.Name) + variant.Ext())
+   file, err := os.Create(encoding.Name(h.Name) + variant.Ext())
    if err != nil {
       return err
    }

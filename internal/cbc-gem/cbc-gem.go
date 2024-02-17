@@ -1,7 +1,7 @@
 package main
 
 import (
-   "154.pages.dev/media/cbc"
+   "154.pages.dev/platform/cbc/gem"
    "os"
 )
 
@@ -10,12 +10,12 @@ func (f flags) download() error {
    if err != nil {
       return err
    }
-   var profile cbc.GemProfile
-   profile.Raw, err = os.ReadFile(home + "/cbc/profile.json")
+   var profile gem.GemProfile
+   profile.Raw, err = os.ReadFile(home + "/cbc-gem/profile.json")
    if err != nil {
       return err
    }
-   var catalog cbc.GemCatalog
+   var catalog gem.GemCatalog
    catalog.New(f.address)
    f.h.Name = catalog.StructuredMetadata
    item, ok := catalog.Item()
@@ -34,7 +34,7 @@ func (f flags) download() error {
 }
 
 func (f flags) profile() error {
-   var token cbc.LoginToken
+   var token gem.LoginToken
    token.New(f.email, f.password)
    profile, err := token.Profile()
    if err != nil {
@@ -44,5 +44,5 @@ func (f flags) profile() error {
    if err != nil {
       return err
    }
-   return os.WriteFile(home + "/cbc/profile.json", profile.Raw, 0666)
+   return os.WriteFile(home + "/cbc-gem/profile.json", profile.Raw, 0666)
 }

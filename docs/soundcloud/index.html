@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="doc2go">
+    <link href="../_/css/main.css" rel="stylesheet" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../_/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../_/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../_/icons/favicon-16x16.png">
+    <link rel="shortcut icon" href="../_/icons/favicon.ico">
+    <title>soundcloud</title>
+</head>
+  <body>
+    <nav>
+        <a href="..">154.pages.dev/platform</a>/soundcloud<span class="navbar-right">
+          v1.4.4 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
+      </nav>
+    <main><h2 id="pkg-overview">package soundcloud</h2>
+<pre class="chroma"><span class="kn">import</span> <span class="s">&#34;154.pages.dev/platform/soundcloud&#34;</span></pre>
+<h3 id="pkg-index">Index</h3>
+<ul>
+  <li><a href="#pkg-variables">Variables</a></li><li>
+      <a href="#Image">type Image</a>
+      </li>
+  <li>
+      <a href="#Media">type Media</a>
+      </li>
+  <li>
+      <a href="#Track">type Track</a>
+      <ul>
+          <li><a href="#New_Track">func New_Track(id int) (*Track, error)</a></li>
+          <li><a href="#Resolve">func Resolve(ref string) (*Track, error)</a></li>
+          <li><a href="#Track.Artwork">func (t Track) Artwork() string</a></li>
+          <li><a href="#Track.Progressive">func (t Track) Progressive() (*Media, error)</a></li>
+          <li><a href="#Track.String">func (t Track) String() string</a></li>
+          <li><a href="#Track.Time">func (t Track) Time() (time.Time, error)</a></li>
+          </ul>
+      </li>
+  </ul><h3 id="pkg-variables">Variables</h3>
+  <pre class="chroma"><span class="kd">var</span> <span id="Images"><span class="nx">Images</span></span> <span class="p">=</span> <span class="p">[]</span><a href="#Image"><span class="nx">Image</span></a><span class="p">{</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t120x120&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t1240x260&#34;</span><span class="p">,</span> <span class="nx">Crop</span><span class="p">:</span> <a href="https://pkg.go.dev/builtin#true"><span class="kc">true</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t200x200&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t20x20&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t240x240&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t2480x520&#34;</span><span class="p">,</span> <span class="nx">Crop</span><span class="p">:</span> <a href="https://pkg.go.dev/builtin#true"><span class="kc">true</span></a><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t250x250&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t300x300&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t40x40&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t47x47&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t500x&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t500x500&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t50x50&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t60x60&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t67x67&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;t80x80&#34;</span><span class="p">},</span>
+	<span class="p">{</span><span class="nx">Size</span><span class="p">:</span> <span class="s">&#34;tx250&#34;</span><span class="p">},</span>
+<span class="p">}</span></pre>
+  <h3 id="pkg-types">Types</h3>
+  <h3 id="Image">type Image</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Image</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="Image.Size"><span class="nx">Size</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="Image.Crop"><span class="nx">Crop</span></span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a>
+<span class="p">}</span></pre>
+    <h3 id="Media">type Media</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Media</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="Media.URL"><span class="nx">URL</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="c1">// cf-media.sndcdn.com/QaV7QR1lxpc6.128.mp3
+</span><span class="c1"></span><span class="p">}</span></pre>
+    <h3 id="Track">type Track</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Track</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="Track.ID"><span class="nx">ID</span></span>           <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>
+	<span id="Track.Display_Date"><span class="nx">Display_Date</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="c1">// 2021-04-12T07:00:01Z
+</span><span class="c1"></span>	<span id="Track.User"><span class="nx">User</span></span>         <span class="kd">struct</span> <span class="p">{</span>
+		<span id="Track.Username"><span class="nx">Username</span></span>   <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+		<span id="Track.Avatar_URL"><span class="nx">Avatar_URL</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span class="p">}</span>
+	<span id="Track.Title"><span class="nx">Title</span></span>       <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="Track.Artwork_URL"><span class="nx">Artwork_URL</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="Track.Media"><span class="nx">Media</span></span>       <span class="kd">struct</span> <span class="p">{</span>
+		<span id="Track.Transcodings"><span class="nx">Transcodings</span></span> <span class="p">[]</span><span class="kd">struct</span> <span class="p">{</span>
+			<span id="Track.Format"><span class="nx">Format</span></span> <span class="kd">struct</span> <span class="p">{</span>
+				<span id="Track.Protocol"><span class="nx">Protocol</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+			<span class="p">}</span>
+			<span id="Track.URL"><span class="nx">URL</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span></pre>
+    <h4 id="New_Track">func New_Track</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="nf">New_Track</span><span class="p">(</span><span class="nx">id</span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a><span class="p">)</span> <span class="p">(</span><span class="o">*</span><a href="#Track"><span class="nx">Track</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="Resolve">func Resolve</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="nf">Resolve</span><span class="p">(</span><span class="nx">ref</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <span class="p">(</span><span class="o">*</span><a href="#Track"><span class="nx">Track</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="Track.Artwork">func (Track) Artwork</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <a href="#Track"><span class="nx">Track</span></a><span class="p">)</span> <span class="nf">Artwork</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  <p>i1.sndcdn.com/artworks-000308141235-7ep8lo-large.jpg
+<h4 id="Track.Progressive">func (Track) Progressive</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <a href="#Track"><span class="nx">Track</span></a><span class="p">)</span> <span class="nf">Progressive</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#Media"><span class="nx">Media</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <p>Also available is &quot;hls&quot;, but all transcodings are quality &quot;sq&quot;.
+Same for &quot;api-mobile.soundcloud.com&quot;.
+<h4 id="Track.String">func (Track) String</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <a href="#Track"><span class="nx">Track</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  <h4 id="Track.Time">func (Track) Time</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <a href="#Track"><span class="nx">Track</span></a><span class="p">)</span> <span class="nf">Time</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/time"><span class="nx">time</span></a><span class="p">.</span><a href="https://pkg.go.dev/time#Time"><span class="nx">Time</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  </main>
+    <hr>
+    <footer>
+      <small id="generated-by-footer">
+        Generated with <a href="https://abhinav.github.io/doc2go/">doc2go</a>
+      </small>
+    </footer>
+    <script src="../_/js/permalink.js"></script>
+  </body>
+</html>

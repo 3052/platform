@@ -2,17 +2,17 @@ package main
 
 import (
    "154.pages.dev/log"
-   "154.pages.dev/rosso"
+   "154.pages.dev/platform/internal"
    "flag"
 )
 
 type flags struct {
    address string
    email string
-   h rosso.HttpStream
    hls_index int
    password string
    v log.Level
+   h internal.HttpStream
 }
 
 func main() {
