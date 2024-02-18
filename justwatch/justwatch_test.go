@@ -3,26 +3,17 @@ package justwatch
 import (
    "fmt"
    "testing"
-   "time"
 )
 
-// justwatch.com/us/movie/mulholland-drive
-const movie = "/us/movie/mulholland-drive"
-
-func TestContent(t *testing.T) {
-   var content ContentUrls
-   err := content.New(movie)
+func TestLocale(t *testing.T) {
+   var locales LocaleStates
+   err := locales.Make("en-US")
    if err != nil {
-     t.Fatal(err)
+      t.Fatal(err)
    }
-   for _, tag := range content.Href_Lang_Tags {
-      offers, err := tag.Offers()
-      if err != nil {
-         t.Fatal(err)
-      }
-      for _, offer := range offers {
-         fmt.Println(tag.Locale.String(offer))
-      }
-      time.Sleep(99 * time.Millisecond)
+   for _, v := range locales {
+      fmt.Printf("{%q, %q, %q},\n", v.FullLocale, v.Country, v.CountryName)
    }
+   tag := LangTag{Locale: "en_US"}
+   fmt.Println(locales.Locale(tag))
 }
