@@ -12,6 +12,15 @@ import (
    "strings"
 )
 
+const fetcher_query = `
+query BackendConstantsFetcherQuery($language: Language!) {
+   locales {
+      fullLocale
+      countryName(language: $language)
+   }
+}
+`
+
 func main() {
    var req http.Request
    req.Header = make(http.Header)
@@ -53,12 +62,3 @@ func main() {
       fmt.Println("fail")
    }
 }
-
-const fetcher_query = `
-query BackendConstantsFetcherQuery($language: Language!) {
-   locales {
-      fullLocale
-      countryName(language: $language)
-   }
-}
-`

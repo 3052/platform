@@ -1,0 +1,562 @@
+{
+ "data": {
+  "locales": [
+   {
+    "fullLocale": "en_US",
+    "countryName": "United States"
+   },
+   {
+    "fullLocale": "de_DE",
+    "countryName": "Germany"
+   },
+   {
+    "fullLocale": "pt_BR",
+    "countryName": "Brazil"
+   },
+   {
+    "fullLocale": "en_AU",
+    "countryName": "Australia"
+   },
+   {
+    "fullLocale": "en_NZ",
+    "countryName": "New Zealand"
+   },
+   {
+    "fullLocale": "en_CA",
+    "countryName": "Canada"
+   },
+   {
+    "fullLocale": "en_GB",
+    "countryName": "United Kingdom"
+   },
+   {
+    "fullLocale": "en_ZA",
+    "countryName": "South Africa"
+   },
+   {
+    "fullLocale": "en_IE",
+    "countryName": "Ireland"
+   },
+   {
+    "fullLocale": "fr_NE",
+    "countryName": "Niger"
+   },
+   {
+    "fullLocale": "sr_ME",
+    "countryName": "Montenegro"
+   },
+   {
+    "fullLocale": "fr_MG",
+    "countryName": "Madagascar"
+   },
+   {
+    "fullLocale": "ar_KW",
+    "countryName": "Kuwait"
+   },
+   {
+    "fullLocale": "pt_MZ",
+    "countryName": "Mozambique"
+   },
+   {
+    "fullLocale": "en_KE",
+    "countryName": "Kenya"
+   },
+   {
+    "fullLocale": "en_UG",
+    "countryName": "Uganda"
+   },
+   {
+    "fullLocale": "en_TT",
+    "countryName": "Trinidad and Tobago"
+   },
+   {
+    "fullLocale": "en_TC",
+    "countryName": "Turks and Caicos Islands"
+   },
+   {
+    "fullLocale": "en_ZM",
+    "countryName": "Zambia"
+   },
+   {
+    "fullLocale": "fr_SN",
+    "countryName": "Senegal"
+   },
+   {
+    "fullLocale": "en_JM",
+    "countryName": "Jamaica"
+   },
+   {
+    "fullLocale": "ro_MD",
+    "countryName": "Moldova"
+   },
+   {
+    "fullLocale": "de_LI",
+    "countryName": "Liechtenstein"
+   },
+   {
+    "fullLocale": "fr_MC",
+    "countryName": "Monaco"
+   },
+   {
+    "fullLocale": "it_SM",
+    "countryName": "San Marino"
+   },
+   {
+    "fullLocale": "en_GI",
+    "countryName": "Gibraltar"
+   },
+   {
+    "fullLocale": "ar_TN",
+    "countryName": "Tunisia"
+   },
+   {
+    "fullLocale": "ar_LY",
+    "countryName": "Libya"
+   },
+   {
+    "fullLocale": "ar_OM",
+    "countryName": "Oman"
+   },
+   {
+    "fullLocale": "en_BM",
+    "countryName": "Bermuda"
+   },
+   {
+    "fullLocale": "ar_YE",
+    "countryName": "Yemen"
+   },
+   {
+    "fullLocale": "en_BS",
+    "countryName": "Bahamas"
+   },
+   {
+    "fullLocale": "fr_GF",
+    "countryName": "French Guiana"
+   },
+   {
+    "fullLocale": "bs_BA",
+    "countryName": "Bosnia and Herzegovina"
+   },
+   {
+    "fullLocale": "it_VA",
+    "countryName": "Vatican City"
+   },
+   {
+    "fullLocale": "sq_XK",
+    "countryName": "Kosovo"
+   },
+   {
+    "fullLocale": "ar_QA",
+    "countryName": "Qatar"
+   },
+   {
+    "fullLocale": "be_BY",
+    "countryName": "Belarus"
+   },
+   {
+    "fullLocale": "en_BZ",
+    "countryName": "Belize"
+   },
+   {
+    "fullLocale": "el_CY",
+    "countryName": "Cyprus"
+   },
+   {
+    "fullLocale": "en_CM",
+    "countryName": "Cameroon"
+   },
+   {
+    "fullLocale": "en_GY",
+    "countryName": "Guyana"
+   },
+   {
+    "fullLocale": "fr_ML",
+    "countryName": "Mali"
+   },
+   {
+    "fullLocale": "es_NI",
+    "countryName": "Nicaragua"
+   },
+   {
+    "fullLocale": "fr_CD",
+    "countryName": "DR Congo"
+   },
+   {
+    "fullLocale": "en_MW",
+    "countryName": "Malawi"
+   },
+   {
+    "fullLocale": "sw_TZ",
+    "countryName": "Tanzania"
+   },
+   {
+    "fullLocale": "en_PG",
+    "countryName": "Papua New Guinea"
+   },
+   {
+    "fullLocale": "en_ZW",
+    "countryName": "Zimbabwe"
+   },
+   {
+    "fullLocale": "az_AZ",
+    "countryName": "Azerbaijan"
+   },
+   {
+    "fullLocale": "lv_LV",
+    "countryName": "Latvia"
+   },
+   {
+    "fullLocale": "en_DK",
+    "countryName": "Denmark"
+   },
+   {
+    "fullLocale": "ar_LB",
+    "countryName": "Lebanon"
+   },
+   {
+    "fullLocale": "ar_PS",
+    "countryName": "Palestine"
+   },
+   {
+    "fullLocale": "mk_MK",
+    "countryName": "Macedonia"
+   },
+   {
+    "fullLocale": "es_CU",
+    "countryName": "Cuba"
+   },
+   {
+    "fullLocale": "pt_AO",
+    "countryName": "Angola"
+   },
+   {
+    "fullLocale": "en_AG",
+    "countryName": "Antigua and Barbuda"
+   },
+   {
+    "fullLocale": "fr_BF",
+    "countryName": "Burkina Faso"
+   },
+   {
+    "fullLocale": "es_CL",
+    "countryName": "Chile"
+   },
+   {
+    "fullLocale": "es_EC",
+    "countryName": "Ecuador"
+   },
+   {
+    "fullLocale": "es_AR",
+    "countryName": "Argentina"
+   },
+   {
+    "fullLocale": "zh_TW",
+    "countryName": "Taiwan"
+   },
+   {
+    "fullLocale": "ur_PK",
+    "countryName": "Pakistan"
+   },
+   {
+    "fullLocale": "it_IT",
+    "countryName": "Italy"
+   },
+   {
+    "fullLocale": "fr_BE",
+    "countryName": "Belgium"
+   },
+   {
+    "fullLocale": "ja_JP",
+    "countryName": "Japan"
+   },
+   {
+    "fullLocale": "ko_KR",
+    "countryName": "South Korea"
+   },
+   {
+    "fullLocale": "ar_SA",
+    "countryName": "Saudi Arabia"
+   },
+   {
+    "fullLocale": "es_PE",
+    "countryName": "Peru"
+   },
+   {
+    "fullLocale": "en_NL",
+    "countryName": "Netherlands"
+   },
+   {
+    "fullLocale": "en_TH",
+    "countryName": "Thailand"
+   },
+   {
+    "fullLocale": "tr_TR",
+    "countryName": "Turkey"
+   },
+   {
+    "fullLocale": "pt_PT",
+    "countryName": "Portugal"
+   },
+   {
+    "fullLocale": "en_IN",
+    "countryName": "India"
+   },
+   {
+    "fullLocale": "bg_BG",
+    "countryName": "Bulgaria"
+   },
+   {
+    "fullLocale": "cs_CZ",
+    "countryName": "Czech Republic"
+   },
+   {
+    "fullLocale": "ru_RU",
+    "countryName": "Russia"
+   },
+   {
+    "fullLocale": "de_CH",
+    "countryName": "Switzerland"
+   },
+   {
+    "fullLocale": "de_AT",
+    "countryName": "Austria"
+   },
+   {
+    "fullLocale": "en_MY",
+    "countryName": "Malaysia"
+   },
+   {
+    "fullLocale": "en_ID",
+    "countryName": "Indonesia"
+   },
+   {
+    "fullLocale": "en_SG",
+    "countryName": "Singapore"
+   },
+   {
+    "fullLocale": "pl_PL",
+    "countryName": "Poland"
+   },
+   {
+    "fullLocale": "fi_FI",
+    "countryName": "Finland"
+   },
+   {
+    "fullLocale": "hu_HU",
+    "countryName": "Hungary"
+   },
+   {
+    "fullLocale": "el_GR",
+    "countryName": "Greece"
+   },
+   {
+    "fullLocale": "es_CO",
+    "countryName": "Colombia"
+   },
+   {
+    "fullLocale": "en_PH",
+    "countryName": "Philippines"
+   },
+   {
+    "fullLocale": "sv_SE",
+    "countryName": "Sweden"
+   },
+   {
+    "fullLocale": "ro_RO",
+    "countryName": "Romania"
+   },
+   {
+    "fullLocale": "en_NO",
+    "countryName": "Norway"
+   },
+   {
+    "fullLocale": "es_MX",
+    "countryName": "Mexico"
+   },
+   {
+    "fullLocale": "es_BO",
+    "countryName": "Bolivia"
+   },
+   {
+    "fullLocale": "es_CR",
+    "countryName": "Costa Rica"
+   },
+   {
+    "fullLocale": "ar_AE",
+    "countryName": "United Arab Emirates"
+   },
+   {
+    "fullLocale": "es_ES",
+    "countryName": "Spain"
+   },
+   {
+    "fullLocale": "fr_FR",
+    "countryName": "France"
+   },
+   {
+    "fullLocale": "ar_EG",
+    "countryName": "Egypt"
+   },
+   {
+    "fullLocale": "es_GT",
+    "countryName": "Guatemala"
+   },
+   {
+    "fullLocale": "sk_SK",
+    "countryName": "Slovakia"
+   },
+   {
+    "fullLocale": "es_VE",
+    "countryName": "Venezuela"
+   },
+   {
+    "fullLocale": "en_BB",
+    "countryName": "Barbados"
+   },
+   {
+    "fullLocale": "ar_TD",
+    "countryName": "Chad"
+   },
+   {
+    "fullLocale": "ar_IQ",
+    "countryName": "Iraq"
+   },
+   {
+    "fullLocale": "en_GH",
+    "countryName": "Ghana"
+   },
+   {
+    "fullLocale": "es_GQ",
+    "countryName": "Equatorial Guinea"
+   },
+   {
+    "fullLocale": "en_FJ",
+    "countryName": "Fiji"
+   },
+   {
+    "fullLocale": "en_GG",
+    "countryName": "Guernsey"
+   },
+   {
+    "fullLocale": "mt_MT",
+    "countryName": "Malta"
+   },
+   {
+    "fullLocale": "fr_MU",
+    "countryName": "Mauritius"
+   },
+   {
+    "fullLocale": "lt_LT",
+    "countryName": "Lithuania"
+   },
+   {
+    "fullLocale": "sr_RS",
+    "countryName": "Serbia"
+   },
+   {
+    "fullLocale": "sl_SI",
+    "countryName": "Slovenia"
+   },
+   {
+    "fullLocale": "en_NG",
+    "countryName": "Nigeria"
+   },
+   {
+    "fullLocale": "he_IL",
+    "countryName": "Israel"
+   },
+   {
+    "fullLocale": "zh_HK",
+    "countryName": "Hong Kong"
+   },
+   {
+    "fullLocale": "uk_UA",
+    "countryName": "Ukraine"
+   },
+   {
+    "fullLocale": "es_HN",
+    "countryName": "Honduras"
+   },
+   {
+    "fullLocale": "et_EE",
+    "countryName": "Estonia"
+   },
+   {
+    "fullLocale": "es_PY",
+    "countryName": "Paraguay"
+   },
+   {
+    "fullLocale": "is_IS",
+    "countryName": "Iceland"
+   },
+   {
+    "fullLocale": "es_PA",
+    "countryName": "Panama"
+   },
+   {
+    "fullLocale": "es_UY",
+    "countryName": "Uruguay"
+   },
+   {
+    "fullLocale": "es_DO",
+    "countryName": "Dominican Republic"
+   },
+   {
+    "fullLocale": "es_SV",
+    "countryName": "El Salvador"
+   },
+   {
+    "fullLocale": "ar_DZ",
+    "countryName": "Algeria"
+   },
+   {
+    "fullLocale": "ar_MA",
+    "countryName": "Morocco"
+   },
+   {
+    "fullLocale": "ca_AD",
+    "countryName": "Andorra"
+   },
+   {
+    "fullLocale": "ar_JO",
+    "countryName": "Jordan"
+   },
+   {
+    "fullLocale": "sq_AL",
+    "countryName": "Albania"
+   },
+   {
+    "fullLocale": "ar_BH",
+    "countryName": "Bahrain"
+   },
+   {
+    "fullLocale": "fr_CI",
+    "countryName": "Ivory Coast"
+   },
+   {
+    "fullLocale": "hr_HR",
+    "countryName": "Croatia"
+   },
+   {
+    "fullLocale": "pt_CV",
+    "countryName": "Cape Verde"
+   },
+   {
+    "fullLocale": "fr_PF",
+    "countryName": "French Polynesia"
+   },
+   {
+    "fullLocale": "en_LC",
+    "countryName": "Saint Lucia"
+   },
+   {
+    "fullLocale": "fr_LU",
+    "countryName": "Luxembourg"
+   },
+   {
+    "fullLocale": "fr_SC",
+    "countryName": "Seychelles"
+   }
+  ]
+ }
+}
