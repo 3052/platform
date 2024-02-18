@@ -50,8 +50,6 @@ query GetUrlTitleDetails(
 }
 `
 
-///////////////////////////
-
 func (l *Locale) UnmarshalText(b []byte) error {
    var ok bool
    l.language, l.country, ok = strings.Cut(string(b), "_")

@@ -1,64 +1,66 @@
-package main
+package justwatch
 
 import (
    "bytes"
    "encoding/base64"
    "encoding/json"
-   "fmt"
-   "io"
+   "errors"
    "net/http"
-   "net/url"
-   "os"
-   "strings"
 )
+
+func (f *FetcherQuery) New(language string) error {
+   body, err := func() ([]byte, error) {
+      var s struct {
+         Query string
+         Variables struct {
+            Language string `json:"language"`
+         }
+      }
+      s.Query = graphql_compact(fetcher_query)
+      s.Variables.Language = language
+      return json.Marshal(s)
+   }()
+   if err != nil {
+      return err
+   }
+   req, err := http.NewRequest(
+      "POST", "https://apis.justwatch.com/graphql", bytes.NewReader(body),
+   )
+   if err != nil {
+      return err
+   }
+   device := base64.RawStdEncoding.EncodeToString(make([]byte, 16))
+   req.Header = http.Header{
+      "Content-Type": {"application/json"},
+      "Device-Id": {device},
+   }
+   res, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return err
+   }
+   defer res.Body.Close()
+   if res.StatusCode != http.StatusOK {
+      var b bytes.Buffer
+      res.Write(&b)
+      return errors.New(b.String())
+   }
+   return json.NewDecoder(res.Body).Decode(f)
+}
 
 const fetcher_query = `
 query BackendConstantsFetcherQuery($language: Language!) {
    locales {
-      fullLocale
       countryName(language: $language)
+      fullLocale
    }
 }
 `
 
-func main() {
-   var req http.Request
-   req.Header = make(http.Header)
-   req.Method = "POST"
-   req.ProtoMajor = 1
-   req.ProtoMinor = 1
-   req.URL = new(url.URL)
-   req.URL.Host = "apis.justwatch.com"
-   req.URL.Path = "/graphql"
-   req.URL.Scheme = "https"
-   req.Header["Content-Type"] = []string{"application/json"}
-   req.Header["Device-Id"] = []string{
-      base64.RawStdEncoding.EncodeToString(make([]byte, 16)),
-   }
-   body := fmt.Sprintf(`
-   {
-      "query": %q,
-      "variables": {
-         "language": "en-US"
+type FetcherQuery struct {
+   Data struct {
+      Locales []struct {
+         CountryName string
+         FullLocale string
       }
-   }
-   `, fetcher_query)
-   req.Body = io.NopCloser(strings.NewReader(body))
-   res, err := new(http.Transport).RoundTrip(&req)
-   if err != nil {
-      panic(err)
-   }
-   defer res.Body.Close()
-   src, err := io.ReadAll(res.Body)
-   if err != nil {
-      panic(err)
-   }
-   var dst bytes.Buffer
-   json.Indent(&dst, src, "", " ")
-   dst.WriteTo(os.Stdout)
-   if strings.Contains(string(src), `"Argentina"`) {
-      fmt.Println("pass")
-   } else {
-      fmt.Println("fail")
    }
 }
