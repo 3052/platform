@@ -12,7 +12,7 @@ func TestLocale(t *testing.T) {
       t.Fatal(err)
    }
    for _, v := range locales {
-      fmt.Printf("{%q, %q},\n", v.FullLocale, v.CountryName)
+      fmt.Printf("{%q, %q, %q},\n", v.FullLocale, v.Country, v.CountryName)
    }
-   fmt.Println(locales.Country("en_US"))
+   fmt.Println(locales.CountryName("en_US"))
 }

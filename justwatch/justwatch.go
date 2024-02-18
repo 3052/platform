@@ -50,15 +50,6 @@ query GetUrlTitleDetails(
 }
 `
 
-func (l *Locale) UnmarshalText(b []byte) error {
-   var ok bool
-   l.language, l.country, ok = strings.Cut(string(b), "_")
-   if !ok {
-      return errors.New("Locale.UnmarshalText")
-   }
-   return nil
-}
-
 func (t LangTag) Offers() ([]Offer, error) {
    body, err := func() ([]byte, error) {
       var s struct {
@@ -108,8 +99,8 @@ type LangTag struct {
 }
 
 type Locale struct {
+   Language string
    country string
-   language string
 }
 
 // `presentationType` data seems to be incorrect in some cases. For example,
@@ -123,7 +114,8 @@ type Offer struct {
 func (l Locale) String(o Offer) string {
    var b strings.Builder
    b.WriteString("country = ")
-   b.WriteString(country_codes[l.country])
+   //b.WriteString(country_codes[l.country])
+   b.WriteString(l.country)
    b.WriteString("\nmonetization = ")
    b.WriteString(o.MonetizationType)
    b.WriteString("\nURL = ")
