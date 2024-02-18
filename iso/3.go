@@ -13,7 +13,7 @@ func main() {
    req.Header = make(http.Header)
    req.Header["Accept"] = []string{"*/*"}
    req.Header["Accept-Language"] = []string{"en-US,en;q=0.5"}
-   req.Header["Content-Type"] = []string{"application/x-www-form-urlencoded"}
+   req.Header["Content-Type"] = []string{"application/json; charset=UTF-8"}
    req.Header["Origin"] = []string{"https://www.iso.org"}
    req.Header["Referer"] = []string{"https://www.iso.org/obp/ui"}
    req.Header["Sec-Fetch-Dest"] = []string{"empty"}
@@ -26,16 +26,36 @@ func main() {
    req.ProtoMinor = 1
    req.URL = new(url.URL)
    req.URL.Host = "www.iso.org"
-   req.URL.Path = "/obp/ui"
+   req.URL.Path = "/obp/ui/UIDL/"
    val := make(url.Values)
-   val["v-1708217027070"] = []string{""}
+   val["v-uiId"] = []string{"0"}
    req.URL.RawQuery = val.Encode()
    req.URL.Scheme = "https"
-   req.Body = io.NopCloser(body)
    req.Header["Cookie"] = []string{
       "BIGipServerpool_prod_iso_obp=914903434.36895.0000",
       "JSESSIONID=" + session_id,
    }
+   body := fmt.Sprintf(`
+   {
+     "csrfToken": %q,
+     "rpc": [
+       [
+         "135",
+         "com.vaadin.shared.data.DataRequestRpc",
+         "requestRows",
+         [
+           0,
+           25,
+           0,
+           0
+         ]
+       ]
+     ],
+     "syncId": 4,
+     "clientId": 4
+   }
+   `, csrf_token)
+   req.Body = io.NopCloser(strings.NewReader(body))
    res, err := http.DefaultClient.Do(req)
    if err != nil {
       panic(err)
@@ -44,14 +64,7 @@ func main() {
    res.Write(os.Stdout)
 }
 
-var body = strings.NewReader(url.Values{
-"theme":[]string{"iso-red"}, "v-appId":[]string{"obpui-105541713"},
-"v-browserDetails":[]string{"1"}, "v-ch":[]string{"622"},
-"v-curdate":[]string{"1708217027070"}, "v-cw":[]string{"1192"},
-"v-dstd":[]string{"60"}, "v-dston":[]string{"false"},
-"v-loc":[]string{"https://www.iso.org/obp/ui#search/code"},
-"v-rtzo":[]string{"360"}, "v-sh":[]string{"864"}, "v-sw":[]string{"1536"},
-"v-tzid":[]string{"America/Chicago"}, "v-tzo":[]string{"360"},
-"v-vh":[]string{"0"}, "v-vw":[]string{"1192"},
-"v-wn":[]string{"obpui-105541713-0.8254629619239288"},
-}.Encode())
+const (
+   csrf_token = "aa4c1468-81e0-414f-8308-3fedf7313b41"
+   session_id = "62D83BAE839BB20EC53F47DC4617BD00"
+)
