@@ -5,13 +5,14 @@ import (
    "testing"
 )
 
-func TestFetcherQuery(t *testing.T) {
-   var query FetcherQuery
-   err := query.New("en-US")
+func TestLocale(t *testing.T) {
+   var locales LocaleStates
+   err := locales.Make("en-US")
    if err != nil {
       t.Fatal(err)
    }
-   for _, locale := range query.Data.Locales {
-      fmt.Printf("%+v\n", locale)
+   for _, v := range locales {
+      fmt.Printf("{%q, %q},\n", v.FullLocale, v.CountryName)
    }
+   fmt.Println(locales.Country("en_US"))
 }
