@@ -2,13 +2,59 @@ package justwatch
 
 import (
    "bytes"
-   "cmp"
    "encoding/json"
    "errors"
    "net/http"
    "slices"
    "strings"
 )
+
+const title_details = `
+query GetUrlTitleDetails(
+   $fullPath: String!
+   $country: Country!
+   $platform: Platform! = WEB
+) {
+   url(fullPath: $fullPath) {
+      node {
+         ... on MovieOrShowOrSeason {
+            offers(country: $country, platform: $platform) {
+               monetizationType
+               standardWebURL
+            }
+         }
+      }
+   }
+}
+`
+
+type OfferGroup struct {
+   URL string
+   Monetization string
+   Country []string
+}
+
+func (gs OfferGroups) String() string {
+   var b strings.Builder
+   slices.SortFunc(gs, func(a, b *OfferGroup) int {
+      return len(b.Country) - len(a.Country)
+   })
+   for i, g := range gs {
+      if i >= 1 {
+         b.WriteString("\n\n")
+      }
+      b.WriteString("url = ")
+      b.WriteString(g.URL)
+      b.WriteString("\nmonetization = ")
+      b.WriteString(g.Monetization)
+      slices.Sort(g.Country)
+      for _, country := range g.Country {
+         b.WriteString("\ncountry = ")
+         b.WriteString(country)
+      }
+   }
+   return b.String()
+}
 
 // `presentationType` data seems to be incorrect in some cases. For example,
 // JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
@@ -95,32 +141,4 @@ func (gs *OfferGroups) Add(s *LocaleState, n OfferNode) {
       g.Country = []string{s.CountryName}
       *gs = append(*gs, &g)
    }
-}
-
-type OfferGroup struct {
-   URL string
-   Monetization string
-   Country []string
-}
-
-func (gs OfferGroups) String() string {
-   var b strings.Builder
-   slices.SortFunc(gs, func(a, b *OfferGroup) int {
-      return cmp.Compare(a.URL, b.URL)
-   })
-   for i, g := range gs {
-      if i >= 1 {
-         b.WriteString("\n\n")
-      }
-      b.WriteString("url = ")
-      b.WriteString(g.URL)
-      b.WriteString("\nmonetization = ")
-      b.WriteString(g.Monetization)
-      slices.Sort(g.Country)
-      for _, country := range g.Country {
-         b.WriteString("\ncountry = ")
-         b.WriteString(country)
-      }
-   }
-   return b.String()
 }
