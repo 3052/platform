@@ -5,7 +5,6 @@ import (
    "encoding/base64"
    "encoding/json"
    "errors"
-   "log/slog"
    "net/http"
    "strings"
 )
@@ -42,7 +41,6 @@ func (s *LocaleStates) Make(language string) error {
       "Content-Type": {"application/json"},
       "Device-Id": {device},
    }
-   slog.Info(req.Method, "URL", req.URL)
    res, err := http.DefaultClient.Do(req)
    if err != nil {
       return err
@@ -264,7 +262,6 @@ type ContentUrls struct {
 
 func (c *ContentUrls) New(path string) error {
    path = "https://apis.justwatch.com/content/urls?path=" + path
-   slog.Info("GET", "URL", path)
    res, err := http.Get(path)
    if err != nil {
       return err

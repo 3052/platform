@@ -2,26 +2,30 @@ package main
 
 import (
    "154.pages.dev/log"
-   "blog/justwatch"
+   "154.pages.dev/platform/justwatch"
+   "errors"
    "flag"
+   "fmt"
    "log/slog"
    "net/url"
+   "slices"
    "time"
 )
 
 type flags struct {
    address string
-   level log.Level
    sleep time.Duration
+   v log.Level
 }
 
 func main() {
    var f flags
    flag.StringVar(&f.address, "a", "", "address")
    flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
-   flag.TextVar(&f.level, "v", f.level, "log level")
+   flag.TextVar(&f.v.Level, "v", f.v.Level, "log level")
    flag.Parse()
-   log.Set_Logger(f.level)
+   log.TransportInfo()
+   log.Handler(f.v)
    if f.address != "" {
       err := f.stream()
       if err != nil {
@@ -37,32 +41,27 @@ func (f flags) stream() error {
    if err != nil {
       return err
    }
-   content, err := justwatch.New_URLs(address.Path)
-   if err != nil {
+   var content justwatch.ContentUrls
+   if err := content.New(address.Path); err != nil {
       return err
    }
-   offer := make(justwatch.Offers)
+   log.TransportDebug()
+   var groups justwatch.OfferGroups
    for _, tag := range content.Href_Lang_Tags {
-      slog.Debug(tag.Href_Lang)
-      if !justwatch.Blacklist[tag.Href_Lang] {
-         v := tag.Variables()
-         text, err := v.Text()
-         if err != nil {
-            return err
-         }
-         slog.Info(text)
-         detail, err := v.Details()
-         if err != nil {
-            return err
-         }
-         offer.Add(v.Country_Code, detail)
-         time.Sleep(f.sleep)
+      slog.Info(tag.Href)
+      locale, ok := justwatch.EnglishLocales.Locale(tag)
+      if !ok {
+         return errors.New("justwatch.LocaleStates.Locale")
       }
+      offers, err := tag.Offers(locale)
+      if err != nil {
+         return err
+      }
+      for _, offer := range slices.DeleteFunc(offers, justwatch.Delete) {
+         groups.Add(locale, offer)
+      }
+      time.Sleep(f.sleep)
    }
-   text, err := offer.Stream().Text()
-   if err != nil {
-      return err
-   }
-   slog.Info(text)
+   fmt.Println(groups)
    return nil
 }
