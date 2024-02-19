@@ -10,6 +10,12 @@ import (
    "strings"
 )
 
+type LocaleState struct {
+   FullLocale string
+   Country string
+   CountryName string
+}
+
 func (s *LocaleStates) Make(language string) error {
    body, err := func() ([]byte, error) {
       var s struct {
@@ -211,12 +217,6 @@ var EnglishLocales = LocaleStates{
    {"zh_TW", "TW", "Taiwan"},
 }
 
-type LocaleState struct {
-   FullLocale string
-   Country string
-   CountryName string
-}
-
 type LocaleStates []LocaleState
 
 func (s LocaleStates) Locale(t LangTag) (*LocaleState, bool) {
@@ -248,8 +248,8 @@ query GetUrlTitleDetails(
 `
 
 type LangTag struct {
-   Href string // /ar/pelicula/mulholland-drive
    Locale string // es_AR
+   Href string // /ar/pelicula/mulholland-drive
 }
 
 // this is better than strings.Replace and strings.ReplaceAll

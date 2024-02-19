@@ -2,42 +2,37 @@ package justwatch
 
 import (
    "bytes"
+   "cmp"
    "encoding/json"
    "errors"
    "net/http"
+   "slices"
    "strings"
 )
-
-// map[string]map[string][]string
-
-func (s LocaleState) String(o Offer) string {
-   var b strings.Builder
-   b.WriteString("url = ")
-   b.WriteString(o.StandardWebUrl)
-   b.WriteString("\nmonetization = ")
-   b.WriteString(o.MonetizationType)
-   b.WriteString("\ncountry = ")
-   b.WriteString(s.CountryName)
-   return b.String()
-}
 
 // `presentationType` data seems to be incorrect in some cases. For example,
 // JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
 // when the site itself reports as HD
-type Offer struct {
+type OfferNode struct {
    MonetizationType string
    StandardWebUrl string
 }
 
-func (o Offer) Stream() bool {
-   switch o.MonetizationType {
-   case "BUY", "RENT":
-      return false
+func Delete(o OfferNode) bool {
+   switch {
+   case o.MonetizationType == "BUY":
+      return true
+   case o.MonetizationType == "RENT":
+      return true
+   case strings.Contains(o.StandardWebUrl, "/more.tv/"):
+      return true
+   case strings.Contains(o.StandardWebUrl, "/viddla.fi/"):
+      return true
    }
-   return true
+   return false
 }
 
-func (t LangTag) Offers(s *LocaleState) ([]Offer, error) {
+func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {
    body, err := func() ([]byte, error) {
       var v struct {
          Variables struct {
@@ -71,7 +66,7 @@ func (t LangTag) Offers(s *LocaleState) ([]Offer, error) {
       Data struct {
          URL struct {
             Node struct {
-               Offers []Offer
+               Offers []OfferNode
             }
          }
       }
@@ -80,4 +75,52 @@ func (t LangTag) Offers(s *LocaleState) ([]Offer, error) {
       return nil, err
    }
    return v.Data.URL.Node.Offers, nil
+}
+
+type OfferGroups []*OfferGroup
+
+func (gs *OfferGroups) Add(s *LocaleState, n OfferNode) {
+   i := slices.IndexFunc(*gs, func(g *OfferGroup) bool {
+      return g.URL == n.StandardWebUrl
+   })
+   if i >= 0 {
+      g := (*gs)[i]
+      if !slices.Contains(g.Country, s.CountryName) {
+         g.Country = append(g.Country, s.CountryName)
+      }
+   } else {
+      var g OfferGroup
+      g.URL = n.StandardWebUrl
+      g.Monetization = n.MonetizationType
+      g.Country = []string{s.CountryName}
+      *gs = append(*gs, &g)
+   }
+}
+
+type OfferGroup struct {
+   URL string
+   Monetization string
+   Country []string
+}
+
+func (gs OfferGroups) String() string {
+   var b strings.Builder
+   slices.SortFunc(gs, func(a, b *OfferGroup) int {
+      return cmp.Compare(a.URL, b.URL)
+   })
+   for i, g := range gs {
+      if i >= 1 {
+         b.WriteString("\n\n")
+      }
+      b.WriteString("url = ")
+      b.WriteString(g.URL)
+      b.WriteString("\nmonetization = ")
+      b.WriteString(g.Monetization)
+      slices.Sort(g.Country)
+      for _, country := range g.Country {
+         b.WriteString("\ncountry = ")
+         b.WriteString(country)
+      }
+   }
+   return b.String()
 }
