@@ -3,48 +3,50 @@ package youtube
 import (
    "154.pages.dev/encoding"
    "errors"
+   "fmt"
    "mime"
    "net/url"
    "path"
-   "strconv"
    "strings"
 )
 
-const ModeLine = `
-{{- range $index, $_ := . -}}
-   {{ if $index }}
-itag = {{ .Itag }}
-   {{ else -}}
-itag = {{ .Itag }}
-   {{ end -}}
-   {{ with .QualityLabel -}}
-label = {{ . }}
-   {{ end -}}
-rate = {{ .Rate }}
-size = {{ .Size }}
-type = {{ .MimeType }}
-   {{ with .AudioQuality -}}
-audio = {{ . }}
-   {{ end -}}
-{{ end -}}
-`
+func (f Format) Ranges() []string {
+   const bytes = 10_000_000
+   var (
+      byte_ranges []string
+      pos int64
+   )
+   for pos < f.ContentLength {
+      byte_range := fmt.Sprintf("&range=%v-%v", pos, pos+bytes-1)
+      byte_ranges = append(byte_ranges, byte_range)
+      pos += bytes
+   }
+   return byte_ranges
+}
+
+func (f Format) String() string {
+   var b []byte
+   b = fmt.Append(b, "itag = ", f.Itag)
+   if f.QualityLabel != "" {
+      b = fmt.Append(b, "\nlabel = ", f.QualityLabel)
+   }
+   b = fmt.Append(b, "\nrate = ", encoding.Rate(f.Bitrate))
+   b = fmt.Append(b, "\nsize = ", encoding.Size(f.ContentLength))
+   b = fmt.Append(b, "\ntype = ", f.MimeType)
+   if f.AudioQuality != "" {
+      b = fmt.Append(b, "\naudio = ", f.AudioQuality)
+   }
+   return string(b)
+}
 
 type Format struct {
-   Itag int
-   URL string
-   ContentLength int64 `json:",string"`
    AudioQuality string
    Bitrate int
+   ContentLength int64 `json:",string"`
+   Itag int
    MimeType string
    QualityLabel string
-}
-
-func (f Format) Rate() encoding.Rate {
-   return encoding.Rate(f.Bitrate)
-}
-
-func (f Format) Size() encoding.Size {
-   return encoding.Size(f.ContentLength)
+   URL string
 }
 
 const (
@@ -191,26 +193,6 @@ type Request struct {
    } `json:"context"`
    RacyCheckOk bool `json:"racyCheckOk,omitempty"`
    VideoId string `json:"videoId"`
-}
-
-func (f Format) Ranges() []string {
-   const bytes = 10_000_000
-   var (
-      byte_ranges []string
-      pos int64
-   )
-   for pos < f.ContentLength {
-      byte_range := func() string {
-         b := []byte("&range=")
-         b = strconv.AppendInt(b, pos, 10)
-         b = append(b, '-')
-         b = strconv.AppendInt(b, pos+bytes-1, 10)
-         return string(b)
-      }()
-      byte_ranges = append(byte_ranges, byte_range)
-      pos += bytes
-   }
-   return byte_ranges
 }
 
 func (f Format) Ext() (string, error) {
