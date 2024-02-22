@@ -3,17 +3,11 @@ package youtube
 import (
    "fmt"
    "net/http"
-   "os"
    "testing"
    "time"
-   "text/template"
 )
 
 func TestModeLine(t *testing.T) {
-   out, err := new(template.Template).Parse(ModeLine)
-   if err != nil {
-      t.Fatal(err)
-   }
    var req Request
    req.Android()
    req.VideoId = android_ids[0]
@@ -21,9 +15,8 @@ func TestModeLine(t *testing.T) {
    if err := play.Post(req, nil); err != nil {
       t.Fatal(err)
    }
-   err = out.Execute(os.Stdout, play.StreamingData.AdaptiveFormats)
-   if err != nil {
-      t.Fatal(err)
+   for _, format := range play.StreamingData.AdaptiveFormats {
+      fmt.Println(format)
    }
 }
 

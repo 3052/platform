@@ -20,7 +20,7 @@ type Player struct {
       Reason string
    }
    StreamingData struct {
-      AdaptiveFormats []Format
+      AdaptiveFormats []AdaptiveFormat
    }
    VideoDetails struct {
       Author string

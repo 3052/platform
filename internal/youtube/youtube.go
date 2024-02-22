@@ -8,7 +8,6 @@ import (
    "log/slog"
    "net/http"
    "os"
-   "text/template"
 )
 
 func (f flags) loop() error {
@@ -18,31 +17,33 @@ func (f flags) loop() error {
    }
    slog.Info("playability", "status", play.PlayabilityStatus)
    formats := play.StreamingData.AdaptiveFormats
-   if len(f.itag) == 0 {
-      html, err := new(template.Template).Parse(youtube.ModeLine)
-      if err != nil {
+   if len(f.itag) >= 1 {
+      var next youtube.WatchNext
+      f.r.Web()
+      if err := next.Post(f.r); err != nil {
          return err
       }
-      return html.Execute(os.Stdout, formats)
-   }
-   var next youtube.WatchNext
-   f.r.Web()
-   if err := next.Post(f.r); err != nil {
-      return err
-   }
-   for _, format := range formats {
-      if _, ok := f.itag[format.Itag]; ok {
-         err := download(format, encoding.Name(next))
-         if err != nil {
-            return err
+      for _, format := range formats {
+         if _, ok := f.itag[format.Itag]; ok {
+            err := download(format, encoding.Name(next))
+            if err != nil {
+               return err
+            }
          }
+      }
+   } else {
+      for i, format := range formats {
+         if i >= 1 {
+            fmt.Println()
+         }
+         fmt.Println(format)
       }
    }
    return nil
 }
 
-func download(format youtube.Format, name string) error {
-   ext, err := format.Ext()
+func download(af youtube.AdaptiveFormat, name string) error {
+   ext, err := af.Ext()
    if err != nil {
       return err
    }
@@ -52,12 +53,12 @@ func download(format youtube.Format, name string) error {
    }
    defer file.Close()
    log.TransportDebug()
-   ranges := format.Ranges()
+   ranges := af.Ranges()
    var meter log.ProgressMeter
    meter.Set(len(ranges))
    for _, byte_range := range ranges {
       err := func() error {
-         res, err := http.Get(format.URL + byte_range)
+         res, err := http.Get(af.URL + byte_range)
          if err != nil {
             return err
          }

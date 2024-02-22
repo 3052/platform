@@ -10,13 +10,13 @@ import (
    "strings"
 )
 
-func (f Format) Ranges() []string {
+func (a AdaptiveFormat) Ranges() []string {
    const bytes = 10_000_000
    var (
       byte_ranges []string
       pos int64
    )
-   for pos < f.ContentLength {
+   for pos < a.ContentLength {
       byte_range := fmt.Sprintf("&range=%v-%v", pos, pos+bytes-1)
       byte_ranges = append(byte_ranges, byte_range)
       pos += bytes
@@ -24,22 +24,22 @@ func (f Format) Ranges() []string {
    return byte_ranges
 }
 
-func (f Format) String() string {
+func (a AdaptiveFormat) String() string {
    var b []byte
-   b = fmt.Append(b, "itag = ", f.Itag)
-   if f.QualityLabel != "" {
-      b = fmt.Append(b, "\nlabel = ", f.QualityLabel)
+   b = fmt.Append(b, "itag = ", a.Itag)
+   if a.QualityLabel != "" {
+      b = fmt.Append(b, "\nlabel = ", a.QualityLabel)
    }
-   b = fmt.Append(b, "\nrate = ", encoding.Rate(f.Bitrate))
-   b = fmt.Append(b, "\nsize = ", encoding.Size(f.ContentLength))
-   b = fmt.Append(b, "\ntype = ", f.MimeType)
-   if f.AudioQuality != "" {
-      b = fmt.Append(b, "\naudio = ", f.AudioQuality)
+   b = fmt.Append(b, "\nrate = ", encoding.Rate(a.Bitrate))
+   b = fmt.Append(b, "\nsize = ", encoding.Size(a.ContentLength))
+   b = fmt.Append(b, "\ntype = ", a.MimeType)
+   if a.AudioQuality != "" {
+      b = fmt.Append(b, "\naudio = ", a.AudioQuality)
    }
    return string(b)
 }
 
-type Format struct {
+type AdaptiveFormat struct {
    AudioQuality string
    Bitrate int
    ContentLength int64 `json:",string"`
@@ -195,8 +195,8 @@ type Request struct {
    VideoId string `json:"videoId"`
 }
 
-func (f Format) Ext() (string, error) {
-   media, _, err := mime.ParseMediaType(f.MimeType)
+func (a AdaptiveFormat) Ext() (string, error) {
+   media, _, err := mime.ParseMediaType(a.MimeType)
    if err != nil {
       return "", err
    }
@@ -210,5 +210,5 @@ func (f Format) Ext() (string, error) {
    case "video/webm":
       return ".webm", nil
    }
-   return "", errors.New(f.MimeType)
+   return "", errors.New(a.MimeType)
 }
