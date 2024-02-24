@@ -17,14 +17,14 @@ func (f flags) loop() error {
    }
    slog.Info("playability", "status", play.PlayabilityStatus)
    formats := play.StreamingData.AdaptiveFormats
-   if len(f.itag) >= 1 {
+   if f.itag >= 1 {
       var next youtube.WatchNext
       f.r.Web()
       if err := next.Post(f.r); err != nil {
          return err
       }
       for _, format := range formats {
-         if _, ok := f.itag[format.Itag]; ok {
+         if format.Itag == f.itag {
             err := download(format, encoding.Name(next))
             if err != nil {
                return err
