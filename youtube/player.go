@@ -7,7 +7,14 @@ import (
    "time"
 )
 
-const user_agent = "com.google.android.youtube/"
+func (p Player) Format(itag int) (*AdaptiveFormat, bool) {
+   for _, format := range p.StreamingData.AdaptiveFormats {
+      if format.Itag == itag {
+         return &format, true
+      }
+   }
+   return nil, false
+}
 
 type Player struct {
    Microformat struct {
@@ -31,6 +38,8 @@ type Player struct {
       ViewCount int64 `json:",string"`
    }
 }
+
+const user_agent = "com.google.android.youtube/"
 
 func (p Player) Author() string {
    return p.VideoDetails.Author

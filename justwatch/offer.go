@@ -19,6 +19,8 @@ func Delete(o OfferNode) bool {
       return true
    case strings.Contains(o.StandardWebUrl, "/viddla.fi/"):
       return true
+   case strings.Contains(o.StandardWebUrl, "/www.hulu.jp/"):
+      return true
    case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com"):
       return true
    case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com/de"):
