@@ -7,75 +7,6 @@ import (
    "strings"
 )
 
-func (w WatchNext) Year() (string, bool) {
-   if v, ok := w.metadata_row_container(); ok {
-      return v.get("Release date")
-   }
-   return "", false
-}
-
-type WatchNext []struct {
-   VideoPrimaryInfoRenderer *struct {
-      Title Run // The Family Secret
-   }
-   VideoSecondaryInfoRenderer *struct {
-      MetadataRowContainer MetadataRowContainer
-      Owner struct {
-         VideoOwnerRenderer struct {
-            Title Run
-         }
-      }
-   }
-}
-
-func (w WatchNext) Episode() (string, bool) {
-   if v, ok := w.metadata_row_container(); ok {
-      return v.get("Episode")
-   }
-   return "", false
-}
-
-func (w WatchNext) Owner() (string, bool) {
-   for _, v := range w {
-      if v := v.VideoSecondaryInfoRenderer; v != nil {
-         return v.Owner.VideoOwnerRenderer.Title.String(), true
-      }
-   }
-   return "", false
-}
-
-func (w WatchNext) Season() (string, bool) {
-   if v, ok := w.metadata_row_container(); ok {
-      return v.get("Season")
-   }
-   return "", false
-}
-
-func (w WatchNext) Show() (string, bool) {
-   if v, ok := w.metadata_row_container(); ok {
-      return v.get("Show")
-   }
-   return "", false
-}
-
-func (w WatchNext) Title() (string, bool) {
-   for _, v := range w {
-      if v := v.VideoPrimaryInfoRenderer; v != nil {
-         return v.Title.String(), true
-      }
-   }
-   return "", false
-}
-
-func (w WatchNext) metadata_row_container() (*MetadataRowContainer, bool) {
-   for _, v := range w {
-      if v := v.VideoSecondaryInfoRenderer; v != nil {
-         return &v.MetadataRowContainer, true
-      }
-   }
-   return nil, false
-}
-
 type MetadataRowContainer struct {
    MetadataRowContainerRenderer struct {
       Rows []struct {
@@ -157,4 +88,73 @@ func (w *WatchNext) Post(r Request) error {
    }
    *w = s.Contents.TwoColumnWatchNextResults.Results.Results.Contents
    return nil
+}
+
+type WatchNext []struct {
+   VideoPrimaryInfoRenderer *struct {
+      Title Run // The Family Secret
+   }
+   VideoSecondaryInfoRenderer *struct {
+      MetadataRowContainer MetadataRowContainer
+      Owner struct {
+         VideoOwnerRenderer struct {
+            Title Run
+         }
+      }
+   }
+}
+
+func (w WatchNext) metadata_row_container() (*MetadataRowContainer, bool) {
+   for _, v := range w {
+      if v := v.VideoSecondaryInfoRenderer; v != nil {
+         return &v.MetadataRowContainer, true
+      }
+   }
+   return nil, false
+}
+
+func (w WatchNext) Owner() (string, bool) {
+   for _, v := range w {
+      if v := v.VideoSecondaryInfoRenderer; v != nil {
+         return v.Owner.VideoOwnerRenderer.Title.String(), true
+      }
+   }
+   return "", false
+}
+
+func (w WatchNext) Show() (string, bool) {
+   if v, ok := w.metadata_row_container(); ok {
+      return v.get("Show")
+   }
+   return "", false
+}
+
+func (w WatchNext) Season() (string, bool) {
+   if v, ok := w.metadata_row_container(); ok {
+      return v.get("Season")
+   }
+   return "", false
+}
+
+func (w WatchNext) Episode() (string, bool) {
+   if v, ok := w.metadata_row_container(); ok {
+      return v.get("Episode")
+   }
+   return "", false
+}
+
+func (w WatchNext) Title() (string, bool) {
+   for _, v := range w {
+      if v := v.VideoPrimaryInfoRenderer; v != nil {
+         return v.Title.String(), true
+      }
+   }
+   return "", false
+}
+
+func (w WatchNext) Year() (string, bool) {
+   if v, ok := w.metadata_row_container(); ok {
+      return v.get("Release date")
+   }
+   return "", false
 }
