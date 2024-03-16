@@ -23,8 +23,8 @@ func main() {
    flag.StringVar(&f.password, "p", "", "password")
    flag.TextVar(&f.v.Level, "v", f.v.Level, "log level")
    flag.Parse()
-   log.TransportInfo()
-   log.Handler(f.v)
+   f.v.Set()
+   log.Transport{}.Set()
    if f.email != "" {
       err := f.profile()
       if err != nil {

@@ -50,9 +50,9 @@ func download(format *youtube.AdaptiveFormat, name string) error {
       return err
    }
    defer file.Close()
-   log.TransportDebug()
-   ranges := format.Ranges()
    var meter log.ProgressMeter
+   log.SetTransport(nil)
+   ranges := format.Ranges()
    meter.Set(len(ranges))
    for _, byte_range := range ranges {
       err := func() error {

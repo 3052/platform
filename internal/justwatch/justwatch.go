@@ -24,8 +24,8 @@ func main() {
    flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
    flag.TextVar(&f.v.Level, "v", f.v.Level, "log level")
    flag.Parse()
-   log.TransportInfo()
-   log.Handler(f.v)
+   f.v.Set()
+   log.Transport{}.Set()
    if f.address != "" {
       err := f.stream()
       if err != nil {
@@ -45,8 +45,8 @@ func (f flags) stream() error {
    if err := content.New(address.Path); err != nil {
       return err
    }
-   log.TransportDebug()
    var groups justwatch.OfferGroups
+   log.SetTransport(nil)
    for _, tag := range content.Href_Lang_Tags {
       slog.Info(tag.Href)
       locale, ok := justwatch.EnglishLocales.Locale(tag)

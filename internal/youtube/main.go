@@ -30,8 +30,8 @@ func main() {
    flag.BoolVar(&f.refresh, "refresh", false, "create OAuth refresh token")
    flag.TextVar(&f.v.Level, "v", f.v.Level, "level")
    flag.Parse()
-   log.TransportInfo()
-   log.Handler(f.v)
+   f.v.Set()
+   log.Transport{}.Set()
    switch {
    case f.r.VideoId != "":
       err := f.loop()

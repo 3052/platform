@@ -69,10 +69,10 @@ func (h HttpStream) HLS(master hls.MasterPlaylist, index int) error {
       return err
    }
    defer file.Close()
-   log.TransportDebug()
-   defer log.TransportInfo()
    var meter log.ProgressMeter
    meter.Set(len(segment.URI))
+   log.SetTransport(nil)
+   defer log.Transport{}.Set()
    for _, uri := range segment.URI {
       // with HLS, the segment URL is relative to the master URL, and the
       // fragment URL is relative to the segment URL.
