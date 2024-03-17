@@ -2,51 +2,13 @@ package justwatch
 
 import (
    "bytes"
+   "cmp"
    "encoding/json"
    "errors"
    "net/http"
    "slices"
    "strings"
 )
-
-func Delete(o OfferNode) bool {
-   switch {
-   case o.MonetizationType == "BUY":
-      return true
-   case o.MonetizationType == "RENT":
-      return true
-   case strings.Contains(o.StandardWebUrl, "/more.tv/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/viddla.fi/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/www.hulu.jp/"):
-      return true
-   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com"):
-      return true
-   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com/de"):
-      return true
-   }
-   return false
-}
-
-const title_details = `
-query GetUrlTitleDetails(
-   $fullPath: String!
-   $country: Country!
-   $platform: Platform! = WEB
-) {
-   url(fullPath: $fullPath) {
-      node {
-         ... on MovieOrShowOrSeason {
-            offers(country: $country, platform: $platform) {
-               monetizationType
-               standardWebURL
-            }
-         }
-      }
-   }
-}
-`
 
 type OfferGroup struct {
    URL string
@@ -57,7 +19,10 @@ type OfferGroup struct {
 func (gs OfferGroups) String() string {
    var b strings.Builder
    slices.SortFunc(gs, func(a, b *OfferGroup) int {
-      return len(b.Country) - len(a.Country)
+      if v := len(b.Country) - len(a.Country); v != 0 {
+         return v
+      }
+      return cmp.Compare(a.URL, b.URL)
    })
    for i, g := range gs {
       if i >= 1 {
@@ -148,3 +113,41 @@ func (gs *OfferGroups) Add(s *LocaleState, n OfferNode) {
       *gs = append(*gs, &g)
    }
 }
+func Delete(o OfferNode) bool {
+   switch {
+   case o.MonetizationType == "BUY":
+      return true
+   case o.MonetizationType == "RENT":
+      return true
+   case strings.Contains(o.StandardWebUrl, "/more.tv/"):
+      return true
+   case strings.Contains(o.StandardWebUrl, "/viddla.fi/"):
+      return true
+   case strings.Contains(o.StandardWebUrl, "/www.hulu.jp/"):
+      return true
+   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com"):
+      return true
+   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com/de"):
+      return true
+   }
+   return false
+}
+
+const title_details = `
+query GetUrlTitleDetails(
+   $fullPath: String!
+   $country: Country!
+   $platform: Platform! = WEB
+) {
+   url(fullPath: $fullPath) {
+      node {
+         ... on MovieOrShowOrSeason {
+            offers(country: $country, platform: $platform) {
+               monetizationType
+               standardWebURL
+            }
+         }
+      }
+   }
+}
+`
