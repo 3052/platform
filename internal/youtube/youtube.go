@@ -8,7 +8,36 @@ import (
    "log/slog"
    "net/http"
    "os"
+   "slices"
 )
+
+func (f flags) player() (*youtube.Player, error) {
+   var token *youtube.Token
+   switch f.request {
+   case 0:
+      f.r.Android()
+   case 1:
+      f.r.AndroidEmbed()
+   case 2:
+      f.r.AndroidCheck()
+      home, err := os.UserHomeDir()
+      if err != nil {
+         return nil, err
+      }
+      token = new(youtube.Token)
+      token.Raw, err = os.ReadFile(home + "/youtube.json")
+      if err != nil {
+         return nil, err
+      }
+      token.Unmarshal()
+      if err := token.Refresh(); err != nil {
+         return nil, err
+      }
+   }
+   var play youtube.Player
+   play.Post(f.r, token)
+   return &play, nil
+}
 
 func (f flags) loop() error {
    play, err := f.player()
@@ -30,6 +59,10 @@ func (f flags) loop() error {
          }
       }
    } else {
+      cmp := func(a, b youtube.AdaptiveFormat) int {
+         return a.Bitrate - b.Bitrate
+      }
+      slices.SortFunc(play.StreamingData.AdaptiveFormats, cmp)
       for i, format := range play.StreamingData.AdaptiveFormats {
          if i >= 1 {
             fmt.Println()
@@ -72,34 +105,6 @@ func download(format *youtube.AdaptiveFormat, name string) error {
       }
    }
    return nil
-}
-
-func (f flags) player() (*youtube.Player, error) {
-   var token *youtube.Token
-   switch f.request {
-   case 0:
-      f.r.Android()
-   case 1:
-      f.r.AndroidEmbed()
-   case 2:
-      f.r.AndroidCheck()
-      home, err := os.UserHomeDir()
-      if err != nil {
-         return nil, err
-      }
-      var token youtube.Token
-      token.Raw, err = os.ReadFile(home + "/youtube.json")
-      if err != nil {
-         return nil, err
-      }
-      token.Unmarshal()
-      if err := token.Refresh(); err != nil {
-         return nil, err
-      }
-   }
-   var play youtube.Player
-   play.Post(f.r, token)
-   return &play, nil
 }
 
 func (f flags) do_refresh() error {
