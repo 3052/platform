@@ -10,6 +10,26 @@ import (
    "strings"
 )
 
+func Delete(o OfferNode) bool {
+   switch {
+   case o.MonetizationType == "BUY":
+      return true
+   case o.MonetizationType == "RENT":
+      return true
+   case strings.Contains(o.StandardWebUrl, "/more.tv/"):
+      return true
+   case strings.Contains(o.StandardWebUrl, "/viddla.fi/"):
+      return true
+   case strings.Contains(o.StandardWebUrl, "/www.hulu.jp/"):
+      return true
+   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com"):
+      return true
+   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com/de"):
+      return true
+   }
+   return false
+}
+
 func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {
    body, err := func() ([]byte, error) {
       var v struct {
@@ -93,25 +113,6 @@ query GetUrlTitleDetails(
    }
 }
 `
-func Delete(o OfferNode) bool {
-   switch {
-   case o.MonetizationType == "BUY":
-      return true
-   case o.MonetizationType == "RENT":
-      return true
-   case strings.Contains(o.StandardWebUrl, "/more.tv/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/viddla.fi/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/www.hulu.jp/"):
-      return true
-   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com"):
-      return true
-   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com/de"):
-      return true
-   }
-   return false
-}
 
 type OfferGroup struct {
    URL string
