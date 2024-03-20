@@ -11,6 +11,55 @@ import (
    "slices"
 )
 
+func download(format *youtube.AdaptiveFormat, name string) error {
+   ext, err := format.Ext()
+   if err != nil {
+      return err
+   }
+   file, err := os.Create(name + ext)
+   if err != nil {
+      return err
+   }
+   defer file.Close()
+   var meter log.ProgressMeter
+   log.SetTransport(nil)
+   ranges := format.Ranges()
+   meter.Set(len(ranges))
+   for _, byte_range := range ranges {
+      err := func() error {
+         res, err := http.Get(format.URL + byte_range)
+         if err != nil {
+            return err
+         }
+         defer res.Body.Close()
+         _, err = file.ReadFrom(meter.Reader(res))
+         if err != nil {
+            return err
+         }
+         return nil
+      }()
+      if err != nil {
+         return err
+      }
+   }
+   return nil
+}
+
+func (f flags) do_refresh() error {
+   var code youtube.DeviceCode
+   code.Post()
+   fmt.Println(code)
+   fmt.Scanln()
+   token, err := code.Token()
+   if err != nil {
+      return err
+   }
+   home, err := os.UserHomeDir()
+   if err != nil {
+      return err
+   }
+   return os.WriteFile(home+"/youtube.json", token.Raw, 0666)
+}
 func (f flags) player() (*youtube.Player, error) {
    var token *youtube.Token
    switch f.request {
@@ -73,52 +122,3 @@ func (f flags) loop() error {
    return nil
 }
 
-func download(format *youtube.AdaptiveFormat, name string) error {
-   ext, err := format.Ext()
-   if err != nil {
-      return err
-   }
-   file, err := os.Create(name + ext)
-   if err != nil {
-      return err
-   }
-   defer file.Close()
-   var meter log.ProgressMeter
-   log.SetTransport(nil)
-   ranges := format.Ranges()
-   meter.Set(len(ranges))
-   for _, byte_range := range ranges {
-      err := func() error {
-         res, err := http.Get(format.URL + byte_range)
-         if err != nil {
-            return err
-         }
-         defer res.Body.Close()
-         _, err = file.ReadFrom(meter.Reader(res))
-         if err != nil {
-            return err
-         }
-         return nil
-      }()
-      if err != nil {
-         return err
-      }
-   }
-   return nil
-}
-
-func (f flags) do_refresh() error {
-   var code youtube.DeviceCode
-   code.Post()
-   fmt.Println(code)
-   fmt.Scanln()
-   token, err := code.Token()
-   if err != nil {
-      return err
-   }
-   home, err := os.UserHomeDir()
-   if err != nil {
-      return err
-   }
-   return os.WriteFile(home+"/youtube.json", token.Raw, 0666)
-}

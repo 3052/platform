@@ -10,65 +10,6 @@ import (
    "strings"
 )
 
-func Delete(o OfferNode) bool {
-   switch {
-   case o.MonetizationType == "BUY":
-      return true
-   case o.MonetizationType == "RENT":
-      return true
-   case strings.Contains(o.StandardWebUrl, "/more.tv/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/viddla.fi/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/www.hulu.jp/"):
-      return true
-   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com"):
-      return true
-   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com/de"):
-      return true
-   }
-   return false
-}
-
-type OfferGroup struct {
-   URL string
-   Monetization string
-   Country []string
-}
-
-func (gs OfferGroups) String() string {
-   var b strings.Builder
-   slices.SortFunc(gs, func(a, b *OfferGroup) int {
-      if v := len(b.Country) - len(a.Country); v != 0 {
-         return v
-      }
-      return cmp.Compare(a.URL, b.URL)
-   })
-   for i, g := range gs {
-      if i >= 1 {
-         b.WriteString("\n\n")
-      }
-      b.WriteString("url = ")
-      b.WriteString(g.URL)
-      b.WriteString("\nmonetization = ")
-      b.WriteString(g.Monetization)
-      slices.Sort(g.Country)
-      for _, country := range g.Country {
-         b.WriteString("\ncountry = ")
-         b.WriteString(country)
-      }
-   }
-   return b.String()
-}
-
-// `presentationType` data seems to be incorrect in some cases. For example,
-// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
-// when the site itself reports as HD
-type OfferNode struct {
-   MonetizationType string
-   StandardWebUrl string
-}
-
 func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {
    body, err := func() ([]byte, error) {
       var v struct {
@@ -152,3 +93,62 @@ query GetUrlTitleDetails(
    }
 }
 `
+func Delete(o OfferNode) bool {
+   switch {
+   case o.MonetizationType == "BUY":
+      return true
+   case o.MonetizationType == "RENT":
+      return true
+   case strings.Contains(o.StandardWebUrl, "/more.tv/"):
+      return true
+   case strings.Contains(o.StandardWebUrl, "/viddla.fi/"):
+      return true
+   case strings.Contains(o.StandardWebUrl, "/www.hulu.jp/"):
+      return true
+   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com"):
+      return true
+   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com/de"):
+      return true
+   }
+   return false
+}
+
+type OfferGroup struct {
+   URL string
+   Monetization string
+   Country []string
+}
+
+func (gs OfferGroups) String() string {
+   var b strings.Builder
+   slices.SortFunc(gs, func(a, b *OfferGroup) int {
+      if v := len(b.Country) - len(a.Country); v != 0 {
+         return v
+      }
+      return cmp.Compare(a.URL, b.URL)
+   })
+   for i, g := range gs {
+      if i >= 1 {
+         b.WriteString("\n\n")
+      }
+      b.WriteString("url = ")
+      b.WriteString(g.URL)
+      b.WriteString("\nmonetization = ")
+      b.WriteString(g.Monetization)
+      slices.Sort(g.Country)
+      for _, country := range g.Country {
+         b.WriteString("\ncountry = ")
+         b.WriteString(country)
+      }
+   }
+   return b.String()
+}
+
+// `presentationType` data seems to be incorrect in some cases. For example,
+// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
+// when the site itself reports as HD
+type OfferNode struct {
+   MonetizationType string
+   StandardWebUrl string
+}
+

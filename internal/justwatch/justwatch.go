@@ -12,30 +12,6 @@ import (
    "time"
 )
 
-type flags struct {
-   address string
-   sleep time.Duration
-   v log.Level
-}
-
-func main() {
-   var f flags
-   flag.StringVar(&f.address, "a", "", "address")
-   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
-   flag.TextVar(&f.v.Level, "v", f.v.Level, "log level")
-   flag.Parse()
-   f.v.Set()
-   log.Transport{}.Set()
-   if f.address != "" {
-      err := f.stream()
-      if err != nil {
-         panic(err)
-      }
-   } else {
-      flag.Usage()
-   }
-}
-
 func (f flags) stream() error {
    address, err := url.Parse(f.address)
    if err != nil {
@@ -65,3 +41,28 @@ func (f flags) stream() error {
    fmt.Println(groups)
    return nil
 }
+
+type flags struct {
+   address string
+   sleep time.Duration
+   v log.Level
+}
+
+func main() {
+   var f flags
+   flag.StringVar(&f.address, "a", "", "address")
+   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
+   flag.TextVar(&f.v.Level, "v", f.v.Level, "log level")
+   flag.Parse()
+   f.v.Set()
+   log.Transport{}.Set()
+   if f.address != "" {
+      err := f.stream()
+      if err != nil {
+         panic(err)
+      }
+   } else {
+      flag.Usage()
+   }
+}
+
