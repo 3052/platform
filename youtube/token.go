@@ -7,13 +7,21 @@ import (
    "net/url"
 )
 
+type OAuth struct {
+   Data []byte
+   V struct {
+      Access_Token string
+      Refresh_Token string
+   }
+}
+
 // YouTube on TV
 const (
    client_id = "861556708454-d6dlm3lh05idd8npek18k6be8ba3oc68.apps.googleusercontent.com"
    client_secret = "SboVhoG9s0rNafixCSGGKXAT"
 )
 
-func (d DeviceCode) Token() (*Token, error) {
+func (d DeviceCode) OAuth() (*OAuth, error) {
    res, err := http.PostForm(
       "https://oauth2.googleapis.com/token", url.Values{
          "client_id": {client_id},
@@ -26,39 +34,31 @@ func (d DeviceCode) Token() (*Token, error) {
       return nil, err
    }
    defer res.Body.Close()
-   var token Token
-   token.Raw, err = io.ReadAll(res.Body)
+   var auth OAuth
+   auth.Data, err = io.ReadAll(res.Body)
    if err != nil {
       return nil, err
    }
-   return &token, nil
+   return &auth, nil
 }
 
-type Token struct {
-   Raw []byte
-   Token struct {
-      Access_Token string
-      Refresh_Token string
-   }
+func (o *OAuth) Unmarshal() error {
+   return json.Unmarshal(o.Data, &o.V)
 }
 
-func (t *Token) Unmarshal() error {
-   return json.Unmarshal(t.Raw, &t.Token)
-}
-
-func (t *Token) Refresh() error {
+func (o *OAuth) Refresh() error {
    res, err := http.PostForm(
       "https://oauth2.googleapis.com/token",
       url.Values{
          "client_id": {client_id},
          "client_secret": {client_secret},
          "grant_type": {"refresh_token"},
-         "refresh_token": {t.Token.Refresh_Token},
+         "refresh_token": {o.V.Refresh_Token},
       },
    )
    if err != nil {
       return err
    }
    defer res.Body.Close()
-   return json.NewDecoder(res.Body).Decode(&t.Token)
+   return json.NewDecoder(res.Body).Decode(&o.V)
 }
