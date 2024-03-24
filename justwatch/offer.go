@@ -10,34 +10,48 @@ import (
    "strings"
 )
 
+var contains = []string{
+   // 2024-3-24
+   "/filmoteket.no/",
+   "/fjernleje.filmstriben.dk/",
+   "/hd.kinopoisk.ru/",
+   "/more.tv/",
+   "/okko.tv/",
+   "/show.sky.ch/",
+   "/skyx.sky.at/",
+   "/tv.blue.ch/",
+   "/viddla.fi/",
+   "/www.canalplus.at/",
+   "/www.catchplay.com/",
+   "/www.hulu.jp/",
+   "/www.sky.at/",
+   "/www.sky.de/",
+   "/www.sunrisetv.ch/",
+}
+
+var suffix = []string{
+   // 2024-3-24
+   "/skygo.sky.it/",
+   "/tv.apple.com",
+   "/tv.apple.com/de",
+}
 
 func Delete(o OfferNode) bool {
-   switch {
-   // 2024-3-24
-   case o.MonetizationType == "BUY":
+   switch o.MonetizationType {
+   case "BUY":
       return true
-   case o.MonetizationType == "RENT":
+   case "RENT":
       return true
-   case strings.Contains(o.StandardWebUrl, "/filmoteket.no/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/fjernleje.filmstriben.dk/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/hd.kinopoisk.ru/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/more.tv/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/okko.tv/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/viddla.fi/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/www.catchplay.com/"):
-      return true
-   case strings.Contains(o.StandardWebUrl, "/www.hulu.jp/"):
-      return true
-   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com"):
-      return true
-   case strings.HasSuffix(o.StandardWebUrl, "/tv.apple.com/de"):
-      return true
+   }
+   for _, value := range contains {
+      if strings.Contains(o.StandardWebUrl, value) {
+         return true
+      }
+   }
+   for _, value := range suffix {
+      if strings.HasSuffix(o.StandardWebUrl, value) {
+         return true
+      }
    }
    return false
 }
