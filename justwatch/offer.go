@@ -10,15 +10,27 @@ import (
    "strings"
 )
 
+
 func Delete(o OfferNode) bool {
    switch {
+   // 2024-3-24
    case o.MonetizationType == "BUY":
       return true
    case o.MonetizationType == "RENT":
       return true
+   case strings.Contains(o.StandardWebUrl, "/filmoteket.no/"):
+      return true
+   case strings.Contains(o.StandardWebUrl, "/fjernleje.filmstriben.dk/"):
+      return true
+   case strings.Contains(o.StandardWebUrl, "/hd.kinopoisk.ru/"):
+      return true
    case strings.Contains(o.StandardWebUrl, "/more.tv/"):
       return true
+   case strings.Contains(o.StandardWebUrl, "/okko.tv/"):
+      return true
    case strings.Contains(o.StandardWebUrl, "/viddla.fi/"):
+      return true
+   case strings.Contains(o.StandardWebUrl, "/www.catchplay.com/"):
       return true
    case strings.Contains(o.StandardWebUrl, "/www.hulu.jp/"):
       return true

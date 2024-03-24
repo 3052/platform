@@ -11,7 +11,7 @@ func (f flags) download() error {
       return err
    }
    var profile gem.GemProfile
-   profile.Raw, err = os.ReadFile(home + "/cbc-gem/profile.json")
+   profile.Data, err = os.ReadFile(home + "/cbc-gem/profile.json")
    if err != nil {
       return err
    }
@@ -44,5 +44,5 @@ func (f flags) profile() error {
    if err != nil {
       return err
    }
-   return os.WriteFile(home + "/cbc-gem/profile.json", profile.Raw, 0666)
+   return os.WriteFile(home + "/cbc-gem/profile.json", profile.Data, 0666)
 }

@@ -18,15 +18,15 @@ func TestCode(t *testing.T) {
    )
    for range [9]bool{} {
       time.Sleep(9 * time.Second)
-      token, err := code.Token()
+      auth, err := code.OAuth()
       if err != nil {
          t.Fatal(err)
       }
-      if err := token.Unmarshal(); err != nil {
+      if err := auth.Unmarshal(); err != nil {
          t.Fatal(err)
       }
-      fmt.Printf("%+v\n", token)
-      if token.Token.Access_Token != "" {
+      fmt.Printf("%+v\n", auth)
+      if auth.V.Access_Token != "" {
          break
       }
    }

@@ -36,7 +36,7 @@ func TestMedia(t *testing.T) {
       t.Fatal(err)
    }
    var profile GemProfile
-   profile.Raw, err = os.ReadFile(home + "/cbc/profile.json")
+   profile.Data, err = os.ReadFile(home + "/cbc/profile.json")
    if err != nil {
       t.Fatal(err)
    }

@@ -22,14 +22,14 @@ func (c GemCatalog) Item() (*LineupItem, bool) {
 }
 
 func (g *GemProfile) Unmarshal() error {
-   return json.Unmarshal(g.Raw, &g.Gem)
+   return json.Unmarshal(g.Data, &g.v)
 }
 
 type GemProfile struct {
-   Gem struct {
+   Data []byte
+   v struct {
       ClaimsToken string
    }
-   Raw []byte
 }
 
 type MediaService struct {
@@ -99,7 +99,7 @@ func (p GemProfile) Media(i *LineupItem) (*MediaService, error) {
       "tech": {"hls"},
    }.Encode()
    req.Header = http.Header{
-      "X-Claims-Token": {p.Gem.ClaimsToken},
+      "X-Claims-Token": {p.v.ClaimsToken},
       "X-Forwarded-For": {forwarded_for},
    }
    res, err := http.DefaultClient.Do(req)
