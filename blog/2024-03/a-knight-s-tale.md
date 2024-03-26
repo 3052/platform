@@ -4,7 +4,7 @@
 
 this works:
 
-https://stan.com.au/watch/a-knights-tale-2001
+https://www.stan.com.au/watch/a-knights-tale-2001
 
 2128 titles:
 

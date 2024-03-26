@@ -11,6 +11,11 @@ import (
 )
 
 var contains = []string{
+   // 2024-3-25
+   "/binge.com.au/",
+   "/oiplay.tv/",
+   "/www.nowonline.com.br/",
+   "/www.wavve.com/",
    // 2024-3-24
    "/filmoteket.no/",
    "/fjernleje.filmstriben.dk/",
