@@ -78,13 +78,6 @@ var contains = []string{
    "/www.xn--lep-tma39c.tv/",
 }
 
-var suffix = []string{
-   // 2024-3-24
-   "/skygo.sky.it/",
-   "/tv.apple.com",
-   "/tv.apple.com/de",
-}
-
 func Delete(o OfferNode) bool {
    switch o.MonetizationType {
    case "BUY":
@@ -94,11 +87,6 @@ func Delete(o OfferNode) bool {
    }
    for _, value := range contains {
       if strings.Contains(o.StandardWebUrl, value) {
-         return true
-      }
-   }
-   for _, value := range suffix {
-      if strings.HasSuffix(o.StandardWebUrl, value) {
          return true
       }
    }
