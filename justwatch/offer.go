@@ -82,6 +82,8 @@ func Delete(o OfferNode) bool {
    switch o.MonetizationType {
    case "BUY":
       return true
+   case "CINEMA":
+      return true
    case "RENT":
       return true
    }
