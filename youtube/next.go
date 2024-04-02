@@ -113,22 +113,6 @@ func (w WatchNext) metadata_row_container() (*MetadataRowContainer, bool) {
    return nil, false
 }
 
-func (w WatchNext) Owner() (string, bool) {
-   for _, v := range w {
-      if v := v.VideoSecondaryInfoRenderer; v != nil {
-         return v.Owner.VideoOwnerRenderer.Title.String(), true
-      }
-   }
-   return "", false
-}
-
-func (w WatchNext) Show() (string, bool) {
-   if v, ok := w.metadata_row_container(); ok {
-      return v.get("Show")
-   }
-   return "", false
-}
-
 func (w WatchNext) Season() (string, bool) {
    if v, ok := w.metadata_row_container(); ok {
       return v.get("Season")
@@ -155,6 +139,22 @@ func (w WatchNext) Title() (string, bool) {
 func (w WatchNext) Year() (string, bool) {
    if v, ok := w.metadata_row_container(); ok {
       return v.get("Release date")
+   }
+   return "", false
+}
+
+func (w WatchNext) Owner() (string, bool) {
+   for _, v := range w {
+      if v := v.VideoSecondaryInfoRenderer; v != nil {
+         return v.Owner.VideoOwnerRenderer.Title.String(), true
+      }
+   }
+   return "", false
+}
+
+func (w WatchNext) Show() (string, bool) {
+   if v, ok := w.metadata_row_container(); ok {
+      return v.get("Show")
    }
    return "", false
 }
