@@ -11,6 +11,9 @@ import (
 )
 
 var contains = []string{
+   // 2024-4-7
+   "/fjernleje.filmstriben.dk/",
+   "/www.rakuten.tv/",
    // 2024-4-6
    "/filmoteket.no/",
    "/premier.one/",
