@@ -9,81 +9,41 @@ import (
 
 var repos = []repository{
    {
-      name: "api",
-      topics: []string{
-         "github",
-         "justwatch",
-         "mullvad",
-         "musicbrainz",
-      },
-   },
-   {
-      name: "encoding",
-      description: "Data parsers and formatters",
-      topics: []string{
-         "dash",
-         "hls",
-         "json",
-         "mp4",
-         "xml",
-      },
-   },
-   {
-      description: "Download APK from Google Play or send API requests",
-      name: "google",
-      topics: []string{
-         "android",
-         "google-play",
-      },
-   },
-   {
       name: "media",
       description: "Download media or send API requests",
       topics: []string{
-         "amc",
-         "bandcamp",
-         "cbc-gem",
+         "hulu",
+         "mubi",
          "nbc",
          "paramount",
+         "peacock",
+         "plex",
+         "stan",
+
+         "amc",
          "roku",
-         "soundcloud",
-         "youtube",
       },
-   },
-   {
-      description: "Protocol Buffers",
-      name: "protobuf",
-   },
-   {
-      name: "widevine",
-      description: "DRM",
    },
 }
 
 const sleep = 99*time.Millisecond
 
 func Test_Repo(t *testing.T) {
-   home, err := os.UserHomeDir()
-   if err != nil {
-      t.Fatal(err)
-   }
-   u, err := user_info(home + "/github.json")
-   if err != nil {
-      t.Fatal(err)
-   }
+   username := os.Getenv("github_username")
+   password := os.Getenv("github_password")
    for _, repo := range repos {
       fmt.Println(repo.name)
-      err := repo.set_actions(u)
+      err := repo.set_actions(username, password)
       if err != nil {
          t.Fatal(err)
       }
       time.Sleep(sleep)
-      if err := repo.set_description(u); err != nil {
+      if err := repo.set_description(username, password); err != nil {
          t.Fatal(err)
       }
       time.Sleep(sleep)
       if repo.topics != nil {
-         err := repo.set_topics(u)
+         err := repo.set_topics(username, password)
          if err != nil {
             t.Fatal(err)
          }
