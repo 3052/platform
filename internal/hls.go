@@ -64,7 +64,11 @@ func (h HttpStream) HLS(master hls.MasterPlaylist, index int) error {
    if err != nil {
       return err
    }
-   file, err := os.Create(encoding.Name(h.Name) + variant.Ext())
+   name, err := encoding.Name(h.Name)
+   if err != nil {
+      return err
+   }
+   file, err := os.Create(name + variant.Ext())
    if err != nil {
       return err
    }
