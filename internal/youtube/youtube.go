@@ -1,7 +1,6 @@
 package main
 
 import (
-   "154.pages.dev/encoding"
    "154.pages.dev/log"
    "154.pages.dev/platform/youtube"
    "fmt"
@@ -20,16 +19,7 @@ func (f flags) loop() error {
    // download one
    for _, format := range play.StreamingData.AdaptiveFormats {
       if format.Itag == f.itag {
-         var next youtube.WatchNext
-         f.r.Web()
-         if err := next.Post(f.r); err != nil {
-            return err
-         }
-         name, err := encoding.Name(next)
-         if err != nil {
-            return err
-         }
-         return download(format, name)
+         return download(format, play.VideoDetails.Title)
       }
    }
    // print all
