@@ -10,6 +10,20 @@ import (
    "strings"
 )
 
+func (a AdaptiveFormat) CompareBitrate(b AdaptiveFormat) int {
+   return a.Bitrate - b.Bitrate
+}
+
+type AdaptiveFormat struct {
+   AudioQuality string
+   Bitrate int
+   ContentLength int64 `json:",string"`
+   Itag int
+   MimeType string
+   QualityLabel string
+   URL string
+}
+
 // we need the length for progress meter, so cannot use a channel
 func (a AdaptiveFormat) Ranges() []string {
    const bytes = 10_000_000
@@ -23,16 +37,6 @@ func (a AdaptiveFormat) Ranges() []string {
       pos += bytes
    }
    return byte_ranges
-}
-
-type AdaptiveFormat struct {
-   AudioQuality string
-   Bitrate int
-   ContentLength int64 `json:",string"`
-   Itag int
-   MimeType string
-   QualityLabel string
-   URL string
 }
 
 func (a AdaptiveFormat) String() string {

@@ -17,35 +17,35 @@ func (f flags) loop() error {
       return err
    }
    slog.Info("playability", "status", play.PlayabilityStatus)
-   if f.itag >= 1 {
-      var next youtube.WatchNext
-      f.r.Web()
-      if err := next.Post(f.r); err != nil {
-         return err
-      }
-      format, ok := play.Format(f.itag)
-      if ok {
-         err := download(format, encoding.Name(next))
+   // download one
+   for _, format := range play.StreamingData.AdaptiveFormats {
+      if format.Itag == f.itag {
+         var next youtube.WatchNext
+         f.r.Web()
+         if err := next.Post(f.r); err != nil {
+            return err
+         }
+         name, err := encoding.Name(next)
          if err != nil {
             return err
          }
+         return download(format, name)
       }
-   } else {
-      cmp := func(a, b youtube.AdaptiveFormat) int {
-         return a.Bitrate - b.Bitrate
+   }
+   // print all
+   slices.SortFunc(
+      play.StreamingData.AdaptiveFormats, youtube.AdaptiveFormat.CompareBitrate,
+   )
+   for i, format := range play.StreamingData.AdaptiveFormats {
+      if i >= 1 {
+         fmt.Println()
       }
-      slices.SortFunc(play.StreamingData.AdaptiveFormats, cmp)
-      for i, format := range play.StreamingData.AdaptiveFormats {
-         if i >= 1 {
-            fmt.Println()
-         }
-         fmt.Println(format)
-      }
+      fmt.Println(format)
    }
    return nil
 }
 
-func download(format *youtube.AdaptiveFormat, name string) error {
+func download(format youtube.AdaptiveFormat, name string) error {
    ext, err := format.Ext()
    if err != nil {
       return err

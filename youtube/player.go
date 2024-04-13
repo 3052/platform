@@ -33,15 +33,6 @@ func (p *Player) Post(r Request, auth *OAuth) error {
    return json.NewDecoder(res.Body).Decode(p)
 }
 
-func (p Player) Format(itag int) (*AdaptiveFormat, bool) {
-   for _, format := range p.StreamingData.AdaptiveFormats {
-      if format.Itag == itag {
-         return &format, true
-      }
-   }
-   return nil, false
-}
-
 type Player struct {
    Microformat struct {
       PlayerMicroformatRenderer struct {
