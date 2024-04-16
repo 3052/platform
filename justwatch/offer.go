@@ -11,6 +11,25 @@ import (
 )
 
 var contains = []string{
+   // 2024-4-15
+   "/globoplay.globo.com/",
+   "/more.tv/",
+   "/play.movistar.com.ec/",
+   "/tv.kpn.com/",
+   "/video.unext.jp/",
+   "/watcha.com/",
+   "/wl.movistarplus.es/",
+   "/www.canalplus.at/",
+   "/www.catchplay.com/",
+   "/www.foxtel.com.au/foxtelplay/",
+   "/www.jiocinema.com/",
+   "/www.joyn.de/",
+   "/www.movistarplay.cl/",
+   "/www.movistarplay.co/",
+   "/www.play.movistar.com.ar/",
+   "/www.starplus.com/",
+   "/www.strim.no/",
+   "/www.sunrisetv.ch/",
    // 2024-4-7
    "/fjernleje.filmstriben.dk/",
    "/www.rakuten.tv/",
