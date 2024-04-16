@@ -14,6 +14,7 @@ var contains = []string{
    // 2024-4-15
    "/globoplay.globo.com/",
    "/more.tv/",
+   "/okko.tv/",
    "/play.movistar.com.ec/",
    "/tv.kpn.com/",
    "/video.unext.jp/",
