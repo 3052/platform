@@ -11,6 +11,8 @@ import (
 )
 
 var contains = []string{
+   // 2024-4-17
+   "/pluto.tv/",
    // 2024-4-16
    "/player.pl/",
    "/www.kanopy.com/",
