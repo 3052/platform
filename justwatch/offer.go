@@ -11,8 +11,18 @@ import (
 )
 
 var contains = []string{
-   // 2024-4-17
-   "/pluto.tv/",
+   // 2024-4-21
+   "/hollywoodsuite.ca/",
+   "/osnplus.com/",
+   "/starzplay.com/ar/",
+   "/web.magentatv.de/",
+   "/www.crave.ca/",
+   "/www.filmbox.com/",
+   "/www.horizon.tv/",
+   "/www.neontv.co.nz/",
+   "/www.nowtv.com/",
+   "/www.nowtv.it/",
+   "/www.sky.com/watch/sky-go/",
    // 2024-4-16
    "/player.pl/",
    "/www.kanopy.com/",
