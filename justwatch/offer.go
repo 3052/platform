@@ -12,6 +12,8 @@ import (
 )
 
 var contains = []string{
+   // 2024-4-23
+   "/web.magentatv.de/",
    // 2024-4-22
    "/hd.kinopoisk.ru/",
    "/tv.allente.dk/",

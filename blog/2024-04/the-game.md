@@ -1,10 +1,6 @@
 # the-game
 
 ~~~
-url = https://web.magentatv.de/film/the-game-das-geschenk-seines-lebens/GN_MV006125670000
-monetization = FLATRATE
-country = Germany
-
 url = https://www.comhemplay.se/program/MV006665650000%7C%7CSVOD%2CRTI%7C/the-game
 monetization = FLATRATE
 country = Sweden
