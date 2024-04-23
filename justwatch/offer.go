@@ -5,38 +5,32 @@ import (
    "cmp"
    "encoding/json"
    "errors"
+   "html"
    "net/http"
    "slices"
    "strings"
 )
 
 var contains = []string{
-   // 2024-4-21
-   "/hbogo.co.th/",
-   "/hbogoasia.id/",
-   "/hbogoasia.my/",
-   "/hbogoasia.ph/",
-   "/hbogoasia.sg/",
-   "/hbogoasia.tw/",
-   "/hollywoodsuite.ca/",
-   "/osnplus.com/",
-   "/starzplay.com/ar/",
+   // 2024-4-22
+   "/hd.kinopoisk.ru/",
    "/tv.allente.dk/",
    "/tvplus.com.tr/",
    "/viaplay.dk/",
    "/viaplay.fi/",
    "/viaplay.no/",
    "/viaplay.se/",
-   "/web.magentatv.de/",
+   "/www.canalplus.com/",
    "/www.crave.ca/",
-   "/www.filmbox.com/",
+   "/www.hoopladigital.com/",
    "/www.horizon.tv/",
-   "/www.hulu.jp/",
-   "/www.neontv.co.nz/",
-   "/www.nowtv.com/",
-   "/www.nowtv.it/",
-   "/www.sky.com/watch/sky-go/",
+   "/www.hotstar.com/",
+   "/www.mycanal.fr/",
+   "/www.tbs.com/",
+   "/www.tntdrama.com/",
    "/www.tod.tv/",
+   "/www.trutv.com/",
+   "/www.xn--lep-tma39c.tv/",
    // 2024-4-16
    "/player.pl/",
    "/www.kanopy.com/",
@@ -137,24 +131,6 @@ func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {
 
 type OfferGroups []*OfferGroup
 
-func (gs *OfferGroups) Add(s *LocaleState, n OfferNode) {
-   i := slices.IndexFunc(*gs, func(g *OfferGroup) bool {
-      return g.URL == n.StandardWebUrl
-   })
-   if i >= 0 {
-      g := (*gs)[i]
-      if !slices.Contains(g.Country, s.CountryName) {
-         g.Country = append(g.Country, s.CountryName)
-      }
-   } else {
-      var g OfferGroup
-      g.URL = n.StandardWebUrl
-      g.Monetization = n.MonetizationType
-      g.Country = []string{s.CountryName}
-      *gs = append(*gs, &g)
-   }
-}
-
 const title_details = `
 query GetUrlTitleDetails(
    $fullPath: String!
@@ -180,6 +156,31 @@ type OfferGroup struct {
    Country []string
 }
 
+// `presentationType` data seems to be incorrect in some cases. For example,
+// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
+// when the site itself reports as HD
+type OfferNode struct {
+   MonetizationType string
+   StandardWebUrl string
+}
+
+func (gs *OfferGroups) Add(s *LocaleState, n OfferNode) {
+   i := slices.IndexFunc(*gs, func(g *OfferGroup) bool {
+      return g.URL == n.StandardWebUrl
+   })
+   if i >= 0 {
+      g := (*gs)[i]
+      if !slices.Contains(g.Country, s.CountryName) {
+         g.Country = append(g.Country, s.CountryName)
+      }
+   } else {
+      var g OfferGroup
+      g.URL = n.StandardWebUrl
+      g.Monetization = n.MonetizationType
+      g.Country = []string{s.CountryName}
+      *gs = append(*gs, &g)
+   }
+}
 func (gs OfferGroups) String() string {
    var b strings.Builder
    slices.SortFunc(gs, func(a, b *OfferGroup) int {
@@ -193,7 +194,7 @@ func (gs OfferGroups) String() string {
          b.WriteString("\n\n")
       }
       b.WriteString("url = ")
-      b.WriteString(g.URL)
+      b.WriteString(html.UnescapeString(g.URL))
       b.WriteString("\nmonetization = ")
       b.WriteString(g.Monetization)
       slices.Sort(g.Country)
@@ -204,12 +205,3 @@ func (gs OfferGroups) String() string {
    }
    return b.String()
 }
-
-// `presentationType` data seems to be incorrect in some cases. For example,
-// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
-// when the site itself reports as HD
-type OfferNode struct {
-   MonetizationType string
-   StandardWebUrl string
-}
-
