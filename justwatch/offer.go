@@ -11,6 +11,27 @@ import (
    "strings"
 )
 
+func Monetization(o OfferNode) bool {
+   switch o.MonetizationType {
+   case "BUY":
+      return true
+   case "CINEMA":
+      return true
+   case "RENT":
+      return true
+   }
+   return false
+}
+
+func URL(o OfferNode) bool {
+   for _, value := range contains {
+      if strings.Contains(o.StandardWebUrl, value) {
+         return true
+      }
+   }
+   return false
+}
+
 var contains = []string{
    // 2024-4-23
    "/viaplay.nl/",
@@ -91,23 +112,6 @@ var contains = []string{
    "/oiplay.tv/",
    "/www.nowonline.com.br/",
    "/www.wavve.com/",
-}
-
-func Delete(o OfferNode) bool {
-   switch o.MonetizationType {
-   case "BUY":
-      return true
-   case "CINEMA":
-      return true
-   case "RENT":
-      return true
-   }
-   for _, value := range contains {
-      if strings.Contains(o.StandardWebUrl, value) {
-         return true
-      }
-   }
-   return false
 }
 
 func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {

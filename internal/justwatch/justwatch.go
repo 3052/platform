@@ -60,9 +60,9 @@ func (f flags) stream() error {
          return err
       }
       if f.filter {
-         offers = slices.DeleteFunc(offers, justwatch.Delete)
+         offers = slices.DeleteFunc(offers, justwatch.URL)
       }
-      for _, offer := range offers {
+      for _, offer := range slices.DeleteFunc(offers, justwatch.Monetization) {
          groups.Add(locale, offer)
       }
       time.Sleep(f.sleep)
