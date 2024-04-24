@@ -12,6 +12,32 @@ import (
    "time"
 )
 
+type flags struct {
+   address string
+   filter bool
+   sleep time.Duration
+   v log.Level
+}
+
+func main() {
+   var f flags
+   flag.StringVar(&f.address, "a", "", "address")
+   flag.BoolVar(&f.filter, "f", true, "filter")
+   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
+   flag.TextVar(&f.v.Level, "v", f.v.Level, "log level")
+   flag.Parse()
+   f.v.Set()
+   log.Transport{}.Set()
+   if f.address != "" {
+      err := f.stream()
+      if err != nil {
+         panic(err)
+      }
+   } else {
+      flag.Usage()
+   }
+}
+
 func (f flags) stream() error {
    address, err := url.Parse(f.address)
    if err != nil {
@@ -33,7 +59,10 @@ func (f flags) stream() error {
       if err != nil {
          return err
       }
-      for _, offer := range slices.DeleteFunc(offers, justwatch.Delete) {
+      if f.filter {
+         offers = slices.DeleteFunc(offers, justwatch.Delete)
+      }
+      for _, offer := range offers {
          groups.Add(locale, offer)
       }
       time.Sleep(f.sleep)
@@ -41,28 +70,3 @@ func (f flags) stream() error {
    fmt.Println(groups)
    return nil
 }
-
-type flags struct {
-   address string
-   sleep time.Duration
-   v log.Level
-}
-
-func main() {
-   var f flags
-   flag.StringVar(&f.address, "a", "", "address")
-   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
-   flag.TextVar(&f.v.Level, "v", f.v.Level, "log level")
-   flag.Parse()
-   f.v.Set()
-   log.Transport{}.Set()
-   if f.address != "" {
-      err := f.stream()
-      if err != nil {
-         panic(err)
-      }
-   } else {
-      flag.Usage()
-   }
-}
-
