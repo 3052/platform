@@ -27,7 +27,7 @@ func TestOffer(t *testing.T) {
       if err != nil {
          t.Fatal(err)
       }
-      for _, offer := range slices.DeleteFunc(offers, Delete) {
+      for _, offer := range slices.DeleteFunc(offers, URL) {
          groups.Add(locale, offer)
       }
       time.Sleep(99 * time.Millisecond)

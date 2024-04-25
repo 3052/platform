@@ -11,62 +11,7 @@ import (
    "strings"
 )
 
-var contains = []string{
-   // 2024-4-24
-   "/www.canalplus.cz/",
-   "/www.canalplus.sk/",
-   // 2024-4-22
-   "/hd.kinopoisk.ru/",
-   "/tv.allente.dk/",
-   "/tvplus.com.tr/",
-   "/viaplay.dk/",
-   "/viaplay.fi/",
-   "/viaplay.no/",
-   "/viaplay.se/",
-   "/www.canalplus.com/",
-   "/www.crave.ca/",
-   "/www.horizon.tv/",
-   "/www.hotstar.com/",
-   "/www.mycanal.fr/",
-   "/www.tbs.com/",
-   "/www.tntdrama.com/",
-   "/www.tod.tv/",
-   "/www.trutv.com/",
-   "/www.xn--lep-tma39c.tv/",
-   // 2024-4-16
-   "/player.pl/",
-   // 2024-4-15
-   "/globoplay.globo.com/",
-   "/more.tv/",
-   "/okko.tv/",
-   "/play.movistar.com.ec/",
-   "/tv.kpn.com/",
-   "/video.unext.jp/",
-   "/watcha.com/",
-   "/wl.movistarplus.es/",
-   "/www.canalplus.at/",
-   "/www.catchplay.com/",
-   "/www.foxtel.com.au/foxtelplay/",
-   "/www.jiocinema.com/",
-   "/www.joyn.de/",
-   "/www.movistarplay.cl/",
-   "/www.movistarplay.co/",
-   "/www.play.movistar.com.ar/",
-   "/www.starplus.com/",
-   "/www.strim.no/",
-   "/www.sunrisetv.ch/",
-   // 2024-4-7
-   "/fjernleje.filmstriben.dk/",
-   "/www.rakuten.tv/",
-   // 2024-4-6
-   "/filmoteket.no/",
-   "/premier.one/",
-   // 2024-3-25
-   "/binge.com.au/",
-   "/oiplay.tv/",
-   "/www.nowonline.com.br/",
-   "/www.wavve.com/",
-}
+var contains []string
 
 func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {
    body, err := func() ([]byte, error) {
@@ -165,6 +110,7 @@ func (gs *OfferGroups) Add(s *LocaleState, n OfferNode) {
       *gs = append(*gs, &g)
    }
 }
+
 func (gs OfferGroups) String() string {
    var b strings.Builder
    slices.SortFunc(gs, func(a, b *OfferGroup) int {
@@ -189,6 +135,7 @@ func (gs OfferGroups) String() string {
    }
    return b.String()
 }
+
 func Monetization(o OfferNode) bool {
    switch o.MonetizationType {
    case "BUY":
