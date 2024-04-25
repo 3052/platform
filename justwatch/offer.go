@@ -11,54 +11,10 @@ import (
    "strings"
 )
 
-func Monetization(o OfferNode) bool {
-   switch o.MonetizationType {
-   case "BUY":
-      return true
-   case "CINEMA":
-      return true
-   case "RENT":
-      return true
-   }
-   return false
-}
-
-func URL(o OfferNode) bool {
-   for _, value := range contains {
-      if strings.Contains(o.StandardWebUrl, value) {
-         return true
-      }
-   }
-   return false
-}
-
 var contains = []string{
-   // 2024-4-23
-   "/viaplay.nl/",
-   "/web.magentatv.de/",
-   "/www.comhemplay.se/",
-   "/www.filmin.es/",
-   "/www.nowtv.com/",
-   "/www.nowtv.it/",
-   "/www.ruutu.fi/",
-   "/www.sky.com/watch/sky-go/",
-   "/www.skyshowtime.com/bg/",
-   "/www.skyshowtime.com/cz/",
-   "/www.skyshowtime.com/dk/",
-   "/www.skyshowtime.com/es/",
-   "/www.skyshowtime.com/fi/",
-   "/www.skyshowtime.com/hr/",
-   "/www.skyshowtime.com/hu/",
-   "/www.skyshowtime.com/nl/",
-   "/www.skyshowtime.com/no/",
-   "/www.skyshowtime.com/pl/",
-   "/www.skyshowtime.com/pt/",
-   "/www.skyshowtime.com/ro/",
-   "/www.skyshowtime.com/se/",
-   "/www.skyshowtime.com/sk/",
-   "/www.sonyliv.com/",
-   "/www.timvision.it/",
-   "/www.vidio.com/",
+   // 2024-4-24
+   "/www.canalplus.cz/",
+   "/www.canalplus.sk/",
    // 2024-4-22
    "/hd.kinopoisk.ru/",
    "/tv.allente.dk/",
@@ -69,7 +25,6 @@ var contains = []string{
    "/viaplay.se/",
    "/www.canalplus.com/",
    "/www.crave.ca/",
-   "/www.hoopladigital.com/",
    "/www.horizon.tv/",
    "/www.hotstar.com/",
    "/www.mycanal.fr/",
@@ -80,7 +35,6 @@ var contains = []string{
    "/www.xn--lep-tma39c.tv/",
    // 2024-4-16
    "/player.pl/",
-   "/www.kanopy.com/",
    // 2024-4-15
    "/globoplay.globo.com/",
    "/more.tv/",
@@ -234,4 +188,24 @@ func (gs OfferGroups) String() string {
       }
    }
    return b.String()
+}
+func Monetization(o OfferNode) bool {
+   switch o.MonetizationType {
+   case "BUY":
+      return true
+   case "CINEMA":
+      return true
+   case "RENT":
+      return true
+   }
+   return false
+}
+
+func URL(o OfferNode) bool {
+   for _, value := range contains {
+      if strings.Contains(o.StandardWebUrl, value) {
+         return true
+      }
+   }
+   return false
 }
