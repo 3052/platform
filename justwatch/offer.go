@@ -59,7 +59,6 @@ var contains = []string{
    "/www.filmbox.com/pl/",
    "/www.filmin.es/",
    "/www.foxtel.com.au/",
-   "/www.hoopladigital.com/",
    "/www.hotstar.com/id/",
    "/www.hotstar.com/my/",
    "/www.hotstar.com/th/",
