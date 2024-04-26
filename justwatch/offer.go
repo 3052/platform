@@ -11,7 +11,42 @@ import (
    "strings"
 )
 
-var contains []string
+var contains = []string{
+   // 2024-4-25
+   "/binge.com.au/",
+   "/filmoteket.no/",
+   "/fjernleje.filmstriben.dk/",
+   "/globoplay.globo.com/",
+   "/more.tv/",
+   "/okko.tv/",
+   "/osnplus.com/",
+   "/play.movistar.com.ec/",
+   "/premier.one/",
+   "/starzplay.com/ar/",
+   "/tv.kpn.com/",
+   "/video.unext.jp/",
+   "/watcha.com/",
+   "/wl.movistarplus.es/",
+   "/www.canalplus.at/",
+   "/www.catchplay.com/tw/",
+   "/www.crave.ca/",
+   "/www.foxtel.com.au/",
+   "/www.jiocinema.com/",
+   "/www.joyn.de/",
+   "/www.movistarplay.cl/",
+   "/www.movistarplay.co/",
+   "/www.neontv.co.nz/",
+   "/www.nowonline.com.br/",
+   "/www.nowtv.it/",
+   "/www.play.movistar.com.ar/",
+   "/www.rakuten.tv/dk/",
+   "/www.rakuten.tv/fi/",
+   "/www.rakuten.tv/no/",
+   "/www.rakuten.tv/se/",
+   "/www.starplus.com/",
+   "/www.strim.no/",
+   "/www.sunrisetv.ch/",
+}
 
 func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {
    body, err := func() ([]byte, error) {
