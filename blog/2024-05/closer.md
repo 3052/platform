@@ -1,29 +1,11 @@
 # closer
 
 ~~~
-url = https://video.unext.jp/title/SID0014673
-monetization = FLATRATE
-country = Japan
-https://www.justwatch.com/jp/動画配信サービス/u-next
-10811 titles
-
 url = https://www.sbs.com.au/ondemand/movie/closer/2229616195516
 monetization = ADS
 country = Australia
 https://www.justwatch.com/au/provider/sbs-on-demand
 2142 titles
-
-url = https://tv.kpn.com/details/VOD/5175596
-monetization = FLATRATE
-country = Netherlands
-
-url = https://hd.kinopoisk.ru/film/45f07c8dc0fa87638b68afd708138037
-monetization = FLATRATE
-country = Russia
-
-url = https://more.tv/blizost
-monetization = FLATRATE
-country = Russia
 
 url = https://www.wavve.com/player/movie?movieid=MV_CF01_SY0000011217
 monetization = FLATRATE

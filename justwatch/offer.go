@@ -12,7 +12,12 @@ import (
 )
 
 var contains = []string{
+   // 2024-5-4
+   "/hd.kinopoisk.ru/",
    // 2024-5-3
+   "/more.tv/",
+   "/tv.kpn.com/",
+   "/video.unext.jp/",
    "/www.mycanal.fr/",
 }
 
