@@ -13,9 +13,19 @@ import (
 
 var contains = []string{
    // 2024-5-4
+   "/filmoteket.no/",
+   "/fjernleje.filmstriben.dk/",
+   "/globoplay.globo.com/",
    "/hd.kinopoisk.ru/",
+   "/viaplay.dk/",
+   "/viaplay.fi/",
+   "/viaplay.no/",
+   "/viaplay.se/",
+   "/web.magentatv.de/",
    "/www.blutv.com/",
+   "/www.canalplus.at/",
    "/www.clarovideo.com/",
+   "/www.crave.ca/",
    "/www.tivify.tv/",
    "/www.wavve.com/",
    // 2024-5-3
