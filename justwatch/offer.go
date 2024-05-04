@@ -11,7 +11,10 @@ import (
    "strings"
 )
 
-var contains []string
+var contains = []string{
+   // 2024-5-3
+   "/www.mycanal.fr/",
+}
 
 func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {
    body, err := func() ([]byte, error) {
