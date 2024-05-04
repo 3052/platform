@@ -1,4 +1,4 @@
-# mycanal
+# mycanal.fr
 
 <https://www.mycanal.fr/cinema/closer-entre-adultes-consentants/h/437146_50002>
 
@@ -20,4 +20,11 @@
 13. monsieur (sir)
 14. nom (last name)
 15. Prénom (first name)
-16. Code postal non reconnu (Postal code not recognized)
+16. Code postal (Postal code)
+   - 92130
+17. adresse (address)
+   - 50 Rue Camille Desmoulins
+18. Téléphone (phone number)
+   - 09.70.82.08.15
+19. Continuer (continue)
+20. Je règle aujourd'hui : 22€99 (I pay today: 22€99)

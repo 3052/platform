@@ -14,6 +14,10 @@ import (
 var contains = []string{
    // 2024-5-4
    "/hd.kinopoisk.ru/",
+   "/www.blutv.com/",
+   "/www.clarovideo.com/",
+   "/www.tivify.tv/",
+   "/www.wavve.com/",
    // 2024-5-3
    "/more.tv/",
    "/tv.kpn.com/",
