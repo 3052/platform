@@ -1,6 +1,6 @@
 # nowtv
 
-<https://www.nowtv.it/watch/home/asset/michael-clayton-2007/R_120497_HD>
+<https://nowtv.it/watch/home/asset/michael-clayton-2007/R_120497_HD>
 
 1. Inizia a guardare (start looking at)
 2. Scopri l'offerta (discover the offer)

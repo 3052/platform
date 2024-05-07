@@ -1,6 +1,6 @@
 # wavve
 
-<https://www.wavve.com/player/movie?movieid=MV_CF01_SY0000011217>
+<http://wavve.com/player/movie?movieid=MV_CF01_SY0000011217>
 
 1.  성인 인증(adult verification)
 2. 성인 인증 후 시청하기(watch after adult verification)

@@ -1,6 +1,6 @@
-# mycanal.fr
+# canalplus.com
 
-<https://www.mycanal.fr/cinema/closer-entre-adultes-consentants/h/437146_50002>
+<https://canalplus.com/cinema/closer-entre-adultes-consentants/h/437146_50002>
 
 1. S'abonner (subscribe)
 2. CANAL+

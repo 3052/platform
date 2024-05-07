@@ -11,7 +11,52 @@ import (
    "strings"
 )
 
+func (gs *OfferGroups) Add(s *LocaleState, n OfferNode) {
+   i := slices.IndexFunc(*gs, func(g *OfferGroup) bool {
+      return g.URL == string(n.StandardWebUrl)
+   })
+   if i >= 0 {
+      g := (*gs)[i]
+      if !slices.Contains(g.Country, s.CountryName) {
+         g.Country = append(g.Country, s.CountryName)
+      }
+   } else {
+      var g OfferGroup
+      g.URL = string(n.StandardWebUrl)
+      g.Monetization = n.MonetizationType
+      g.Country = []string{s.CountryName}
+      *gs = append(*gs, &g)
+   }
+}
+
+func (gs OfferGroups) String() string {
+   var b strings.Builder
+   slices.SortFunc(gs, func(a, b *OfferGroup) int {
+      if v := len(b.Country) - len(a.Country); v != 0 {
+         return v
+      }
+      return cmp.Compare(a.URL, b.URL)
+   })
+   for i, g := range gs {
+      if i >= 1 {
+         b.WriteString("\n\n")
+      }
+      b.WriteString("url = ")
+      b.WriteString(html.UnescapeString(g.URL))
+      b.WriteString("\nmonetization = ")
+      b.WriteString(g.Monetization)
+      slices.Sort(g.Country)
+      for _, country := range g.Country {
+         b.WriteString("\ncountry = ")
+         b.WriteString(country)
+      }
+   }
+   return b.String()
+}
+
 var contains = []string{
+   // 2024-5-6
+   "/www.canalplus.com/ch/",
    // 2024-5-4
    "/filmoteket.no/",
    "/fjernleje.filmstriben.dk/",
@@ -112,57 +157,6 @@ type OfferGroup struct {
    Country []string
 }
 
-// `presentationType` data seems to be incorrect in some cases. For example,
-// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
-// when the site itself reports as HD
-type OfferNode struct {
-   MonetizationType string
-   StandardWebUrl string
-}
-
-func (gs *OfferGroups) Add(s *LocaleState, n OfferNode) {
-   i := slices.IndexFunc(*gs, func(g *OfferGroup) bool {
-      return g.URL == n.StandardWebUrl
-   })
-   if i >= 0 {
-      g := (*gs)[i]
-      if !slices.Contains(g.Country, s.CountryName) {
-         g.Country = append(g.Country, s.CountryName)
-      }
-   } else {
-      var g OfferGroup
-      g.URL = n.StandardWebUrl
-      g.Monetization = n.MonetizationType
-      g.Country = []string{s.CountryName}
-      *gs = append(*gs, &g)
-   }
-}
-
-func (gs OfferGroups) String() string {
-   var b strings.Builder
-   slices.SortFunc(gs, func(a, b *OfferGroup) int {
-      if v := len(b.Country) - len(a.Country); v != 0 {
-         return v
-      }
-      return cmp.Compare(a.URL, b.URL)
-   })
-   for i, g := range gs {
-      if i >= 1 {
-         b.WriteString("\n\n")
-      }
-      b.WriteString("url = ")
-      b.WriteString(html.UnescapeString(g.URL))
-      b.WriteString("\nmonetization = ")
-      b.WriteString(g.Monetization)
-      slices.Sort(g.Country)
-      for _, country := range g.Country {
-         b.WriteString("\ncountry = ")
-         b.WriteString(country)
-      }
-   }
-   return b.String()
-}
-
 func Monetization(o OfferNode) bool {
    switch o.MonetizationType {
    case "BUY":
@@ -177,9 +171,25 @@ func Monetization(o OfferNode) bool {
 
 func URL(o OfferNode) bool {
    for _, value := range contains {
-      if strings.Contains(o.StandardWebUrl, value) {
+      if strings.Contains(string(o.StandardWebUrl), value) {
          return true
       }
    }
    return false
+}
+
+// `presentationType` data seems to be incorrect in some cases. For example,
+// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
+// when the site itself reports as HD
+type OfferNode struct {
+   MonetizationType string
+   StandardWebUrl web_url
+}
+
+type web_url string
+
+func (w *web_url) UnmarshalText(text []byte) error {
+   text = bytes.TrimSuffix(text, []byte{'\n'})
+   *w = web_url(text)
+   return nil
 }

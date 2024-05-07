@@ -1,6 +1,6 @@
 # strim
 
-https://www.strim.no/film/1001844:vod/michael-clayton
+https://strim.no/film/1001844:vod/michael-clayton
 
 1. Bli kunde (become a customer)
 2. Bestill nå (order now)

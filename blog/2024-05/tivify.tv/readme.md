@@ -1,6 +1,6 @@
 # tivify
 
-https://www.tivify.tv/ficha?id=662b19dc178978a4bf8831ad
+https://tivify.tv/ficha?id=662b19dc178978a4bf8831ad
 
 1. general.useragent.override
    - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
