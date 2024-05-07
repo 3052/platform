@@ -11,52 +11,11 @@ import (
    "strings"
 )
 
-func (gs *OfferGroups) Add(s *LocaleState, n OfferNode) {
-   i := slices.IndexFunc(*gs, func(g *OfferGroup) bool {
-      return g.URL == string(n.StandardWebUrl)
-   })
-   if i >= 0 {
-      g := (*gs)[i]
-      if !slices.Contains(g.Country, s.CountryName) {
-         g.Country = append(g.Country, s.CountryName)
-      }
-   } else {
-      var g OfferGroup
-      g.URL = string(n.StandardWebUrl)
-      g.Monetization = n.MonetizationType
-      g.Country = []string{s.CountryName}
-      *gs = append(*gs, &g)
-   }
-}
-
-func (gs OfferGroups) String() string {
-   var b strings.Builder
-   slices.SortFunc(gs, func(a, b *OfferGroup) int {
-      if v := len(b.Country) - len(a.Country); v != 0 {
-         return v
-      }
-      return cmp.Compare(a.URL, b.URL)
-   })
-   for i, g := range gs {
-      if i >= 1 {
-         b.WriteString("\n\n")
-      }
-      b.WriteString("url = ")
-      b.WriteString(html.UnescapeString(g.URL))
-      b.WriteString("\nmonetization = ")
-      b.WriteString(g.Monetization)
-      slices.Sort(g.Country)
-      for _, country := range g.Country {
-         b.WriteString("\ncountry = ")
-         b.WriteString(country)
-      }
-   }
-   return b.String()
-}
-
 var contains = []string{
    // 2024-5-6
    "/www.canalplus.com/ch/",
+   "/www.catchplay.com/",
+   "/www.movistarplay.cl/",
    // 2024-5-4
    "/filmoteket.no/",
    "/fjernleje.filmstriben.dk/",
@@ -193,3 +152,46 @@ func (w *web_url) UnmarshalText(text []byte) error {
    *w = web_url(text)
    return nil
 }
+func (gs *OfferGroups) Add(s *LocaleState, n OfferNode) {
+   i := slices.IndexFunc(*gs, func(g *OfferGroup) bool {
+      return g.URL == string(n.StandardWebUrl)
+   })
+   if i >= 0 {
+      g := (*gs)[i]
+      if !slices.Contains(g.Country, s.CountryName) {
+         g.Country = append(g.Country, s.CountryName)
+      }
+   } else {
+      var g OfferGroup
+      g.URL = string(n.StandardWebUrl)
+      g.Monetization = n.MonetizationType
+      g.Country = []string{s.CountryName}
+      *gs = append(*gs, &g)
+   }
+}
+
+func (gs OfferGroups) String() string {
+   var b strings.Builder
+   slices.SortFunc(gs, func(a, b *OfferGroup) int {
+      if v := len(b.Country) - len(a.Country); v != 0 {
+         return v
+      }
+      return cmp.Compare(a.URL, b.URL)
+   })
+   for i, g := range gs {
+      if i >= 1 {
+         b.WriteString("\n\n")
+      }
+      b.WriteString("url = ")
+      b.WriteString(html.UnescapeString(g.URL))
+      b.WriteString("\nmonetization = ")
+      b.WriteString(g.Monetization)
+      slices.Sort(g.Country)
+      for _, country := range g.Country {
+         b.WriteString("\ncountry = ")
+         b.WriteString(country)
+      }
+   }
+   return b.String()
+}
+
