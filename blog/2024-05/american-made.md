@@ -1,10 +1,6 @@
 # american-made
 
 ~~~
-url = https://joyn.de/filme/barry-seal-only-in-america
-monetization = ADS
-country = Germany
-
 url = https://jiocinema.com/movies/american-made/3780463/watch
 monetization = FLATRATE
 country = India

@@ -12,6 +12,8 @@ import (
 )
 
 var contains = []string{
+   // 2024-5-9
+   "/joyn.de/",
    // 2024-5-6
    "/www.canalplus.com/ch/",
    "/www.catchplay.com/",
