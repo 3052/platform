@@ -1,7 +1,27 @@
 # joyn
 
-- https://joyn.de/filme/barry-seal-only-in-america
-- https://justwatch.com/de/Anbieter/joyn-plus
+https://joyn.de/filme/barry-seal-only-in-america
+
+## paid
+
+1. https://joyn.de
+2. PLUS kostenlos testen (test PLUS free of charge)
+3. Jetzt kostenlos testen (test now free of charge)
+4. Vorname (first name)
+5. last name
+6. credit card
+7. Karteninhaber (cardholder)
+8. card number
+9. CVC
+10. MM
+11. YY
+12. Ich stimme der Ausführung des Vertrages vor Ablauf der Widerrufsfrist
+   ausdrücklich zu (I expressly agree to the execution of the contract before the
+   expiry of the withdrawal period)
+13. Zahlungspflichtig bestellen (order with obligation to pay)
+14. Ihre Kreditkarte wurde abgelehnt (your credit card has been declined)
+
+even with regular card its rejected, so it must be a country thing
 
 ## free
 
@@ -19,25 +39,6 @@
 10. month
 11. year
 12. Speichern (save)
-
-## paid
-
-1. https://joyn.de
-2. PLUS kostenlos testen (test PLUS free of charge)
-3. Jetzt kostenlos testen (test now free of charge)
-4. Vorname (first name)
-5. last name
-6. credit card
-7. Karteninhaber (cardholder)
-8. card number
-9. CVC
-10. MM
-11. YY
-6. Ich stimme der Ausführung des Vertrages vor Ablauf der Widerrufsfrist
-   ausdrücklich zu (I expressly agree to the execution of the contract before the
-   expiry of the withdrawal period)
-7. Zahlungspflichtig bestellen (order with obligation to pay)
-8. Ihre Kreditkarte wurde abgelehnt (your credit card has been declined)
 
 ## quality
 

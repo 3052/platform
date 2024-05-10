@@ -12,8 +12,16 @@ import (
 )
 
 var contains = []string{
-   // 2024-5-9
-   "/joyn.de/",
+   // 2024-5-10
+   "/okko.tv/",
+   "/play.movistar.com.ec/",
+   "/wl.movistarplus.es/",
+   "/www.jiocinema.com/",
+   "/www.joyn.de/",
+   "/www.movistarplay.co/",
+   "/www.play.movistar.com.ar/",
+   "/www.starplus.com/",
+   "/www.sunrisetv.ch/",
    // 2024-5-6
    "/www.canalplus.com/ch/",
    "/www.catchplay.com/",
