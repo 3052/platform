@@ -23,4 +23,4 @@ http://neontv.co.nz/movie/horrible-bosses
 
 ! Payment Declined by Payment Gateway due to following reason : DECLINED
 
-even with brand new card
+fails with new virtual card and real card

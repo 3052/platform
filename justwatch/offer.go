@@ -13,15 +13,24 @@ import (
 
 var contains = []string{
    // 2024-5-10
+   "/binge.com.au/",
+   "/maxstream.tv/",
    "/okko.tv/",
+   "/osnplus.com/",
    "/play.movistar.com.ec/",
+   "/premier.one/",
    "/wl.movistarplus.es/",
    "/www.jiocinema.com/",
    "/www.joyn.de/",
    "/www.movistarplay.co/",
+   "/www.neontv.co.nz/",
+   "/www.nowtv.com/",
    "/www.play.movistar.com.ar/",
+   "/www.rakuten.tv/",
+   "/www.sky.com/watch/sky-go/",
    "/www.starplus.com/",
    "/www.sunrisetv.ch/",
+   "/www.tod.tv/",
    // 2024-5-6
    "/www.canalplus.com/ch/",
    "/www.catchplay.com/",
