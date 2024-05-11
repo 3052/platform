@@ -8,3 +8,5 @@ https://movistarplus.es/cine/barry-seal-el-traficante/ficha?id=1462514
 3. Suscribirme ahora (subscribe now)
 
 403 Forbidden
+
+with x-forwarded-for and all spain VPN cities

@@ -15,11 +15,16 @@ var contains = []string{
    // 2024-5-11
    "/disneyplus.bn5x.net/",
    "/hbogo.co.th/",
+   "/more.tv/",
+   "/play.movistar.com.ec/",
    "/stream.sooner.be/",
    "/stream.sooner.nl/",
    "/v2.videoland.com/",
    "/viaplay.pl/",
+   "/watcha.com/",
+   "/wl.movistarplus.es/",
    "/www.filmotv.fr/",
+   "/www.foxtel.com.au/",
    "/www.hoopladigital.com/",
    "/www.vidio.com/",
    // 2024-5-10
