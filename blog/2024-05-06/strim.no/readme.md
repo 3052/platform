@@ -18,4 +18,4 @@ https://strim.no/film/1001844:vod/michael-clayton
 11. Opprett konto (create an account)
 12. Betal med kort (pay by card)
 
-no trial?
+no trial

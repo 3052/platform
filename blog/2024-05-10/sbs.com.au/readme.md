@@ -2,6 +2,6 @@
 
 country = Australia
 
-HLS with no encryption
+https://www.sbs.com.au/ondemand/movie/closer/2229616195516
 
-url = https://www.sbs.com.au/ondemand/movie/closer/2229616195516
+HLS with no encryption

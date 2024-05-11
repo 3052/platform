@@ -20,3 +20,7 @@ https://stream.sooner.nl/m/american-hustle
 13. disable javascript
 14. start trial
 15. I am human
+
+480p
+
+<http://cdnapi.kaltura.com/p/2031841/playManifest/entryId/1_ml2r8fll/format/mpegdash>
