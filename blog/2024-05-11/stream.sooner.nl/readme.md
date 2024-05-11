@@ -1,0 +1,22 @@
+# stream.sooner.nl
+
+country = Netherlands
+
+https://stream.sooner.nl/m/american-hustle
+
+1. Abonneer (subscribe)
+2. Ga verder (continue)
+3. e-mail
+   - 2024-5-12@mailsac.com
+4. password
+5. Ga verder (continue)
+6. card
+7. card number
+8. expiration
+9. CVC
+10. full name
+11. country
+12. zip
+13. disable javascript
+14. start trial
+15. I am human

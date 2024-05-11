@@ -20,6 +20,8 @@ var contains = []string{
    "/hbogoasia.ph/",
    "/hbogoasia.sg/",
    "/hbogoasia.tw/",
+   "/stream.sooner.be/",
+   "/viaplay.pl/",
    "/www.cineasterna.com/",
    "/www.filmotv.fr/",
    "/www.foxtel.com.au/",
@@ -27,6 +29,7 @@ var contains = []string{
    "/www.hotstar.com/id/",
    "/www.hotstar.com/my/",
    "/www.hotstar.com/th/",
+   "/www.vidio.com/",
    // 2024-5-10
    "/binge.com.au/",
    "/hollywoodsuite.ca/",
