@@ -12,6 +12,21 @@ import (
 )
 
 var contains = []string{
+   // 2024-5-11
+   "/disneyplus.bn5x.net/",
+   "/hbogo.co.th/",
+   "/hbogoasia.id/",
+   "/hbogoasia.my/",
+   "/hbogoasia.ph/",
+   "/hbogoasia.sg/",
+   "/hbogoasia.tw/",
+   "/www.cineasterna.com/",
+   "/www.filmotv.fr/",
+   "/www.foxtel.com.au/",
+   "/www.hoopladigital.com/",
+   "/www.hotstar.com/id/",
+   "/www.hotstar.com/my/",
+   "/www.hotstar.com/th/",
    // 2024-5-10
    "/binge.com.au/",
    "/hollywoodsuite.ca/",
