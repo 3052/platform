@@ -16,3 +16,9 @@ https://binge.com.au/movies/asset-horrible-bosses!7657
 
 server randomly blocks both initial page above, and also the final step above.
 tried all cities, both OVPN and WG.
+
+~~~
+Australia 1.128.0.0
+/~q/x-forwarded-for/1.128.0.0
+/~q/x-forwarded-for/23.45.119.136
+~~~

@@ -10,3 +10,9 @@ https://premier.one/show/19017
 3. Продолжить (continue)
 4. Введите код из СМС (enter code from SMS)
 5. Video is unavailable in your country
+
+~~~
+Russia 95.24.0.0
+/~q/x-forwarded-for/95.24.0.0
+/~q/x-forwarded-for/194.190.77.89
+~~~
