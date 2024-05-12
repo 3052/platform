@@ -12,6 +12,18 @@ import (
 )
 
 var contains = []string{
+   // 2024-5-12
+   "/hbogoasia.id/",
+   "/hbogoasia.my/",
+   "/hbogoasia.ph/",
+   "/hbogoasia.sg/",
+   "/hbogoasia.tw/",
+   "/play.tv2.dk/",
+   "/www.hotstar.com/",
+   "/www.rakuten.tv/",
+   "/www.sonyliv.com/",
+   "/www.tivify.tv/",
+   "/www.tvnz.co.nz/",
    // 2024-5-11
    "/binge.com.au/",
    "/disneyplus.bn5x.net/",

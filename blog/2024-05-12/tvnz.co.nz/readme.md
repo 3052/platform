@@ -21,9 +21,9 @@ https://www.tvnz.co.nz/shows/american-hustle/movie/s1-e1
 15. verify my email
 16. stream on
 
-Access to this resource is forbidden by access policy
+media URLs are blocked with VPN and header
 
-
-
-
-
+~~~
+New Zealand 49.224.0.0
+/~q/x-forwarded-for/49.224.0.0
+~~~

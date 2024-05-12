@@ -1,5 +1,7 @@
 # tivify
 
+the site is just a god damn piece of shit. really slow with or without VPN
+
 https://tivify.tv/ficha?id=662b19dc178978a4bf8831ad
 
 1. general.useragent.override
@@ -24,16 +26,10 @@ https://tivify.tv/ficha?id=662b19dc178978a4bf8831ad
 15. Tu cuenta se ha activado correctamente (Your account has been successfully
    activated)
 
-## Geoblocking restrictions do not allow playing this content from your country
+after this you get geo block with VPN or header
 
-- barcelona
-- madrid
-   - ovpn 201
-   - ovpn 202
-   - wg 101
-   - wg 102
-   - wg 201
-   - wg 202
-- valencia
-   - wg 1
-   - wg 2
+~~~
+Spain 88.0.0.0
+/~q/x-forwarded-for/88.0.0.0
+/~q/x-forwarded-for/18.161.156.123
+~~~

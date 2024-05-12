@@ -1,19 +1,6 @@
 # american hustle
 
 ~~~
-tvnz.co.nz/shows/american-hustle/movie/s1-e1
-url = https://www.tvnz.co.nz/shows/american-hustle/movie/s1-e1
-monetization = FLATRATE
-country = New Zealand
-https://www.justwatch.com/nz/provider/tvnz
-1355
-
-url = https://play.tv2.dk/film/american-hustle-459218ba-1ce9-47fe-993e-63ce5293d192
-monetization = FLATRATE
-country = Denmark
-https://www.justwatch.com/dk/provider/tv-2
-1267 titles
-
 url = https://www.cinemember.nl/nl/films/american-hustle
 monetization = FLATRATE
 country = Belgium
