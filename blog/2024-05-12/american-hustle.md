@@ -1,6 +1,7 @@
 # american hustle
 
 ~~~
+cinemember.nl/nl/films/american-hustle
 url = https://www.cinemember.nl/nl/films/american-hustle
 monetization = FLATRATE
 country = Belgium
