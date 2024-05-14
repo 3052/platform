@@ -9,6 +9,39 @@ import (
    "strings"
 )
 
+type Path string
+
+// https://www.justwatch.com/us/movie/the-social-network
+func (p *Path) Set(s string) error {
+   s = strings.TrimPrefix(s, "https://")
+   s = strings.TrimPrefix(s, "www.")
+   s = strings.TrimPrefix(s, "justwatch.com")
+   *p = Path(s)
+   return nil
+}
+
+func (p Path) String() string {
+   return string(p)
+}
+
+func (p Path) Content() (*ContentUrls, error) {
+   address := "https://apis.justwatch.com/content/urls?path=" + string(p)
+   res, err := http.Get(address)
+   if err != nil {
+      return nil, err
+   }
+   defer res.Body.Close()
+   if res.StatusCode != http.StatusOK {
+      return nil, errors.New(res.Status)
+   }
+   content := new(ContentUrls)
+   err = json.NewDecoder(res.Body).Decode(content)
+   if err != nil {
+      return nil, err
+   }
+   return content, nil
+}
+
 var EnglishLocales = LocaleStates{
    {"ar_AE", "AE", "United Arab Emirates"},
    {"ar_BH", "BH", "Bahrain"},
@@ -169,19 +202,6 @@ func graphql_compact(s string) string {
 
 type ContentUrls struct {
    Href_Lang_Tags []LangTag
-}
-
-func (c *ContentUrls) New(path string) error {
-   path = "https://apis.justwatch.com/content/urls?path=" + path
-   res, err := http.Get(path)
-   if err != nil {
-      return err
-   }
-   defer res.Body.Close()
-   if res.StatusCode != http.StatusOK {
-      return errors.New(res.Status)
-   }
-   return json.NewDecoder(res.Body).Decode(c)
 }
 
 type LangTag struct {
