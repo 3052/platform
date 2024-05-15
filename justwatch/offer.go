@@ -12,6 +12,8 @@ import (
 )
 
 var contains = []string{
+   // 2024-5-14
+   "/www.peacocktv.com/",
    // 2024-5-12
    "/hbogoasia.id/",
    "/hbogoasia.my/",
@@ -19,8 +21,8 @@ var contains = []string{
    "/hbogoasia.sg/",
    "/hbogoasia.tw/",
    "/play.tv2.dk/",
-   "/www.hotstar.com/",
    "/www.rakuten.tv/",
+   "/www.hotstar.com/",
    "/www.sonyliv.com/",
    "/www.tivify.tv/",
    "/www.tvnz.co.nz/",
