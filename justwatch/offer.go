@@ -12,6 +12,12 @@ import (
 )
 
 var contains = []string{
+   // 2024-5-15
+   "/7plus.com.au/",
+   "/lionsgateplay.com/",
+   "/play.rtl.hr/",
+   "/starzplay.com/",
+   "/www.tvzavr.ru/",
    // 2024-5-14
    "/www.peacocktv.com/",
    // 2024-5-12
