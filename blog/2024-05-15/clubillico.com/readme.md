@@ -34,11 +34,16 @@ country = Canada
    link we've just sent you by e-mail to this address)
 24. ACTIVER MON ABONNEMENT (activate my subscription)
 
-without VPN:
+~~~
+Canada 99.224.0.0
+/~q/x-forwarded-for/99.224.0.0
+~~~
+
+without VPN or x-forwarded-for:
 
 Contenu non disponible dans votre région (content not available in your region)
 
-with VPN:
+with mullvad:
 
 Le visionnement ne peut pas être effectué lorsque vous êtes connecté à un VPN
 (Viewing is not possible when connected to a VPN)
