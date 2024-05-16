@@ -6,11 +6,15 @@ monetization = FLATRATE
 country = India
 ~~~
 
-next:
+## x-forwarded-for
 
 ~~~
 {"India", "106.192.0.0"},
 /~q/x-forwarded-for/106.192.0.0
 ~~~
 
-fails with added header
+Failed to play content
+
+## smart proxy
+
+Failed to play content

@@ -1,6 +1,28 @@
 # globo
 
-https://globoplay.globo.com/conduta-de-risco/t/GwdPHDxWBj/
+~~~
+url = https://globoplay.globo.com/feito-na-america/t/YXrvhjqw6p/
+monetization = FLATRATE
+country = Brazil
+~~~
+
+## without VPN
+
+Página não encontrada
+
+## x-forwarded-for
+
+~~~
+My IP Location:
+Sao Paulo, SP BR
+My Public IPv4:
+169.150.198.89
+/~q/x-forwarded-for/169.150.198.89
+~~~
+
+403 response
+
+## mullvad
 
 1. Conheça o plano (get to know the plan)
 2. globoplay
@@ -18,4 +40,8 @@ https://globoplay.globo.com/conduta-de-risco/t/GwdPHDxWBj/
    and agree to the Terms of Use and Privacy Policy)
 14. Cadastrar (register)
 
-then it gets stuck on the captcha
+403 response
+
+## smart proxy
+
+403 response

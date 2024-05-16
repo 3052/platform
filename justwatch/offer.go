@@ -12,6 +12,17 @@ import (
 )
 
 var contains = []string{
+   // 2024-5-16
+   "/globoplay.globo.com/",
+   "/play.movistar.com.ec/",
+   "/tv.kpn.com/",
+   "/video.unext.jp/",
+   "/www.canalplus.at/",
+   "/www.catchplay.com/",
+   "/www.jiocinema.com/",
+   "/www.movistarplay.cl/",
+   "/www.movistarplay.co/",
+   "/www.play.movistar.com.ar/",
    // 2024-5-15
    "/www.foxtel.com.au/",
    "/www.joyn.de/",

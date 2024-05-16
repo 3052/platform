@@ -6,11 +6,20 @@ monetization = FLATRATE
 country = Taiwan
 ~~~
 
-next:
+## x-forwarded-for
 
 ~~~
 {"Taiwan", "120.96.0.0"},
 /~q/x-forwarded-for/120.96.0.0
 ~~~
 
-redirects even with header
+redirects
+
+## smart proxy
+
+1. 立即加入 (join now)
+2. english
+3. mobile number
+4. continue
+
+incorrect format
