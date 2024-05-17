@@ -16,10 +16,23 @@ country = Peru
 country = Venezuela
 ~~~
 
-without VPN:
+## nothing
 
 Star+ is unavailable in your region.
 
-with VPN:
+## mullvad
+
+Sorry, something went wrong. Please try again later.
+
+## x-forwarded-for
+
+~~~
+Argentina 186.128.0.0
+/~q/x-forwarded-for/186.128.0.0
+~~~
+
+Star+ is unavailable in your region.
+
+## smart proxy
 
 Sorry, something went wrong. Please try again later.
