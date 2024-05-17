@@ -13,8 +13,13 @@ import (
 
 var contains = []string{
    // 2024-5-16
+   "/binge.com.au/",
    "/filmoteket.no/",
+   "/fjernleje.filmstriben.dk/",
    "/globoplay.globo.com/",
+   "/maxstream.tv/",
+   "/okko.tv/",
+   "/osnplus.com/",
    "/play.movistar.com.ec/",
    "/tv.kpn.com/",
    "/video.unext.jp/",
@@ -22,9 +27,13 @@ var contains = []string{
    "/wl.movistarplus.es/",
    "/www.canalplus.at/",
    "/www.catchplay.com/",
+   "/www.cineasterna.com/",
+   "/www.crave.ca/",
    "/www.jiocinema.com/",
    "/www.movistarplay.cl/",
    "/www.movistarplay.co/",
+   "/www.neontv.co.nz/",
+   "/www.nowtv.it/",
    "/www.play.movistar.com.ar/",
    "/www.starplus.com/",
    "/www.strim.no/",
