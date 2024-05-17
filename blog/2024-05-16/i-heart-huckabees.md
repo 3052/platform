@@ -1,10 +1,6 @@
 # i-heart-huckabees
 
 ~~~
-url = https://premier.one/show/19017
-monetization = FREE
-country = Russia
-
 url = https://www.rakuten.tv/dk/movies/i-heart-huckabees
 monetization = ADS
 country = Denmark

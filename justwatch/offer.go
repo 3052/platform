@@ -21,6 +21,7 @@ var contains = []string{
    "/okko.tv/",
    "/osnplus.com/",
    "/play.movistar.com.ec/",
+   "/premier.one/",
    "/tv.kpn.com/",
    "/video.unext.jp/",
    "/watcha.com/",

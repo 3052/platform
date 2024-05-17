@@ -12,14 +12,4 @@ country = Russia
 3. Продолжить (continue)
 4. Введите код из СМС (enter code from SMS)
 
-## x-forwarded-for
-
-~~~
-Russia 95.24.0.0
-/~q/x-forwarded-for/95.24.0.0
-/~q/x-forwarded-for/194.190.77.89
-~~~
-
-Video is unavailable in your country
-
-## smart proxy
+429 Too Many Requests

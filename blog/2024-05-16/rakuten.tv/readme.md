@@ -1,8 +1,5 @@
 # rakuten.tv
 
-1. Se gratis med reklamer (watch for free with ads)
-2. Rakuten TV is not available in your country
-
 ~~~
 url = https://www.rakuten.tv/se/movies/i-heart-huckabees
 monetization = ADS
@@ -21,8 +18,26 @@ monetization = ADS
 country = Norway
 ~~~
 
-fails:
+Se gratis med annonser (watch for free with ads)
 
-- mullvad
-- windScribe
-- x-forwarded-for
+## x-forwarded-for
+
+Rakuten TV is not available in your country
+
+## mullvad
+
+Rakuten TV is not available in your country
+
+## windScribe
+
+Rakuten TV is not available in your country
+
+## smart proxy
+
+works
+
+~~~
+mitmproxy `
+--mode upstream:http://se.smartproxy.com:20001 `
+--upstream-auth USER:PASS
+~~~
