@@ -39,11 +39,11 @@ Canada 99.224.0.0
 /~q/x-forwarded-for/99.224.0.0
 ~~~
 
-without VPN or x-forwarded-for:
+## x-forwarded-for
 
 Contenu non disponible dans votre région (content not available in your region)
 
-with mullvad:
+## mullvad
 
 Le visionnement ne peut pas être effectué lorsque vous êtes connecté à un VPN
 (Viewing is not possible when connected to a VPN)
