@@ -1,3 +1,0 @@
-# froxy
-
-https://froxy.com

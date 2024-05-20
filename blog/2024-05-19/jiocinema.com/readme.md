@@ -6,6 +6,16 @@ monetization = FLATRATE
 country = India
 ~~~
 
+## proxy seller
+
+1. continue
+2. premium
+3. continue & pay
+4. your mobile number
+5. continue
+
+Enter the 6 digit code sent to
+
 ## x-forwarded-for
 
 ~~~

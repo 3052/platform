@@ -1,18 +1,6 @@
 # rakuten.tv
 
 ~~~
-url = https://www.rakuten.tv/dk/movies/i-heart-huckabees
-monetization = ADS
-country = Denmark
-
-url = https://www.rakuten.tv/fi/movies/i-heart-huckabees
-monetization = ADS
-country = Finland
-
-url = https://www.rakuten.tv/no/movies/i-heart-huckabees
-monetization = ADS
-country = Norway
-
 url = https://www.rakuten.tv/se/movies/i-heart-huckabees
 monetization = ADS
 country = Sweden
@@ -28,16 +16,26 @@ Rakuten TV is not available in your country
 
 Rakuten TV is not available in your country
 
-## windScribe
-
-Rakuten TV is not available in your country
-
 ## smart proxy
-
-works
 
 ~~~
 mitmproxy `
 --mode upstream:http://se.smartproxy.com:20001 `
 --upstream-auth USER:PASS
 ~~~
+
+1. Registrera dig (register yourself)
+2. Din e-postadress (your e-mail address)
+3. password
+4. Jag accepterar användningsvillkoren (I accept the terms of use)
+5. Skapa konto (create an account)
+
+anonymous:
+
+width="960" height="540"
+
+free account:
+
+width="960" height="540"
+
+UK is HD, but DK/FI/NO/SE all SD

@@ -6,22 +6,6 @@ monetization = FLATRATE
 country = Brazil
 ~~~
 
-## without VPN
-
-Página não encontrada
-
-## x-forwarded-for
-
-~~~
-My IP Location:
-Sao Paulo, SP BR
-My Public IPv4:
-169.150.198.89
-/~q/x-forwarded-for/169.150.198.89
-~~~
-
-403 response
-
 ## mullvad
 
 1. Conheça o plano (get to know the plan)
@@ -32,6 +16,7 @@ My Public IPv4:
 6. Criar Conta Globo (create globo account)
 7. name
 8. email
+   - cannot use mailsac.com
 9. Senha (password)
 10. Gênero (gender)
 11. Data de nascimento (date of birth)
@@ -39,9 +24,6 @@ My Public IPv4:
 13. Li e concordo com os Termos de Uso e Política de Privacidade (I have read
    and agree to the Terms of Use and Privacy Policy)
 14. Cadastrar (register)
+15. CPF
 
-403 response
-
-## smart proxy
-
-403 response
+<https://wikipedia.org/wiki/CPF_number>
