@@ -38,4 +38,4 @@ free account:
 
 width="960" height="540"
 
-UK is HD, but DK/FI/NO/SE all SD
+FR/UK is HD, but DK/FI/NO/SE all SD
