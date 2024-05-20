@@ -1,10 +1,6 @@
 # rakuten.tv
 
 ~~~
-url = https://www.rakuten.tv/se/movies/i-heart-huckabees
-monetization = ADS
-country = Sweden
-
 url = https://www.rakuten.tv/dk/movies/i-heart-huckabees
 monetization = ADS
 country = Denmark
@@ -16,6 +12,10 @@ country = Finland
 url = https://www.rakuten.tv/no/movies/i-heart-huckabees
 monetization = ADS
 country = Norway
+
+url = https://www.rakuten.tv/se/movies/i-heart-huckabees
+monetization = ADS
+country = Sweden
 ~~~
 
 Se gratis med annonser (watch for free with ads)
