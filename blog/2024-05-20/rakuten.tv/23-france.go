@@ -46,14 +46,14 @@ func main() {
 
 var body = strings.NewReader(`
 {
-   "audio_language": "FRA",
+   "player": "atvui40:DASH-CENC:WVM",
    "audio_quality": "2.0",
-   "classification_id": "23",
    "content_id": "jerry-maguire",
    "content_type": "movies",
    "device_serial": "63ac404c-08ce-4527-a9dc-3f3454d4af1b",
-   "player": "atvui40:DASH-CENC:WVM",
    "subtitle_language": "MIS",
-   "video_type": "stream"
+   "video_type": "stream",
+   "audio_language": "ENG",
+   "classification_id": "23"
 }
 `)
