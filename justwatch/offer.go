@@ -12,6 +12,8 @@ import (
 )
 
 var contains = []string{
+   // 2024-5-23
+   "/disneyplus.bn5x.net/",
    // 2024-5-16
    "/binge.com.au/",
    "/filmoteket.no/",
