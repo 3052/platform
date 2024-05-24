@@ -12,11 +12,6 @@ import (
 )
 
 var contains = []string{
-   // 2024-5-22
-   "/www.rakuten.tv/dk/",
-   "/www.rakuten.tv/fi/",
-   "/www.rakuten.tv/no/",
-   "/www.rakuten.tv/se/",
    // 2024-5-16
    "/binge.com.au/",
    "/filmoteket.no/",
