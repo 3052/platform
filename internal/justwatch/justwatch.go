@@ -17,7 +17,7 @@ func (f flags) stream() error {
    }
    var groups justwatch.OfferGroups
    log.SetTransport(nil)
-   for _, tag := range content.Href_Lang_Tags {
+   for _, tag := range content.HrefLangTags {
       slog.Info(tag.Href)
       locale, ok := justwatch.EnglishLocales.Locale(tag)
       if !ok {

@@ -7,6 +7,13 @@ import (
    "os/exec"
 )
 
+type show_entry struct {
+   Streams []struct {
+      BitRate int `json:"bit_rate,string"`
+      CodecType string `json:"codec_type"`
+   }
+}
+
 func main() {
    os.Chdir("d:/videos")
    entries, err := os.ReadDir(".")
@@ -25,23 +32,16 @@ func main() {
       var show show_entry
       json.Unmarshal(text, &show)
       for _, stream := range show.Streams {
-         switch stream.Codec_Type {
+         switch stream.CodecType {
          case "audio":
-            if stream.Bit_Rate < 100_000 {
+            if stream.BitRate < 100_000 {
                fmt.Println(entry)
             }
          case "video":
-            if stream.Bit_Rate < 2_000_000 {
+            if stream.BitRate < 2_000_000 {
                fmt.Println(entry)
             }
          }
       }
-   }
-}
-
-type show_entry struct {
-   Streams []struct {
-      Bit_Rate int `json:",string"`
-      Codec_Type string
    }
 }

@@ -8,6 +8,15 @@ import (
    "net/http"
 )
 
+func (p ReportParams) Band() (*BandDetails, error) {
+   var band BandDetails
+   err := band.New(p.Aid)
+   if err != nil {
+      return nil, err
+   }
+   return &band, nil
+}
+
 func (r *ReportParams) New(address string) error {
    res, err := http.Get(address)
    if err != nil {
@@ -30,13 +39,9 @@ func (r *ReportParams) New(address string) error {
 }
 
 type ReportParams struct {
-   Aid int `json:"a_id"`
+   Aid int64 `json:"a_id"`
    Iid int `json:"i_id"`
    Itype string `json:"i_type"`
-}
-
-func (p ReportParams) Band() (*Band, error) {
-   return new_band(p.Aid)
 }
 
 func (p ReportParams) Tralbum() (*Tralbum, error) {
@@ -48,4 +53,3 @@ func (p ReportParams) Tralbum() (*Tralbum, error) {
    }
    return nil, invalid_type{p.Itype}
 }
-

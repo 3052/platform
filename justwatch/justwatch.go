@@ -201,7 +201,7 @@ func graphql_compact(s string) string {
 }
 
 type ContentUrls struct {
-   Href_Lang_Tags []LangTag
+   HrefLangTags []LangTag `json:"href_lang_tags"`
 }
 
 type LangTag struct {

@@ -13,9 +13,9 @@ var tests = []string{
    "https://schnaussandmunk.bandcamp.com/track/amaris-2",
 }
 
-func Test_Param(t *testing.T) {
+func TestParam(t *testing.T) {
    for _, test := range tests {
-      param, err := New_Params(test)
+      param, err := NewParams(test)
       if err != nil {
          t.Fatal(err)
       }

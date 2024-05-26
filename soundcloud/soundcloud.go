@@ -9,6 +9,26 @@ import (
    "time"
 )
 
+func (c *ClientTrack) New(id int64) error {
+   address := func() string {
+      b := []byte("https://api-v2.soundcloud.com/tracks/")
+      b = strconv.AppendInt(b, id, 10)
+      b = append(b, "?client_id="...)
+      b = append(b, client_id...)
+      return string(b)
+   }()
+   req, err := http.NewRequest("", address, nil)
+   if err != nil {
+      return err
+   }
+   res, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return err
+   }
+   defer res.Body.Close()
+   return json.NewDecoder(res.Body).Decode(c)
+}
+
 type ClientTrack struct {
    ArtworkUrl string `json:"artwork_url"`
    DisplayDate string `json:"display_date"`
@@ -90,13 +110,13 @@ const client_id = "iZIs9mchVcX5lhVRyQGGAYlNPVldzAoX"
 // i1.sndcdn.com/artworks-000308141235-7ep8lo-large.jpg
 func (t ClientTrack) Artwork() string {
    if t.ArtworkUrl == "" {
-      t.ArtworkUrl = t.User.Avatar_URL
+      t.ArtworkUrl = t.User.AvatarUrl
    }
    return strings.Replace(t.ArtworkUrl, "large", "t500x500", 1)
 }
 
 func (t ClientTrack) Time() (time.Time, error) {
-   return time.Parse(time.RFC3339, t.Display_Date)
+   return time.Parse(time.RFC3339, t.DisplayDate)
 }
 
 func Resolve(address string) (*ClientTrack, error) {
@@ -121,24 +141,4 @@ func Resolve(address string) (*ClientTrack, error) {
       return nil, err
    }
    return &s.Track, nil
-}
-
-func (c *ClientTrack) New(id int64) error {
-   address := func() string {
-      b := []byte("https://api-v2.soundcloud.com/tracks/")
-      b = strconv.AppendInt(b, id, 10)
-      b = append(b, "?client_id=")
-      b = append(b, client_id...)
-      return string(b)
-   }()
-   req, err := http.NewRequest("", address, nil)
-   if err != nil {
-      return err
-   }
-   res, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return err
-   }
-   defer res.Body.Close()
-   return json.NewDecoder(res.Body).Decode(c)
 }
