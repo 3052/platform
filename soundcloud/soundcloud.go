@@ -11,7 +11,7 @@ import (
 
 // Also available is "hls", but all transcodings are quality "sq".
 // Same for "api-mobile.soundcloud.com".
-func (t Track) Progressive() (*Media, error) {
+func (t ClientTrack) Progressive() (*Media, error) {
    ref := func() string {
       for _, code := range t.Media.Transcodings {
          if code.Format.Protocol == "progressive" {
@@ -20,7 +20,7 @@ func (t Track) Progressive() (*Media, error) {
       }
       return ""
    }
-   req, err := http.NewRequest("GET", ref(), nil)
+   req, err := http.NewRequest("", ref(), nil)
    if err != nil {
       return nil, err
    }
@@ -35,31 +35,6 @@ func (t Track) Progressive() (*Media, error) {
       return nil, err
    }
    return med, nil
-}
-
-func (t Track) String() string {
-   var b []byte
-   b = append(b, "ID: "...)
-   b = strconv.AppendInt(b, t.ID, 10)
-   b = append(b, "\ndisplay date: "...)
-   b = append(b, t.Display_Date...)
-   b = append(b, "\nusername: "...)
-   b = append(b, t.User.Username...)
-   b = append(b, "\navatar: "...)
-   b = append(b, t.User.Avatar_URL...)
-   b = append(b, "\ntitle: "...)
-   b = append(b, t.Title...)
-   if t.Artwork_URL != "" {
-      b = append(b, "\nartwork: "...)
-      b = append(b, t.Artwork_URL...)
-   }
-   for _, coding := range t.Media.Transcodings {
-      b = append(b, "\n\nformat: "...)
-      b = append(b, coding.Format.Protocol...)
-      b = append(b, "\nURL: "...)
-      b = append(b, coding.URL...)
-   }
-   return string(b)
 }
 
 type Media struct {
@@ -90,9 +65,10 @@ var Images = []Image{
    {Size: "t80x80"},
    {Size: "tx250"},
 }
+
 const client_id = "iZIs9mchVcX5lhVRyQGGAYlNPVldzAoX"
 
-type Track struct {
+type ClientTrack struct {
    ID int64
    Display_Date string // 2021-04-12T07:00:01Z
    User struct {
@@ -110,7 +86,20 @@ type Track struct {
       }
    }
 }
-func Resolve(ref string) (*Track, error) {
+
+// i1.sndcdn.com/artworks-000308141235-7ep8lo-large.jpg
+func (t ClientTrack) Artwork() string {
+   if t.Artwork_URL == "" {
+      t.Artwork_URL = t.User.Avatar_URL
+   }
+   return strings.Replace(t.Artwork_URL, "large", "t500x500", 1)
+}
+
+func (t ClientTrack) Time() (time.Time, error) {
+   return time.Parse(time.RFC3339, t.Display_Date)
+}
+
+func Resolve(ref string) (*ClientTrack, error) {
    req, err := http.NewRequest(
       "GET", "https://api-v2.soundcloud.com/resolve", nil,
    )
@@ -127,7 +116,7 @@ func Resolve(ref string) (*Track, error) {
    }
    defer res.Body.Close()
    var solve struct {
-      Track Track
+      Track ClientTrack
    }
    if err := json.NewDecoder(res.Body).Decode(&solve); err != nil {
       return nil, err
@@ -135,7 +124,7 @@ func Resolve(ref string) (*Track, error) {
    return &solve.Track, nil
 }
 
-func New_Track(id int) (*Track, error) {
+func New_Track(id int) (*ClientTrack, error) {
    req, err := http.NewRequest("GET", "https://api-v2.soundcloud.com", nil)
    if err != nil {
       return nil, err
@@ -147,22 +136,9 @@ func New_Track(id int) (*Track, error) {
       return nil, err
    }
    defer res.Body.Close()
-   tra := new(Track)
-   if err := json.NewDecoder(res.Body).Decode(tra); err != nil {
+   track := new(ClientTrack)
+   if err := json.NewDecoder(res.Body).Decode(track); err != nil {
       return nil, err
    }
-   return tra, nil
+   return track, nil
 }
-
-// i1.sndcdn.com/artworks-000308141235-7ep8lo-large.jpg
-func (t Track) Artwork() string {
-   if t.Artwork_URL == "" {
-      t.Artwork_URL = t.User.Avatar_URL
-   }
-   return strings.Replace(t.Artwork_URL, "large", "t500x500", 1)
-}
-
-func (t Track) Time() (time.Time, error) {
-   return time.Parse(time.RFC3339, t.Display_Date)
-}
-

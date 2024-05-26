@@ -6,7 +6,7 @@ import (
    "testing"
 )
 
-func Test_Config(t *testing.T) {
+func TestConfig(t *testing.T) {
    var con config
    err := con.get()
    if err != nil {

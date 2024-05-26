@@ -75,22 +75,6 @@ func (r Request) String() string {
    return r.VideoId
 }
 
-func (d DeviceCode) String() string {
-   var b strings.Builder
-   b.WriteString("1. Go to\n")
-   b.WriteString(d.Verification_URL)
-   b.WriteString("\n\n2. Enter this code\n")
-   b.WriteString(d.User_Code)
-   b.WriteString("\n\n3. Press Enter to continue")
-   return b.String()
-}
-
-type DeviceCode struct {
-   Device_Code string
-   User_Code string
-   Verification_URL string
-}
-
 var Images = []Image{
    {Width:120, Height:90, Name:"default.jpg"},
    {Width:120, Height:90, Name:"1.jpg"},

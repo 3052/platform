@@ -1,52 +1,51 @@
 package bandcamp
 
 import (
-   "154.pages.dev/encoding/xml"
+   "154.pages.dev/encoding"
    "encoding/json"
+   "encoding/xml"
    "io"
    "net/http"
 )
 
-func New_Params(ref string) (*Params, error) {
-   res, err := http.Get(ref)
+func (r *ReportParams) New(address string) error {
+   res, err := http.Get(address)
    if err != nil {
-      return nil, err
+      return err
    }
    defer res.Body.Close()
    text, err := io.ReadAll(res.Body)
    if err != nil {
-      return nil, err
+      return err
    }
-   _, text = xml.Cut(text, nil, []byte(`<p id="report-account-vm"`))
+   _, text, _ = encoding.CutBefore(text, []byte(`<p id="report-account-vm"`))
    var p struct {
-      Report_Params []byte `xml:"data-tou-report-params,attr"`
+      DataTouReportParams []byte `xml:"data-tou-report-params,attr"`
    }
-   if err := xml.Decode(text, &p); err != nil {
-      return nil, err
+   err = xml.Unmarshal(text, &p)
+   if err != nil {
+      return err
    }
-   param := new(Params)
-   if err := json.Unmarshal(p.Report_Params, param); err != nil {
-      return nil, err
-   }
-   return param, nil
+   return json.Unmarshal(p.DataTouReportParams, r)
 }
 
-type Params struct {
-   A_ID int
-   I_ID int
-   I_Type string
+type ReportParams struct {
+   Aid int `json:"a_id"`
+   Iid int `json:"i_id"`
+   Itype string `json:"i_type"`
 }
 
-func (p Params) Band() (*Band, error) {
-   return new_band(p.A_ID)
+func (p ReportParams) Band() (*Band, error) {
+   return new_band(p.Aid)
 }
 
-func (p Params) Tralbum() (*Tralbum, error) {
-   switch p.I_Type {
+func (p ReportParams) Tralbum() (*Tralbum, error) {
+   switch p.Itype {
    case "a":
-      return new_tralbum('a', p.I_ID)
+      return new_tralbum('a', p.Iid)
    case "t":
-      return new_tralbum('t', p.I_ID)
+      return new_tralbum('t', p.Iid)
    }
-   return nil, invalid_type{p.I_Type}
+   return nil, invalid_type{p.Itype}
 }
+

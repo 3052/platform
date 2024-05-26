@@ -1,17 +1,16 @@
 package youtube
 
 import (
-   "154.pages.dev/encoding/json"
    "io"
    "net/http"
 )
 
 type config struct {
-   Innertube_Client_Name string
-   Innertube_Client_Version string
+   InnertubeClientName string `json:"innertube_client_name"`
+   InnertubeClientVersion string `json:"innertube_client_version"`
 }
 
-func (c *config) get() error {
+func (c *config) New() error {
    res, err := http.Get("https://www.youtube.com")
    if err != nil {
       return err

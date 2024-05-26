@@ -12,7 +12,7 @@ const (
    address = "https://soundcloud.com/kino-scmusic/mqymd53jtwag"
 )
 
-func Test_Resolve(t *testing.T) {
+func TestResolve(t *testing.T) {
    track, err := Resolve(address)
    if err != nil {
       t.Fatal(err)
@@ -20,8 +20,8 @@ func Test_Resolve(t *testing.T) {
    fmt.Println(track)
 }
 
-func Test_Track(t *testing.T) {
-   track, err := New_Track(id)
+func TestTrack(t *testing.T) {
+   track, err := NewTrack(id)
    if err != nil {
       t.Fatal(err)
    }
