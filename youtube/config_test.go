@@ -7,12 +7,12 @@ import (
 )
 
 func TestConfig(t *testing.T) {
-   var con config
-   err := con.get()
+   var tube innertube
+   err := tube.New()
    if err != nil {
       t.Fatal(err)
    }
    enc := json.NewEncoder(os.Stdout)
    enc.SetIndent("", " ")
-   enc.Encode(con)
+   enc.Encode(tube)
 }

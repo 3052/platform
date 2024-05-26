@@ -21,7 +21,8 @@ func TestResolve(t *testing.T) {
 }
 
 func TestTrack(t *testing.T) {
-   track, err := NewTrack(id)
+   var track ClientTrack
+   err := track.New(id)
    if err != nil {
       t.Fatal(err)
    }

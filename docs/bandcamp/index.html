@@ -14,14 +14,20 @@
   <body>
     <nav>
         <a href="..">154.pages.dev/platform</a>/bandcamp<span class="navbar-right">
-          v1.4.5 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
+          v1.4.6 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
       </nav>
     <main><h2 id="pkg-overview">package bandcamp</h2>
 <pre class="chroma"><span class="kn">import</span> <span class="s">&#34;154.pages.dev/platform/bandcamp&#34;</span></pre>
 <h3 id="pkg-index">Index</h3>
 <ul>
   <li><a href="#pkg-constants">Constants</a></li><li><a href="#pkg-variables">Variables</a></li><li>
-      <a href="#Band">type Band</a>
+      <a href="#AlbumTrack">type AlbumTrack</a>
+      </li>
+  <li>
+      <a href="#BandDetails">type BandDetails</a>
+      <ul>
+          <li><a href="#BandDetails.New">func (b *BandDetails) New(id int64) error</a></li>
+          </ul>
       </li>
   <li>
       <a href="#Image">type Image</a>
@@ -32,22 +38,16 @@
   <li>
       <a href="#Item">type Item</a>
       <ul>
-          <li><a href="#Item.Band">func (i Item) Band() (*Band, error)</a></li>
+          <li><a href="#Item.Band">func (i Item) Band() (*BandDetails, error)</a></li>
           <li><a href="#Item.Tralbum">func (i Item) Tralbum() (*Tralbum, error)</a></li>
           </ul>
       </li>
   <li>
-      <a href="#Params">type Params</a>
+      <a href="#ReportParams">type ReportParams</a>
       <ul>
-          <li><a href="#New_Params">func New_Params(ref string) (*Params, error)</a></li>
-          <li><a href="#Params.Band">func (p Params) Band() (*Band, error)</a></li>
-          <li><a href="#Params.Tralbum">func (p Params) Tralbum() (*Tralbum, error)</a></li>
-          </ul>
-      </li>
-  <li>
-      <a href="#Track">type Track</a>
-      <ul>
-          <li><a href="#Track.String">func (t Track) String() string</a></li>
+          <li><a href="#ReportParams.Band">func (p ReportParams) Band() (*BandDetails, error)</a></li>
+          <li><a href="#ReportParams.New">func (r *ReportParams) New(address string) error</a></li>
+          <li><a href="#ReportParams.Tralbum">func (p ReportParams) Tralbum() (*Tralbum, error)</a></li>
           </ul>
       </li>
   <li>
@@ -108,12 +108,23 @@
 	<span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="mi">69</span><span class="p">,</span> <span class="nx">Width</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="nx">Format</span><span class="p">:</span> <a href="#JPEG"><span class="nx">JPEG</span></a><span class="p">},</span>
 <span class="p">}</span></pre>
   <h3 id="pkg-types">Types</h3>
-  <h3 id="Band">type Band</h3>
-    <pre class="chroma"><span class="kd">type</span> <span class="nx">Band</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="Band.Name"><span class="nx">Name</span></span>        <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="Band.Discography"><span class="nx">Discography</span></span> <span class="p">[]</span><a href="#Item"><span class="nx">Item</span></a>
+  <h3 id="AlbumTrack">type AlbumTrack</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">AlbumTrack</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="AlbumTrack.TrackNum"><span class="nx">TrackNum</span></span>     <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a> <span class="s">`json:&#34;track_num&#34;`</span>
+	<span id="AlbumTrack.Title"><span class="nx">Title</span></span>        <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="AlbumTrack.BandName"><span class="nx">BandName</span></span>     <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;band_name&#34;`</span>
+	<span id="AlbumTrack.StreamingUrl"><span class="nx">StreamingUrl</span></span> <span class="o">*</span><span class="kd">struct</span> <span class="p">{</span>
+		<span id="AlbumTrack.MP3_128"><span class="nx">MP3_128</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;mp3-128&#34;`</span>
+	<span class="p">}</span> <span class="s">`json:&#34;streaming_url&#34;`</span>
 <span class="p">}</span></pre>
-    <h3 id="Image">type Image</h3>
+    <h3 id="BandDetails">type BandDetails</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">BandDetails</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="BandDetails.Name"><span class="nx">Name</span></span>        <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="BandDetails.Discography"><span class="nx">Discography</span></span> <span class="p">[]</span><a href="#Item"><span class="nx">Item</span></a>
+<span class="p">}</span></pre>
+    <h4 id="BandDetails.New">func (*BandDetails) New</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><a href="#BandDetails"><span class="nx">BandDetails</span></a><span class="p">)</span> <span class="nf">New</span><span class="p">(</span><span class="nx">id</span> <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  <h3 id="Image">type Image</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">Image</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span id="Image.Crop"><span class="nx">Crop</span></span>   <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a>
 	<span id="Image.Format"><span class="nx">Format</span></span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
@@ -126,44 +137,33 @@
   <p>Extension is optional.
 <h3 id="Item">type Item</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">Item</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="Item.Band_ID"><span class="nx">Band_ID</span></span>   <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
-	<span id="Item.Item_ID"><span class="nx">Item_ID</span></span>   <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
-	<span id="Item.Item_Type"><span class="nx">Item_Type</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="Item.BandId"><span class="nx">BandId</span></span>   <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>  <span class="s">`json:&#34;band_id&#34;`</span>
+	<span id="Item.ItemId"><span class="nx">ItemId</span></span>   <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>    <span class="s">`json:&#34;item_id&#34;`</span>
+	<span id="Item.ItemType"><span class="nx">ItemType</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;item_type&#34;`</span>
 <span class="p">}</span></pre>
     <h4 id="Item.Band">func (Item) Band</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">i</span> <a href="#Item"><span class="nx">Item</span></a><span class="p">)</span> <span class="nf">Band</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#Band"><span class="nx">Band</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">i</span> <a href="#Item"><span class="nx">Item</span></a><span class="p">)</span> <span class="nf">Band</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#BandDetails"><span class="nx">BandDetails</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
   <h4 id="Item.Tralbum">func (Item) Tralbum</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">i</span> <a href="#Item"><span class="nx">Item</span></a><span class="p">)</span> <span class="nf">Tralbum</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#Tralbum"><span class="nx">Tralbum</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
-  <h3 id="Params">type Params</h3>
-    <pre class="chroma"><span class="kd">type</span> <span class="nx">Params</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="Params.A_ID"><span class="nx">A_ID</span></span>   <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
-	<span id="Params.I_ID"><span class="nx">I_ID</span></span>   <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
-	<span id="Params.I_Type"><span class="nx">I_Type</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+  <h3 id="ReportParams">type ReportParams</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">ReportParams</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="ReportParams.Aid"><span class="nx">Aid</span></span>   <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>  <span class="s">`json:&#34;a_id&#34;`</span>
+	<span id="ReportParams.Iid"><span class="nx">Iid</span></span>   <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>    <span class="s">`json:&#34;i_id&#34;`</span>
+	<span id="ReportParams.Itype"><span class="nx">Itype</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;i_type&#34;`</span>
 <span class="p">}</span></pre>
-    <h4 id="New_Params">func New_Params</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="nf">New_Params</span><span class="p">(</span><span class="nx">ref</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <span class="p">(</span><span class="o">*</span><a href="#Params"><span class="nx">Params</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
-  <h4 id="Params.Band">func (Params) Band</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#Params"><span class="nx">Params</span></a><span class="p">)</span> <span class="nf">Band</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#Band"><span class="nx">Band</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
-  <h4 id="Params.Tralbum">func (Params) Tralbum</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#Params"><span class="nx">Params</span></a><span class="p">)</span> <span class="nf">Tralbum</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#Tralbum"><span class="nx">Tralbum</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
-  <h3 id="Track">type Track</h3>
-    <pre class="chroma"><span class="kd">type</span> <span class="nx">Track</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="Track.Track_Num"><span class="nx">Track_Num</span></span>     <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>
-	<span id="Track.Title"><span class="nx">Title</span></span>         <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="Track.Band_Name"><span class="nx">Band_Name</span></span>     <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="Track.Streaming_URL"><span class="nx">Streaming_URL</span></span> <span class="o">*</span><span class="kd">struct</span> <span class="p">{</span>
-		<span id="Track.MP3_128"><span class="nx">MP3_128</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;mp3-128&#34;`</span>
-	<span class="p">}</span>
-<span class="p">}</span></pre>
-    <h4 id="Track.String">func (Track) String</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <a href="#Track"><span class="nx">Track</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+    <h4 id="ReportParams.Band">func (ReportParams) Band</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#ReportParams"><span class="nx">ReportParams</span></a><span class="p">)</span> <span class="nf">Band</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#BandDetails"><span class="nx">BandDetails</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="ReportParams.New">func (*ReportParams) New</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><a href="#ReportParams"><span class="nx">ReportParams</span></a><span class="p">)</span> <span class="nf">New</span><span class="p">(</span><span class="nx">address</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  <h4 id="ReportParams.Tralbum">func (ReportParams) Tralbum</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#ReportParams"><span class="nx">ReportParams</span></a><span class="p">)</span> <span class="nf">Tralbum</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#Tralbum"><span class="nx">Tralbum</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
   <h3 id="Tralbum">type Tralbum</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">Tralbum</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="Tralbum.Art_ID"><span class="nx">Art_ID</span></span>         <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>
-	<span id="Tralbum.Release_Date"><span class="nx">Release_Date</span></span>   <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>
-	<span id="Tralbum.Title"><span class="nx">Title</span></span>          <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="Tralbum.Tralbum_Artist"><span class="nx">Tralbum_Artist</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="Tralbum.Tracks"><span class="nx">Tracks</span></span>         <span class="p">[]</span><a href="#Track"><span class="nx">Track</span></a>
+	<span id="Tralbum.ArtId"><span class="nx">ArtId</span></span>         <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a> <span class="s">`json:&#34;art_id&#34;`</span>
+	<span id="Tralbum.Title"><span class="nx">Title</span></span>         <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="Tralbum.Tracks"><span class="nx">Tracks</span></span>        <span class="p">[]</span><a href="#AlbumTrack"><span class="nx">AlbumTrack</span></a>
+	<span id="Tralbum.ReleaseDate"><span class="nx">ReleaseDate</span></span>   <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>  <span class="s">`json:&#34;release_date&#34;`</span>
+	<span id="Tralbum.TralbumArtist"><span class="nx">TralbumArtist</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;tralbum_artist&#34;`</span>
 <span class="p">}</span></pre>
     <h4 id="Tralbum.Date">func (Tralbum) Date</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <a href="#Tralbum"><span class="nx">Tralbum</span></a><span class="p">)</span> <span class="nf">Date</span><span class="p">()</span> <a href="https://pkg.go.dev/time"><span class="nx">time</span></a><span class="p">.</span><a href="https://pkg.go.dev/time#Time"><span class="nx">Time</span></a></pre>

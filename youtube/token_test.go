@@ -28,7 +28,7 @@ func TestAndroidCheck(t *testing.T) {
       var play Player
       req := Request{VideoId: check_id}
       req.AndroidCheck()
-      auth := OAuth{Data: text}
+      auth := AuthToken{Data: text}
       auth.Unmarshal()
       err := play.Post(req, &auth)
       if err != nil {

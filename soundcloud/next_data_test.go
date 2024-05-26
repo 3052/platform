@@ -7,7 +7,8 @@ import (
 )
 
 func TestNextData(t *testing.T) {
-   next, err := new_next_data()
+   var next next_data
+   err := next.New()
    if err != nil {
       t.Fatal(err)
    }

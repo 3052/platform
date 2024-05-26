@@ -14,27 +14,34 @@
   <body>
     <nav>
         <a href="..">154.pages.dev/platform</a>/youtube<span class="navbar-right">
-          v1.4.5 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
+          v1.4.6 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
       </nav>
     <main><h2 id="pkg-overview">package youtube</h2>
 <pre class="chroma"><span class="kn">import</span> <span class="s">&#34;154.pages.dev/platform/youtube&#34;</span></pre>
 <h3 id="pkg-index">Index</h3>
 <ul>
-  <li><a href="#pkg-constants">Constants</a></li><li><a href="#pkg-variables">Variables</a></li><li>
-      <a href="#DeviceCode">type DeviceCode</a>
+  <li><a href="#pkg-variables">Variables</a></li><li>
+      <a href="#AdaptiveFormat">type AdaptiveFormat</a>
       <ul>
-          <li><a href="#DeviceCode.Post">func (d *DeviceCode) Post() error</a></li>
-          <li><a href="#DeviceCode.String">func (d DeviceCode) String() string</a></li>
-          <li><a href="#DeviceCode.Token">func (d DeviceCode) Token() (*Token, error)</a></li>
+          <li><a href="#AdaptiveFormat.CompareBitrate">func (a AdaptiveFormat) CompareBitrate(b AdaptiveFormat) int</a></li>
+          <li><a href="#AdaptiveFormat.Ext">func (a AdaptiveFormat) Ext() (string, error)</a></li>
+          <li><a href="#AdaptiveFormat.Ranges">func (a AdaptiveFormat) Ranges() []string</a></li>
+          <li><a href="#AdaptiveFormat.String">func (a AdaptiveFormat) String() string</a></li>
           </ul>
       </li>
   <li>
-      <a href="#Format">type Format</a>
+      <a href="#AuthToken">type AuthToken</a>
       <ul>
-          <li><a href="#Format.Ext">func (f Format) Ext() (string, error)</a></li>
-          <li><a href="#Format.Ranges">func (f Format) Ranges() []string</a></li>
-          <li><a href="#Format.Rate">func (f Format) Rate() encoding.Rate</a></li>
-          <li><a href="#Format.Size">func (f Format) Size() encoding.Size</a></li>
+          <li><a href="#AuthToken.Refresh">func (a *AuthToken) Refresh() error</a></li>
+          <li><a href="#AuthToken.Unmarshal">func (a *AuthToken) Unmarshal() error</a></li>
+          </ul>
+      </li>
+  <li>
+      <a href="#DeviceCode">type DeviceCode</a>
+      <ul>
+          <li><a href="#DeviceCode.Auth">func (d DeviceCode) Auth() (*AuthToken, error)</a></li>
+          <li><a href="#DeviceCode.New">func (d *DeviceCode) New() error</a></li>
+          <li><a href="#DeviceCode.String">func (d DeviceCode) String() string</a></li>
           </ul>
       </li>
   <li>
@@ -44,13 +51,10 @@
           </ul>
       </li>
   <li>
-      <a href="#MetadataRowContainer">type MetadataRowContainer</a>
-      </li>
-  <li>
       <a href="#Player">type Player</a>
       <ul>
           <li><a href="#Player.Author">func (p Player) Author() string</a></li>
-          <li><a href="#Player.Post">func (p *Player) Post(r Request, t *Token) error</a></li>
+          <li><a href="#Player.Post">func (p *Player) Post(r Request, auth *AuthToken) error</a></li>
           <li><a href="#Player.Time">func (p Player) Time() (time.Time, error)</a></li>
           <li><a href="#Player.Title">func (p Player) Title() string</a></li>
           </ul>
@@ -66,57 +70,7 @@
           <li><a href="#Request.Web">func (r *Request) Web()</a></li>
           </ul>
       </li>
-  <li>
-      <a href="#Run">type Run</a>
-      <ul>
-          <li><a href="#Run.String">func (r Run) String() string</a></li>
-          </ul>
-      </li>
-  <li>
-      <a href="#Runs">type Runs</a>
-      <ul>
-          <li><a href="#Runs.String">func (r Runs) String() string</a></li>
-          </ul>
-      </li>
-  <li>
-      <a href="#Token">type Token</a>
-      <ul>
-          <li><a href="#Token.Refresh">func (t *Token) Refresh() error</a></li>
-          <li><a href="#Token.Unmarshal">func (t *Token) Unmarshal() error</a></li>
-          </ul>
-      </li>
-  <li>
-      <a href="#WatchNext">type WatchNext</a>
-      <ul>
-          <li><a href="#WatchNext.Episode">func (w WatchNext) Episode() (string, bool)</a></li>
-          <li><a href="#WatchNext.Owner">func (w WatchNext) Owner() (string, bool)</a></li>
-          <li><a href="#WatchNext.Post">func (w *WatchNext) Post(r Request) error</a></li>
-          <li><a href="#WatchNext.Season">func (w WatchNext) Season() (string, bool)</a></li>
-          <li><a href="#WatchNext.Show">func (w WatchNext) Show() (string, bool)</a></li>
-          <li><a href="#WatchNext.Title">func (w WatchNext) Title() (string, bool)</a></li>
-          <li><a href="#WatchNext.Year">func (w WatchNext) Year() (string, bool)</a></li>
-          </ul>
-      </li>
-  </ul><h3 id="pkg-constants">Constants</h3>
-  <pre class="chroma"><span class="kd">const</span> <span id="ModeLine"><span class="nx">ModeLine</span></span> <span class="p">=</span> <span class="s">`
-</span><span class="s"></span><span class="cp">{{-</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">$index</span><span class="o">,</span><span class="w"> </span><span class="nx">$_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="na">.</span><span class="w"> </span><span class="cp">-}}</span><span class="s">
-</span><span class="s">   </span><span class="cp">{{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">$index</span><span class="w"> </span><span class="cp">}}</span><span class="s">
-</span><span class="s">itag = </span><span class="cp">{{</span><span class="w"> </span><span class="na">.Itag</span><span class="w"> </span><span class="cp">}}</span><span class="s">
-</span><span class="s">   </span><span class="cp">{{</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="cp">-}}</span><span class="s">
-</span><span class="s">itag = </span><span class="cp">{{</span><span class="w"> </span><span class="na">.Itag</span><span class="w"> </span><span class="cp">}}</span><span class="s">
-</span><span class="s">   </span><span class="cp">{{</span><span class="w"> </span><span class="k">end</span><span class="w"> </span><span class="cp">-}}</span><span class="s">
-</span><span class="s">   </span><span class="cp">{{</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="na">.QualityLabel</span><span class="w"> </span><span class="cp">-}}</span><span class="s">
-</span><span class="s">label = </span><span class="cp">{{</span><span class="w"> </span><span class="na">.</span><span class="w"> </span><span class="cp">}}</span><span class="s">
-</span><span class="s">   </span><span class="cp">{{</span><span class="w"> </span><span class="k">end</span><span class="w"> </span><span class="cp">-}}</span><span class="s">
-</span><span class="s">rate = </span><span class="cp">{{</span><span class="w"> </span><span class="na">.Rate</span><span class="w"> </span><span class="cp">}}</span><span class="s">
-</span><span class="s">size = </span><span class="cp">{{</span><span class="w"> </span><span class="na">.Size</span><span class="w"> </span><span class="cp">}}</span><span class="s">
-</span><span class="s">type = </span><span class="cp">{{</span><span class="w"> </span><span class="na">.MimeType</span><span class="w"> </span><span class="cp">}}</span><span class="s">
-</span><span class="s">   </span><span class="cp">{{</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="na">.AudioQuality</span><span class="w"> </span><span class="cp">-}}</span><span class="s">
-</span><span class="s">audio = </span><span class="cp">{{</span><span class="w"> </span><span class="na">.</span><span class="w"> </span><span class="cp">}}</span><span class="s">
-</span><span class="s">   </span><span class="cp">{{</span><span class="w"> </span><span class="k">end</span><span class="w"> </span><span class="cp">-}}</span><span class="s">
-</span><span class="s"></span><span class="cp">{{</span><span class="w"> </span><span class="k">end</span><span class="w"> </span><span class="cp">-}}</span><span class="s">
-</span><span class="s">`</span></pre>
-  <h3 id="pkg-variables">Variables</h3>
+  </ul><h3 id="pkg-variables">Variables</h3>
   <pre class="chroma"><span class="kd">var</span> <span id="Images"><span class="nx">Images</span></span> <span class="p">=</span> <span class="p">[]</span><a href="#Image"><span class="nx">Image</span></a><span class="p">{</span>
 	<span class="p">{</span><span class="nx">Width</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span> <span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;default.jpg&#34;</span><span class="p">},</span>
 	<span class="p">{</span><span class="nx">Width</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span> <span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;1.jpg&#34;</span><span class="p">},</span>
@@ -164,36 +118,49 @@
 	<span class="p">{</span><span class="nx">Width</span><span class="p">:</span> <span class="mi">1280</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">720</span><span class="p">,</span> <span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;maxres3.webp&#34;</span><span class="p">},</span>
 <span class="p">}</span></pre>
   <h3 id="pkg-types">Types</h3>
+  <h3 id="AdaptiveFormat">type AdaptiveFormat</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">AdaptiveFormat</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="AdaptiveFormat.AudioQuality"><span class="nx">AudioQuality</span></span>  <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="AdaptiveFormat.Bitrate"><span class="nx">Bitrate</span></span>       <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
+	<span id="AdaptiveFormat.ContentLength"><span class="nx">ContentLength</span></span> <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a> <span class="s">`json:&#34;,string&#34;`</span>
+	<span id="AdaptiveFormat.Itag"><span class="nx">Itag</span></span>          <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
+	<span id="AdaptiveFormat.MimeType"><span class="nx">MimeType</span></span>      <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="AdaptiveFormat.QualityLabel"><span class="nx">QualityLabel</span></span>  <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="AdaptiveFormat.URL"><span class="nx">URL</span></span>           <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+<span class="p">}</span></pre>
+    <h4 id="AdaptiveFormat.CompareBitrate">func (AdaptiveFormat) CompareBitrate</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <span class="nf">CompareBitrate</span><span class="p">(</span><span class="nx">b</span> <a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a></pre>
+  <h4 id="AdaptiveFormat.Ext">func (AdaptiveFormat) Ext</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <span class="nf">Ext</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="AdaptiveFormat.Ranges">func (AdaptiveFormat) Ranges</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <span class="nf">Ranges</span><span class="p">()</span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  <p>we need the length for progress meter, so cannot use a channel
+<h4 id="AdaptiveFormat.String">func (AdaptiveFormat) String</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  <h3 id="AuthToken">type AuthToken</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">AuthToken</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="AuthToken.Data"><span class="nx">Data</span></span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#byte"><span class="kt">byte</span></a>
+	<span id="AuthToken.V"><span class="nx">V</span></span>    <span class="kd">struct</span> <span class="p">{</span>
+		<span id="AuthToken.AccessToken"><span class="nx">AccessToken</span></span>  <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;access_token&#34;`</span>
+		<span id="AuthToken.RefreshToken"><span class="nx">RefreshToken</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;refresh_token&#34;`</span>
+	<span class="p">}</span>
+<span class="p">}</span></pre>
+    <h4 id="AuthToken.Refresh">func (*AuthToken) Refresh</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><a href="#AuthToken"><span class="nx">AuthToken</span></a><span class="p">)</span> <span class="nf">Refresh</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  <h4 id="AuthToken.Unmarshal">func (*AuthToken) Unmarshal</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><a href="#AuthToken"><span class="nx">AuthToken</span></a><span class="p">)</span> <span class="nf">Unmarshal</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
   <h3 id="DeviceCode">type DeviceCode</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">DeviceCode</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="DeviceCode.Device_Code"><span class="nx">Device_Code</span></span>      <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="DeviceCode.User_Code"><span class="nx">User_Code</span></span>        <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="DeviceCode.Verification_URL"><span class="nx">Verification_URL</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="DeviceCode.DeviceCode"><span class="nx">DeviceCode</span></span>      <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;device_code&#34;`</span>
+	<span id="DeviceCode.UserCode"><span class="nx">UserCode</span></span>        <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;user_code&#34;`</span>
+	<span id="DeviceCode.VerificationUrl"><span class="nx">VerificationUrl</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;verification_url&#34;`</span>
 <span class="p">}</span></pre>
-    <h4 id="DeviceCode.Post">func (*DeviceCode) Post</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><a href="#DeviceCode"><span class="nx">DeviceCode</span></a><span class="p">)</span> <span class="nf">Post</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+    <h4 id="DeviceCode.Auth">func (DeviceCode) Auth</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <a href="#DeviceCode"><span class="nx">DeviceCode</span></a><span class="p">)</span> <span class="nf">Auth</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#AuthToken"><span class="nx">AuthToken</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="DeviceCode.New">func (*DeviceCode) New</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><a href="#DeviceCode"><span class="nx">DeviceCode</span></a><span class="p">)</span> <span class="nf">New</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
   <h4 id="DeviceCode.String">func (DeviceCode) String</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <a href="#DeviceCode"><span class="nx">DeviceCode</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
-  <h4 id="DeviceCode.Token">func (DeviceCode) Token</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <a href="#DeviceCode"><span class="nx">DeviceCode</span></a><span class="p">)</span> <span class="nf">Token</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#Token"><span class="nx">Token</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
-  <h3 id="Format">type Format</h3>
-    <pre class="chroma"><span class="kd">type</span> <span class="nx">Format</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="Format.Itag"><span class="nx">Itag</span></span>          <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
-	<span id="Format.URL"><span class="nx">URL</span></span>           <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="Format.ContentLength"><span class="nx">ContentLength</span></span> <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a> <span class="s">`json:&#34;,string&#34;`</span>
-	<span id="Format.AudioQuality"><span class="nx">AudioQuality</span></span>  <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="Format.Bitrate"><span class="nx">Bitrate</span></span>       <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
-	<span id="Format.MimeType"><span class="nx">MimeType</span></span>      <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="Format.QualityLabel"><span class="nx">QualityLabel</span></span>  <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-<span class="p">}</span></pre>
-    <h4 id="Format.Ext">func (Format) Ext</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <a href="#Format"><span class="nx">Format</span></a><span class="p">)</span> <span class="nf">Ext</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
-  <h4 id="Format.Ranges">func (Format) Ranges</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <a href="#Format"><span class="nx">Format</span></a><span class="p">)</span> <span class="nf">Ranges</span><span class="p">()</span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
-  <h4 id="Format.Rate">func (Format) Rate</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <a href="#Format"><span class="nx">Format</span></a><span class="p">)</span> <span class="nf">Rate</span><span class="p">()</span> <a href="https://pkg.go.dev/154.pages.dev/encoding"><span class="nx">encoding</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/encoding#Rate"><span class="nx">Rate</span></a></pre>
-  <h4 id="Format.Size">func (Format) Size</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <a href="#Format"><span class="nx">Format</span></a><span class="p">)</span> <span class="nf">Size</span><span class="p">()</span> <a href="https://pkg.go.dev/154.pages.dev/encoding"><span class="nx">encoding</span></a><span class="p">.</span><a href="https://pkg.go.dev/154.pages.dev/encoding#Size"><span class="nx">Size</span></a></pre>
   <h3 id="Image">type Image</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">Image</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span id="Image.Height"><span class="nx">Height</span></span>  <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
@@ -203,18 +170,7 @@
 <span class="p">}</span></pre>
     <h4 id="Image.String">func (Image) String</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">i</span> <a href="#Image"><span class="nx">Image</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
-  <h3 id="MetadataRowContainer">type MetadataRowContainer</h3>
-    <pre class="chroma"><span class="kd">type</span> <span class="nx">MetadataRowContainer</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="MetadataRowContainer.MetadataRowContainerRenderer"><span class="nx">MetadataRowContainerRenderer</span></span> <span class="kd">struct</span> <span class="p">{</span>
-		<span id="MetadataRowContainer.Rows"><span class="nx">Rows</span></span> <span class="p">[]</span><span class="kd">struct</span> <span class="p">{</span>
-			<span id="MetadataRowContainer.MetadataRowRenderer"><span class="nx">MetadataRowRenderer</span></span> <span class="kd">struct</span> <span class="p">{</span>
-				<span id="MetadataRowContainer.Title"><span class="nx">Title</span></span>    <a href="#Run"><span class="nx">Run</span></a>  <span class="c1">// Show
-</span><span class="c1"></span>				<span id="MetadataRowContainer.Contents"><span class="nx">Contents</span></span> <a href="#Runs"><span class="nx">Runs</span></a> <span class="c1">// In The Heat Of The Night
-</span><span class="c1"></span>			<span class="p">}</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
-<span class="p">}</span></pre>
-    <h3 id="Player">type Player</h3>
+  <h3 id="Player">type Player</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">Player</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span id="Player.Microformat"><span class="nx">Microformat</span></span> <span class="kd">struct</span> <span class="p">{</span>
 		<span id="Player.PlayerMicroformatRenderer"><span class="nx">PlayerMicroformatRenderer</span></span> <span class="kd">struct</span> <span class="p">{</span>
@@ -226,7 +182,7 @@
 		<span id="Player.Reason"><span class="nx">Reason</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
 	<span class="p">}</span>
 	<span id="Player.StreamingData"><span class="nx">StreamingData</span></span> <span class="kd">struct</span> <span class="p">{</span>
-		<span id="Player.AdaptiveFormats"><span class="nx">AdaptiveFormats</span></span> <span class="p">[]</span><a href="#Format"><span class="nx">Format</span></a>
+		<span id="Player.AdaptiveFormats"><span class="nx">AdaptiveFormats</span></span> <span class="p">[]</span><a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a>
 	<span class="p">}</span>
 	<span id="Player.VideoDetails"><span class="nx">VideoDetails</span></span> <span class="kd">struct</span> <span class="p">{</span>
 		<span id="Player.Author"><span class="nx">Author</span></span>           <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
@@ -240,7 +196,7 @@
     <h4 id="Player.Author">func (Player) Author</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#Player"><span class="nx">Player</span></a><span class="p">)</span> <span class="nf">Author</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
   <h4 id="Player.Post">func (*Player) Post</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span><a href="#Player"><span class="nx">Player</span></a><span class="p">)</span> <span class="nf">Post</span><span class="p">(</span><span class="nx">r</span> <a href="#Request"><span class="nx">Request</span></a><span class="p">,</span> <span class="nx">t</span> <span class="o">*</span><a href="#Token"><span class="nx">Token</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span><a href="#Player"><span class="nx">Player</span></a><span class="p">)</span> <span class="nf">Post</span><span class="p">(</span><span class="nx">r</span> <a href="#Request"><span class="nx">Request</span></a><span class="p">,</span> <span class="nx">auth</span> <span class="o">*</span><a href="#AuthToken"><span class="nx">AuthToken</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
   <h4 id="Player.Time">func (Player) Time</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#Player"><span class="nx">Player</span></a><span class="p">)</span> <span class="nf">Time</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/time"><span class="nx">time</span></a><span class="p">.</span><a href="https://pkg.go.dev/time#Time"><span class="nx">Time</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
   <h4 id="Player.Title">func (Player) Title</h4>
@@ -276,60 +232,6 @@
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <a href="#Request"><span class="nx">Request</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
   <h4 id="Request.Web">func (*Request) Web</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><a href="#Request"><span class="nx">Request</span></a><span class="p">)</span> <span class="nf">Web</span><span class="p">()</span></pre>
-  <h3 id="Run">type Run</h3>
-    <pre class="chroma"><span class="kd">type</span> <span class="nx">Run</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="Run.Runs"><span class="nx">Runs</span></span> <span class="p">[]</span><span class="kd">struct</span> <span class="p">{</span>
-		<span id="Run.Text"><span class="nx">Text</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span class="p">}</span>
-	<span id="Run.SimpleText"><span class="nx">SimpleText</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-<span class="p">}</span></pre>
-    <h4 id="Run.String">func (Run) String</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <a href="#Run"><span class="nx">Run</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
-  <h3 id="Runs">type Runs</h3>
-    <pre class="chroma"><span class="kd">type</span> <span class="nx">Runs</span> <span class="p">[]</span><a href="#Run"><span class="nx">Run</span></a></pre>
-    <h4 id="Runs.String">func (Runs) String</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <a href="#Runs"><span class="nx">Runs</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
-  <h3 id="Token">type Token</h3>
-    <pre class="chroma"><span class="kd">type</span> <span class="nx">Token</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="Token.Raw"><span class="nx">Raw</span></span>   <span class="p">[]</span><a href="https://pkg.go.dev/builtin#byte"><span class="kt">byte</span></a>
-	<span id="Token.Token"><span class="nx">Token</span></span> <span class="kd">struct</span> <span class="p">{</span>
-		<span id="Token.Access_Token"><span class="nx">Access_Token</span></span>  <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-		<span id="Token.Refresh_Token"><span class="nx">Refresh_Token</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span class="p">}</span>
-<span class="p">}</span></pre>
-    <h4 id="Token.Refresh">func (*Token) Refresh</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><a href="#Token"><span class="nx">Token</span></a><span class="p">)</span> <span class="nf">Refresh</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
-  <h4 id="Token.Unmarshal">func (*Token) Unmarshal</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><a href="#Token"><span class="nx">Token</span></a><span class="p">)</span> <span class="nf">Unmarshal</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
-  <h3 id="WatchNext">type WatchNext</h3>
-    <pre class="chroma"><span class="kd">type</span> <span class="nx">WatchNext</span> <span class="p">[]</span><span class="kd">struct</span> <span class="p">{</span>
-	<span id="WatchNext.VideoPrimaryInfoRenderer"><span class="nx">VideoPrimaryInfoRenderer</span></span> <span class="o">*</span><span class="kd">struct</span> <span class="p">{</span>
-		<span id="WatchNext.Title"><span class="nx">Title</span></span> <a href="#Run"><span class="nx">Run</span></a> <span class="c1">// The Family Secret
-</span><span class="c1"></span>	<span class="p">}</span>
-	<span id="WatchNext.VideoSecondaryInfoRenderer"><span class="nx">VideoSecondaryInfoRenderer</span></span> <span class="o">*</span><span class="kd">struct</span> <span class="p">{</span>
-		<span id="WatchNext.MetadataRowContainer"><span class="nx">MetadataRowContainer</span></span> <a href="#MetadataRowContainer"><span class="nx">MetadataRowContainer</span></a>
-		<span id="WatchNext.Owner"><span class="nx">Owner</span></span>                <span class="kd">struct</span> <span class="p">{</span>
-			<span id="WatchNext.VideoOwnerRenderer"><span class="nx">VideoOwnerRenderer</span></span> <span class="kd">struct</span> <span class="p">{</span>
-				<span id="WatchNext.Title"><span class="nx">Title</span></span> <a href="#Run"><span class="nx">Run</span></a>
-			<span class="p">}</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
-<span class="p">}</span></pre>
-    <h4 id="WatchNext.Episode">func (WatchNext) Episode</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">w</span> <a href="#WatchNext"><span class="nx">WatchNext</span></a><span class="p">)</span> <span class="nf">Episode</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span></pre>
-  <h4 id="WatchNext.Owner">func (WatchNext) Owner</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">w</span> <a href="#WatchNext"><span class="nx">WatchNext</span></a><span class="p">)</span> <span class="nf">Owner</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span></pre>
-  <h4 id="WatchNext.Post">func (*WatchNext) Post</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">w</span> <span class="o">*</span><a href="#WatchNext"><span class="nx">WatchNext</span></a><span class="p">)</span> <span class="nf">Post</span><span class="p">(</span><span class="nx">r</span> <a href="#Request"><span class="nx">Request</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
-  <p>/youtubei/v1/player is missing the name of the series. use with WEB client.
-<h4 id="WatchNext.Season">func (WatchNext) Season</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">w</span> <a href="#WatchNext"><span class="nx">WatchNext</span></a><span class="p">)</span> <span class="nf">Season</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span></pre>
-  <h4 id="WatchNext.Show">func (WatchNext) Show</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">w</span> <a href="#WatchNext"><span class="nx">WatchNext</span></a><span class="p">)</span> <span class="nf">Show</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span></pre>
-  <h4 id="WatchNext.Title">func (WatchNext) Title</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">w</span> <a href="#WatchNext"><span class="nx">WatchNext</span></a><span class="p">)</span> <span class="nf">Title</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span></pre>
-  <h4 id="WatchNext.Year">func (WatchNext) Year</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">w</span> <a href="#WatchNext"><span class="nx">WatchNext</span></a><span class="p">)</span> <span class="nf">Year</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span></pre>
   </main>
     <hr>
     <footer>

@@ -47,10 +47,10 @@ func download(format youtube.AdaptiveFormat, name string) error {
 
 func (f flags) do_refresh() error {
    var code youtube.DeviceCode
-   code.Post()
+   code.New()
    fmt.Println(code)
    fmt.Scanln()
-   auth, err := code.OAuth()
+   auth, err := code.Auth()
    if err != nil {
       return err
    }
@@ -62,7 +62,7 @@ func (f flags) do_refresh() error {
 }
 
 func (f flags) player() (*youtube.Player, error) {
-   var auth *youtube.OAuth
+   var auth *youtube.AuthToken
    switch f.request {
    case 0:
       f.r.Android()
@@ -74,7 +74,7 @@ func (f flags) player() (*youtube.Player, error) {
       if err != nil {
          return nil, err
       }
-      auth = new(youtube.OAuth)
+      auth = new(youtube.AuthToken)
       auth.Data, err = os.ReadFile(home + "/youtube.json")
       if err != nil {
          return nil, err

@@ -1,16 +1,18 @@
 package youtube
 
 import (
+   "bytes"
+   "encoding/json"
    "io"
    "net/http"
 )
 
-type config struct {
+type innertube struct {
    InnertubeClientName string `json:"innertube_client_name"`
    InnertubeClientVersion string `json:"innertube_client_version"`
 }
 
-func (c *config) New() error {
+func (i *innertube) New() error {
    res, err := http.Get("https://www.youtube.com")
    if err != nil {
       return err
@@ -20,6 +22,6 @@ func (c *config) New() error {
    if err != nil {
       return err
    }
-   _, text = json.Cut(text, []byte("\nytcfg.set("), nil)
-   return json.Decode(text, c)
+   _, text, _ = bytes.Cut(text, []byte("\nytcfg.set("))
+   return json.NewDecoder(bytes.NewReader(text)).Decode(i)
 }

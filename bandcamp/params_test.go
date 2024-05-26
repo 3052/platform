@@ -15,11 +15,12 @@ var tests = []string{
 
 func TestParam(t *testing.T) {
    for _, test := range tests {
-      param, err := NewParams(test)
+      var params ReportParams
+      err := params.New(test)
       if err != nil {
          t.Fatal(err)
       }
-      fmt.Printf("%+v\n", param)
+      fmt.Printf("%+v\n", params)
       time.Sleep(99 * time.Millisecond)
    }
 }

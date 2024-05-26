@@ -14,18 +14,16 @@
   <body>
     <nav>
         <a href="..">154.pages.dev/platform</a>/justwatch<span class="navbar-right">
-          v1.4.5 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
+          v1.4.6 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
       </nav>
     <main><h2 id="pkg-overview">package justwatch</h2>
 <pre class="chroma"><span class="kn">import</span> <span class="s">&#34;154.pages.dev/platform/justwatch&#34;</span></pre>
 <h3 id="pkg-index">Index</h3>
 <ul>
-  <li><a href="#pkg-variables">Variables</a></li><li><a href="#Delete">func Delete(o OfferNode) bool</a></li>
+  <li><a href="#pkg-variables">Variables</a></li><li><a href="#Monetization">func Monetization(o OfferNode) bool</a></li>
+  <li><a href="#URL">func URL(o OfferNode) bool</a></li>
   <li>
       <a href="#ContentUrls">type ContentUrls</a>
-      <ul>
-          <li><a href="#ContentUrls.New">func (c *ContentUrls) New(path string) error</a></li>
-          </ul>
       </li>
   <li>
       <a href="#LangTag">type LangTag</a>
@@ -55,6 +53,14 @@
       </li>
   <li>
       <a href="#OfferNode">type OfferNode</a>
+      </li>
+  <li>
+      <a href="#Path">type Path</a>
+      <ul>
+          <li><a href="#Path.Content">func (p Path) Content() (*ContentUrls, error)</a></li>
+          <li><a href="#Path.Set">func (p *Path) Set(s string) error</a></li>
+          <li><a href="#Path.String">func (p Path) String() string</a></li>
+          </ul>
       </li>
   </ul><h3 id="pkg-variables">Variables</h3>
   <pre class="chroma"><span class="kd">var</span> <span id="EnglishLocales"><span class="nx">EnglishLocales</span></span> <span class="p">=</span> <a href="#LocaleStates"><span class="nx">LocaleStates</span></a><span class="p">{</span>
@@ -199,16 +205,16 @@
 	<span class="p">{</span><span class="s">&#34;zh_TW&#34;</span><span class="p">,</span> <span class="s">&#34;TW&#34;</span><span class="p">,</span> <span class="s">&#34;Taiwan&#34;</span><span class="p">},</span>
 <span class="p">}</span></pre>
   <h3 id="pkg-functions">Functions</h3>
-  <h3 id="Delete">func Delete</h3>
-    <pre class="chroma"><span class="kd">func</span> <span class="nf">Delete</span><span class="p">(</span><span class="nx">o</span> <a href="#OfferNode"><span class="nx">OfferNode</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a></pre>
+  <h3 id="Monetization">func Monetization</h3>
+    <pre class="chroma"><span class="kd">func</span> <span class="nf">Monetization</span><span class="p">(</span><span class="nx">o</span> <a href="#OfferNode"><span class="nx">OfferNode</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a></pre>
+    <h3 id="URL">func URL</h3>
+    <pre class="chroma"><span class="kd">func</span> <span class="nf">URL</span><span class="p">(</span><span class="nx">o</span> <a href="#OfferNode"><span class="nx">OfferNode</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a></pre>
     <h3 id="pkg-types">Types</h3>
   <h3 id="ContentUrls">type ContentUrls</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">ContentUrls</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="ContentUrls.Href_Lang_Tags"><span class="nx">Href_Lang_Tags</span></span> <span class="p">[]</span><a href="#LangTag"><span class="nx">LangTag</span></a>
+	<span id="ContentUrls.HrefLangTags"><span class="nx">HrefLangTags</span></span> <span class="p">[]</span><a href="#LangTag"><span class="nx">LangTag</span></a> <span class="s">`json:&#34;href_lang_tags&#34;`</span>
 <span class="p">}</span></pre>
-    <h4 id="ContentUrls.New">func (*ContentUrls) New</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><a href="#ContentUrls"><span class="nx">ContentUrls</span></a><span class="p">)</span> <span class="nf">New</span><span class="p">(</span><span class="nx">path</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
-  <h3 id="LangTag">type LangTag</h3>
+    <h3 id="LangTag">type LangTag</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">LangTag</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span id="LangTag.Locale"><span class="nx">Locale</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="c1">// es_AR
 </span><span class="c1"></span>	<span id="LangTag.Href"><span class="nx">Href</span></span>   <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="c1">// /ar/pelicula/mulholland-drive
@@ -242,12 +248,21 @@
   <h3 id="OfferNode">type OfferNode</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">OfferNode</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span id="OfferNode.MonetizationType"><span class="nx">MonetizationType</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="OfferNode.StandardWebUrl"><span class="nx">StandardWebUrl</span></span>   <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="OfferNode.StandardWebUrl"><span class="nx">StandardWebUrl</span></span>   <span class="nx">web_url</span>
 <span class="p">}</span></pre>
     <p>`presentationType` data seems to be incorrect in some cases. For example,
 JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
 when the site itself reports as HD
-</main>
+<h3 id="Path">type Path</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Path</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+    <h4 id="Path.Content">func (Path) Content</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#Path"><span class="nx">Path</span></a><span class="p">)</span> <span class="nf">Content</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#ContentUrls"><span class="nx">ContentUrls</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="Path.Set">func (*Path) Set</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span><a href="#Path"><span class="nx">Path</span></a><span class="p">)</span> <span class="nf">Set</span><span class="p">(</span><span class="nx">s</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  <p><a href="https://www.justwatch.com/us/movie/the-social-network">https://www.justwatch.com/us/movie/the-social-network</a>
+<h4 id="Path.String">func (Path) String</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#Path"><span class="nx">Path</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  </main>
     <hr>
     <footer>
       <small id="generated-by-footer">
