@@ -6,7 +6,7 @@ import (
    "testing"
 )
 
-func Test_Next_Data(t *testing.T) {
+func TestNextData(t *testing.T) {
    next, err := new_next_data()
    if err != nil {
       t.Fatal(err)
