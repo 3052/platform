@@ -1,7 +1,7 @@
 package youtube
 
 import (
-   "154.pages.dev/encoding"
+   "154.pages.dev/text"
    "errors"
    "fmt"
    "mime"
@@ -45,8 +45,8 @@ func (a AdaptiveFormat) String() string {
    if a.QualityLabel != "" {
       b = fmt.Append(b, "\nlabel = ", a.QualityLabel)
    }
-   b = fmt.Append(b, "\nrate = ", encoding.Rate(a.Bitrate))
-   b = fmt.Append(b, "\nsize = ", encoding.Size(a.ContentLength))
+   b = fmt.Append(b, "\nrate = ", text.Rate(a.Bitrate))
+   b = fmt.Append(b, "\nsize = ", text.Size(a.ContentLength))
    b = fmt.Append(b, "\ntype = ", a.MimeType)
    if a.AudioQuality != "" {
       b = fmt.Append(b, "\naudio = ", a.AudioQuality)

@@ -12,6 +12,12 @@ import (
 )
 
 var contains = []string{
+   // 2024-5-26
+   "/tv.kinopop.com/",
+   "/www.canalplus.com/ch/",
+   "/www.france.tv/",
+   "/www.mycanal.fr/",
+   "/www.starz.com/",
    // 2024-5-23
    "/disneyplus.bn5x.net/",
    // 2024-5-16

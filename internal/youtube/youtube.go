@@ -1,28 +1,51 @@
 package main
 
 import (
-   "154.pages.dev/encoding"
-   "154.pages.dev/log"
    "154.pages.dev/platform/youtube"
+   "154.pages.dev/text"
    "fmt"
-   "log/slog"
    "net/http"
    "os"
    "slices"
 )
+
+func (f flags) loop() error {
+   play, err := f.player()
+   if err != nil {
+      return err
+   }
+   fmt.Printf("%+v\n", play.PlayabilityStatus)
+   // download one
+   for _, format := range play.StreamingData.AdaptiveFormats {
+      if format.Itag == f.itag {
+         return download(format, play.VideoDetails.Title)
+      }
+   }
+   // print all
+   slices.SortFunc(
+      play.StreamingData.AdaptiveFormats, youtube.AdaptiveFormat.CompareBitrate,
+   )
+   for i, format := range play.StreamingData.AdaptiveFormats {
+      if i >= 1 {
+         fmt.Println()
+      }
+      fmt.Println(format)
+   }
+   return nil
+}
 
 func download(format youtube.AdaptiveFormat, name string) error {
    ext, err := format.Ext()
    if err != nil {
       return err
    }
-   file, err := os.Create(encoding.Clean(name) + ext)
+   file, err := os.Create(text.Clean(name) + ext)
    if err != nil {
       return err
    }
    defer file.Close()
-   var meter log.ProgressMeter
-   log.SetTransport(nil)
+   var meter text.ProgressMeter
+   text.SetTransport(nil)
    ranges := format.Ranges()
    meter.Set(len(ranges))
    for _, byte_range := range ranges {
@@ -88,29 +111,3 @@ func (f flags) player() (*youtube.Player, error) {
    play.Post(f.r, auth)
    return &play, nil
 }
-
-func (f flags) loop() error {
-   play, err := f.player()
-   if err != nil {
-      return err
-   }
-   slog.Info("playability", "status", play.PlayabilityStatus)
-   // download one
-   for _, format := range play.StreamingData.AdaptiveFormats {
-      if format.Itag == f.itag {
-         return download(format, play.VideoDetails.Title)
-      }
-   }
-   // print all
-   slices.SortFunc(
-      play.StreamingData.AdaptiveFormats, youtube.AdaptiveFormat.CompareBitrate,
-   )
-   for i, format := range play.StreamingData.AdaptiveFormats {
-      if i >= 1 {
-         fmt.Println()
-      }
-      fmt.Println(format)
-   }
-   return nil
-}
-

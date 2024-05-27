@@ -1,7 +1,7 @@
 package bandcamp
 
 import (
-   "154.pages.dev/encoding"
+   "154.pages.dev/text"
    "encoding/json"
    "encoding/xml"
    "io"
@@ -14,15 +14,15 @@ func (r *ReportParams) New(address string) error {
       return err
    }
    defer res.Body.Close()
-   text, err := io.ReadAll(res.Body)
+   data, err := io.ReadAll(res.Body)
    if err != nil {
       return err
    }
-   _, text, _ = encoding.CutBefore(text, []byte(`<p id="report-account-vm"`))
+   _, data, _ = text.CutBefore(data, []byte(`<p id="report-account-vm"`))
    var p struct {
       DataTouReportParams []byte `xml:"data-tou-report-params,attr"`
    }
-   err = xml.Unmarshal(text, &p)
+   err = xml.Unmarshal(data, &p)
    if err != nil {
       return err
    }

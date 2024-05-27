@@ -1,8 +1,8 @@
 package main
 
 import (
-   "154.pages.dev/log"
    "154.pages.dev/platform/youtube"
+   "154.pages.dev/text"
    "flag"
    "strings"
 )
@@ -12,7 +12,7 @@ type flags struct {
    r youtube.Request
    refresh bool
    request int
-   v log.Level
+   v text.Level
 }
 
 func main() {
@@ -31,7 +31,7 @@ func main() {
    flag.TextVar(&f.v.Level, "v", f.v.Level, "level")
    flag.Parse()
    f.v.Set()
-   log.Transport{}.Set()
+   text.Transport{}.Set()
    switch {
    case f.r.VideoId != "":
       err := f.loop()

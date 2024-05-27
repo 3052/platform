@@ -1,8 +1,8 @@
 package main
 
 import (
-   "154.pages.dev/log"
    "154.pages.dev/platform/justwatch"
+   "154.pages.dev/text"
    "flag"
    "time"
 )
@@ -10,7 +10,7 @@ import (
 type flags struct {
    filter bool
    sleep time.Duration
-   v log.Level
+   v text.Level
    path justwatch.Path
 }
 
@@ -22,7 +22,7 @@ func main() {
    flag.TextVar(&f.v.Level, "v", f.v.Level, "log level")
    flag.Parse()
    f.v.Set()
-   log.Transport{}.Set()
+   text.Transport{}.Set()
    if f.path != "" {
       err := f.stream()
       if err != nil {
