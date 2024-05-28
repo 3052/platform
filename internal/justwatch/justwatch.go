@@ -2,7 +2,6 @@ package main
 
 import (
    "154.pages.dev/platform/justwatch"
-   "154.pages.dev/text"
    "errors"
    "fmt"
    "slices"
@@ -15,7 +14,7 @@ func (f flags) stream() error {
       return err
    }
    var groups justwatch.OfferGroups
-   text.SetTransport(nil)
+   f.log.SetTransport(false)
    for _, tag := range content.HrefLangTags {
       fmt.Println(tag.Href)
       locale, ok := justwatch.EnglishLocales.Locale(tag)

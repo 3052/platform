@@ -10,7 +10,7 @@ import (
 type flags struct {
    filter bool
    sleep time.Duration
-   v text.Level
+   log text.LogLevel
    path justwatch.Path
 }
 
@@ -19,10 +19,10 @@ func main() {
    flag.Var(&f.path, "a", "address")
    flag.BoolVar(&f.filter, "f", true, "filter")
    flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
-   flag.TextVar(&f.v.Level, "v", f.v.Level, "log level")
+   flag.TextVar(&f.log.Level, "v", f.log.Level, "log level")
    flag.Parse()
-   f.v.Set()
-   text.Transport{}.Set()
+   f.log.Set()
+   f.log.SetTransport(true)
    if f.path != "" {
       err := f.stream()
       if err != nil {

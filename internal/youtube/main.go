@@ -12,7 +12,7 @@ type flags struct {
    r youtube.Request
    refresh bool
    request int
-   v text.Level
+   log text.LogLevel
 }
 
 func main() {
@@ -28,10 +28,10 @@ func main() {
       flag.IntVar(&f.request, "r", 0, b.String())
    }
    flag.BoolVar(&f.refresh, "refresh", false, "create OAuth refresh token")
-   flag.TextVar(&f.v.Level, "v", f.v.Level, "level")
+   flag.TextVar(&f.log.Level, "v", f.log.Level, "level")
    flag.Parse()
-   f.v.Set()
-   text.Transport{}.Set()
+   f.log.Set()
+   f.log.SetTransport(true)
    switch {
    case f.r.VideoId != "":
       err := f.loop()
