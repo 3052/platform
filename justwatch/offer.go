@@ -12,6 +12,15 @@ import (
 )
 
 var contains = []string{
+   // 2024-5-29
+   "/hbogo.co.th/",
+   "/hbogoasia.id/",
+   "/hbogoasia.my/",
+   "/hbogoasia.ph/",
+   "/hbogoasia.sg/",
+   "/hbogoasia.tw/",
+   "/more.tv/",
+   "/skygo.sky.it/",
    // 2024-5-26
    "/tv.kinopop.com/",
    "/www.canalplus.com/ch/",
