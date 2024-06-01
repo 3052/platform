@@ -6,19 +6,6 @@ monetization = FLATRATE
 country = Malaysia
 ~~~
 
-## us
-
-HBO GO service for this country is not available at your current location
-
-## x-forwarded-for
-
-~~~
-{"Malaysia", "175.136.0.0"},
-/~q/x-forwarded-for/175.136.0.0
-~~~
-
-HBO GO service for this country is not available at your current location
-
 ## proxy seller
 
 1. click here to find out how to subscribe

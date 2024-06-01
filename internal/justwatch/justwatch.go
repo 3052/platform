@@ -25,7 +25,7 @@ func (f flags) stream() error {
       if err != nil {
          return err
       }
-      if f.filter {
+      if !f.all {
          offers = slices.DeleteFunc(offers, justwatch.URL)
       }
       for _, offer := range slices.DeleteFunc(offers, justwatch.Monetization) {

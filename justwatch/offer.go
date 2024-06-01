@@ -12,6 +12,14 @@ import (
 )
 
 var contains = []string{
+   // 2024-6-1
+   "/app.primevideo.com/",
+   "/watch.amazon.co.jp/",
+   "/watch.amazon.co.uk/",
+   "/watch.amazon.com/",
+   "/watch.amazon.de/",
+   "/www.cineast.fi/",
+   "/www.filmfriend.ch/",
    // 2024-5-31
    "/hd.kinopoisk.ru/",
    "/hollywoodsuite.ca/",

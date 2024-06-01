@@ -6,9 +6,7 @@ monetization = FLATRATE
 country = Taiwan
 ~~~
 
-## us
-
-HBO GO service for this country is not available at your current location
+Taiwanese Account - shenghwa113@gmail.com:nice6688
 
 ## proxy seller
 

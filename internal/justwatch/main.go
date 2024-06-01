@@ -8,7 +8,7 @@ import (
 )
 
 type flags struct {
-   filter bool
+   all bool
    sleep time.Duration
    log text.LogLevel
    path justwatch.Path
@@ -17,9 +17,9 @@ type flags struct {
 func main() {
    var f flags
    flag.Var(&f.path, "a", "address")
-   flag.BoolVar(&f.filter, "f", true, "filter")
    flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
    flag.TextVar(&f.log.Level, "v", f.log.Level, "log level")
+   flag.BoolVar(&f.all, "all", false, "all results")
    flag.Parse()
    f.log.Set()
    f.log.SetTransport(true)

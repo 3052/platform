@@ -6,10 +6,6 @@ monetization = FLATRATE
 country = Philippines
 ~~~
 
-## us
-
-HBO GO service for this country is not available at your current location
-
 ## proxy seller
 
 1. click here to find out how to subscribe
