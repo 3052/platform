@@ -12,6 +12,19 @@ import (
 )
 
 var contains = []string{
+   // 2024-5-31
+   "/hd.kinopoisk.ru/",
+   "/hollywoodsuite.ca/",
+   "/web.magentatv.de/",
+   "/www.cineast.no/",
+   "/www.filmbox.com/",
+   "/www.filmotv.fr/",
+   "/www.hoopladigital.com/",
+   "/www.nowtv.com/",
+   "/www.sky.com/",
+   "/www.tbs.com/",
+   "/www.tntdrama.com/",
+   "/www.trutv.com/",
    // 2024-5-29
    "/hbogo.co.th/",
    "/hbogoasia.id/",
@@ -20,7 +33,6 @@ var contains = []string{
    "/hbogoasia.sg/",
    "/hbogoasia.tw/",
    "/more.tv/",
-   "/skygo.sky.it/",
    // 2024-5-26
    "/tv.kinopop.com/",
    "/www.canalplus.com/ch/",
