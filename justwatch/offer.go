@@ -12,6 +12,8 @@ import (
 )
 
 var contains = []string{
+   // 2024-6-2
+   "/www.raiplay.it/",
    // 2024-6-1
    "/app.primevideo.com/",
    "/watch.amazon.co.jp/",
