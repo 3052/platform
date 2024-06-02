@@ -1,10 +1,6 @@
 # mollys-game
 
 ~~~
-url = https://www.hulu.jp/watch/100060176
-monetization = FLATRATE
-country = Japan
-
 url = https://www.kktv.me/titles/09000953
 monetization = FLATRATE
 country = Taiwan

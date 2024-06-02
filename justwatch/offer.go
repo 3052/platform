@@ -20,6 +20,7 @@ var contains = []string{
    "/watch.amazon.de/",
    "/www.cineast.fi/",
    "/www.filmfriend.ch/",
+   "/www.hulu.jp/",
    // 2024-5-31
    "/hd.kinopoisk.ru/",
    "/hollywoodsuite.ca/",
