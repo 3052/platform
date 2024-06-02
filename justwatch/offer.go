@@ -13,6 +13,8 @@ import (
 
 var contains = []string{
    // 2024-6-2
+   "/lionsgateplay.com/",
+   "/play.tv2.dk/",
    "/www.raiplay.it/",
    // 2024-6-1
    "/app.primevideo.com/",
