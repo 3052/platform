@@ -15,6 +15,9 @@ var contains = []string{
    // 2024-6-2
    "/lionsgateplay.com/",
    "/play.tv2.dk/",
+   "/show.sky.ch/",
+   "/www.filmingo.ch/",
+   "/www.iprima.cz/",
    "/www.raiplay.it/",
    // 2024-6-1
    "/app.primevideo.com/",

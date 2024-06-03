@@ -6,18 +6,6 @@ monetization = FLATRATE
 country = Sweden
 (H264) 1920x1080 24fps 1392kbps
 
----
-
-filmingo.ch/de/films/1462-molly-s-game
-url = https://www.filmingo.ch/de/films/1462-molly-s-game
-monetization = FLATRATE
-country = Switzerland
-
-iprima.cz/filmy/velka-hra
-url = https://www.iprima.cz/filmy/velka-hra
-monetization = FLATRATE
-country = Czech Republic
-
 kktv.me/titles/09000953
 url = https://www.kktv.me/titles/09000953
 monetization = FLATRATE
@@ -28,12 +16,6 @@ monetization = FLATRATE
 country = Egypt
 country = Saudi Arabia
 country = United Arab Emirates
-
----
-
-url = https://show.sky.ch/de/filme/76978/mollys-game
-monetization = FLATRATE
-country = Switzerland
 
 sky.at/produkte/sky-go-158150
 url = https://www.sky.at/produkte/sky-go-158150
