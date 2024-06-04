@@ -22,19 +22,7 @@ country = New Zealand
 13. verify your email address
 14. stream on
 
-## x-forwarded-for
-
-~~~
-New Zealand 49.224.0.0
-/~q/x-forwarded-for/49.224.0.0
-~~~
-
-media URLs are blocked
-
-## mullvad
-
-media URLs are blocked
-
 ## proxy seller
 
-720p
+h264 (Main) (avc1 / 0x31637661), yuv420p(tv, unknown/unknown/bt709), 1280x720
+[SAR 1:1 DAR 16:9], 1427 kb/s

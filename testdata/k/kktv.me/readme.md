@@ -18,3 +18,6 @@ country = Taiwan
 9. 待會再說 (I'll talk to you later)
 10. VPN/proxy
 11. 播放 (playable)
+
+hard subtitles. normally you could use MPC-HC with Ctrl+2, but the subs rise
+above the black bars in some cases.

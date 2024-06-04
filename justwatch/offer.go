@@ -12,6 +12,14 @@ import (
 )
 
 var contains = []string{
+   // 2024-6-3
+   "/shahid.mbc.net/",
+   "/skyticket.sky.de/",
+   "/skyx.sky.at/",
+   "/tv.blue.ch/",
+   "/www.kktv.me/",
+   "/www.sky.at/",
+   "/www.sky.de/",
    // 2024-6-2
    "/lionsgateplay.com/",
    "/play.tv2.dk/",
