@@ -8,42 +8,6 @@ import (
    "time"
 )
 
-type AlbumTrack struct {
-   TrackNum int64 `json:"track_num"`
-   Title string
-   BandName string `json:"band_name"`
-   StreamingUrl *struct {
-      MP3_128 string `json:"mp3-128"`
-   } `json:"streaming_url"`
-}
-
-func (t Tralbum) Date() time.Time {
-   return time.Unix(t.ReleaseDate, 0)
-}
-
-type Tralbum struct {
-   ArtId int64 `json:"art_id"`
-   Title string
-   Tracks []AlbumTrack
-   ReleaseDate int64 `json:"release_date"`
-   TralbumArtist string `json:"tralbum_artist"`
-}
-
-type Item struct {
-   BandId int64 `json:"band_id"`
-   ItemId int `json:"item_id"`
-   ItemType string `json:"item_type"`
-}
-
-func (i Item) Band() (*BandDetails, error) {
-   var band BandDetails
-   err := band.New(i.BandId)
-   if err != nil {
-      return nil, err
-   }
-   return &band, nil
-}
-
 func (b *BandDetails) New(id int64) error {
    address := func() string {
       b := []byte("http://bandcamp.com/api/mobile/24/band_details?band_id=")
@@ -179,4 +143,39 @@ const (
 type BandDetails struct {
    Name string
    Discography []Item
+}
+type AlbumTrack struct {
+   TrackNum int64 `json:"track_num"`
+   Title string
+   BandName string `json:"band_name"`
+   StreamingUrl *struct {
+      MP3_128 string `json:"mp3-128"`
+   } `json:"streaming_url"`
+}
+
+func (t Tralbum) Date() time.Time {
+   return time.Unix(t.ReleaseDate, 0)
+}
+
+type Tralbum struct {
+   ArtId int64 `json:"art_id"`
+   Title string
+   Tracks []AlbumTrack
+   ReleaseDate int64 `json:"release_date"`
+   TralbumArtist string `json:"tralbum_artist"`
+}
+
+type Item struct {
+   BandId int64 `json:"band_id"`
+   ItemId int `json:"item_id"`
+   ItemType string `json:"item_type"`
+}
+
+func (i Item) Band() (*BandDetails, error) {
+   var band BandDetails
+   err := band.New(i.BandId)
+   if err != nil {
+      return nil, err
+   }
+   return &band, nil
 }
