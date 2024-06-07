@@ -14,11 +14,7 @@ func (b *BandDetails) New(id int64) error {
       b = strconv.AppendInt(b, id, 10)
       return string(b)
    }()
-   req, err := http.NewRequest("", address, nil)
-   if err != nil {
-      return err
-   }
-   res, err := http.DefaultClient.Do(req)
+   res, err := http.Get(address)
    if err != nil {
       return err
    }

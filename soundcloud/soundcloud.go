@@ -17,11 +17,7 @@ func (c *ClientTrack) New(id int64) error {
       b = append(b, client_id...)
       return string(b)
    }()
-   req, err := http.NewRequest("", address, nil)
-   if err != nil {
-      return err
-   }
-   res, err := http.DefaultClient.Do(req)
+   res, err := http.Get(address)
    if err != nil {
       return err
    }
