@@ -2,36 +2,25 @@
 
 https://amazon.com/gp/video/detail/0NRT15S2XG06SG5HBV5NQAW3E3
 
-## web
+## create
 
 1. watch with prime, start your 30-day free trial
 2. create your Amazon account
 3. your name
 4. email
-   - email.ml pass
-   - mailsac.com fail
+   - email.ml
 5. password
 6. re-enter password
 7. verify email
 8. enter OTP
-9. create your Amazon account
-10. full name
-11. address
-12. city
-13. state
-14. zip
-15. phone number
-16. continue
-17. payment method, change
-18. name on card
-19. car number
-20. month
-21. year
-22. security code
-23. add your card
-24. use this address
-25. continue
-26. start your free trial
+9. mobile number
+10. add mobile number
+11. enter OTP
+12. create your Amazon account
+
+The phone number you've entered already exists with another account
+
+## web
 
 for this request:
 
