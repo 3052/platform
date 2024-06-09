@@ -1,42 +1,7 @@
 # source code
 
 ~~~
-url = http://www.netflix.com/title/70141646
-monetization = FLATRATE
-country = Bulgaria
-country = Croatia
-country = Czech Republic
-country = Egypt
-country = Hungary
-country = Ireland
-country = Japan
-country = Poland
-country = Portugal
-country = Romania
-country = Saudi Arabia
-country = Slovakia
-country = South Africa
-country = South Korea
-country = Switzerland
-country = Taiwan
-country = Turkey
-country = United Arab Emirates
-country = United Kingdom
-
-url = https://play.hbomax.com/feature/urn:hbo:feature:GYJH8YgsKHQaSsQEAAAH_
-monetization = FLATRATE
-country = Argentina
-country = Bolivia
-country = Brazil
-country = Chile
-country = Colombia
-country = Costa Rica
-country = Ecuador
-country = Guatemala
-country = Mexico
-country = Peru
-country = Venezuela
-
+max.com/movie/127b00c5-0131-4bac-b2d1-40762deefe09
 url = https://play.max.com/movie/127b00c5-0131-4bac-b2d1-40762deefe09
 monetization = FLATRATE
 country = Argentina
