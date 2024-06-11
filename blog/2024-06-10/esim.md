@@ -1,3 +1,5 @@
 # eSIM
 
-https://maya.net/esim/switzerland
+https://hottelecom.biz
+
+https://prepaid-data-sim-card.fandom.com/wiki/Switzerland
