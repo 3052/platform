@@ -42,12 +42,12 @@ func TestImage(t *testing.T) {
    for _, img := range Images {
       img.VideoId = image_test
       fmt.Println(img)
-      res, err := http.Head(img.String())
+      resp, err := http.Head(img.String())
       if err != nil {
          t.Fatal(err)
       }
-      if res.StatusCode != http.StatusOK {
-         t.Fatal(res.Status)
+      if resp.StatusCode != http.StatusOK {
+         t.Fatal(resp.Status)
       }
       time.Sleep(99 * time.Millisecond)
    }
