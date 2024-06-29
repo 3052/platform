@@ -14,9 +14,7 @@ func (f flags) stream() error {
       return err
    }
    var groups justwatch.OfferGroups
-   f.log.SetTransport(false)
    for _, tag := range content.HrefLangTags {
-      fmt.Println(tag.Href)
       locale, ok := justwatch.EnglishLocales.Locale(tag)
       if !ok {
          return errors.New("justwatch.LocaleStates.Locale")

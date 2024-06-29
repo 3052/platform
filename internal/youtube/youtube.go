@@ -22,7 +22,6 @@ func (f flags) download(format youtube.AdaptiveFormat, name string) error {
    var meter text.ProgressMeter
    ranges := format.Ranges()
    meter.Set(len(ranges))
-   f.log.SetTransport(false)
    for _, byte_range := range ranges {
       err := func() error {
          res, err := http.Get(format.URL + byte_range)

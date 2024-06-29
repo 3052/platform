@@ -10,7 +10,6 @@ import (
 type flags struct {
    all bool
    sleep time.Duration
-   log text.LogLevel
    path justwatch.Path
 }
 
@@ -18,11 +17,9 @@ func main() {
    var f flags
    flag.Var(&f.path, "a", "address")
    flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
-   flag.TextVar(&f.log.Level, "v", f.log.Level, "log level")
    flag.BoolVar(&f.all, "all", false, "all results")
    flag.Parse()
-   f.log.Set()
-   f.log.SetTransport(true)
+   text.Transport{}.Set(true)
    if f.path != "" {
       err := f.stream()
       if err != nil {
