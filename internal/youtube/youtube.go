@@ -4,10 +4,36 @@ import (
    "154.pages.dev/platform/youtube"
    "154.pages.dev/text"
    "fmt"
+   "log/slog"
    "net/http"
    "os"
    "slices"
 )
+
+func (f flags) loop() error {
+   play, err := f.player()
+   if err != nil {
+      return err
+   }
+   slog.Info("playability", "status", play.PlayabilityStatus.Status)
+   // download one
+   for _, format := range play.StreamingData.AdaptiveFormats {
+      if format.Itag == f.itag {
+         return f.download(format, play.VideoDetails.Title)
+      }
+   }
+   // print all
+   slices.SortFunc(
+      play.StreamingData.AdaptiveFormats, youtube.AdaptiveFormat.CompareBitrate,
+   )
+   for i, format := range play.StreamingData.AdaptiveFormats {
+      if i >= 1 {
+         fmt.Println()
+      }
+      fmt.Println(format)
+   }
+   return nil
+}
 
 func (f flags) download(format youtube.AdaptiveFormat, name string) error {
    ext, err := format.Ext()
@@ -85,29 +111,3 @@ func (f flags) player() (*youtube.Player, error) {
    play.Post(f.r, auth)
    return &play, nil
 }
-
-func (f flags) loop() error {
-   play, err := f.player()
-   if err != nil {
-      return err
-   }
-   fmt.Printf("%+v\n", play.PlayabilityStatus)
-   // download one
-   for _, format := range play.StreamingData.AdaptiveFormats {
-      if format.Itag == f.itag {
-         return f.download(format, play.VideoDetails.Title)
-      }
-   }
-   // print all
-   slices.SortFunc(
-      play.StreamingData.AdaptiveFormats, youtube.AdaptiveFormat.CompareBitrate,
-   )
-   for i, format := range play.StreamingData.AdaptiveFormats {
-      if i >= 1 {
-         fmt.Println()
-      }
-      fmt.Println(format)
-   }
-   return nil
-}
-
