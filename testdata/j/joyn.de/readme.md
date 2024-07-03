@@ -4,7 +4,7 @@ https://joyn.de/filme/barry-seal-only-in-america
 
 ## paid
 
-1. https://joyn.de
+1. joyn.de
 2. PLUS kostenlos testen (test PLUS free of charge)
 3. Jetzt kostenlos testen (test now free of charge)
 4. Vorname (first name)
@@ -22,49 +22,6 @@ https://joyn.de/filme/barry-seal-only-in-america
 14. Ihre Kreditkarte wurde abgelehnt (your credit card has been declined)
 
 even with regular card its rejected, so it must be a country thing
-
-## free
-
-1. https://joyn.de/mein-account
-2. Alles akzeptieren (accept everything)
-3. e-mail
-   - invalid email passed : 2024-5-9@mailsac.com
-4. Anmelden (log in)
-5. Klick einfach auf den Link in der Mail, dann kann's losgehen (Just click on
-   the link in the e-mail and you're ready to go)
-6. password
-7. Weiter (next)
-8. Männlich (male)
-9. day
-10. month
-11. year
-12. Speichern (save)
-
-## quality
-
-android phone:
-
-~~~go
-(type=="video"&&MaxHeight<=576)||(type=="audio"&&FourCC=="AACL")
-~~~
-
-android tv:
-
-~~~
-type=="video"&&MaxHeight<=480)||(type=="audio"&&FourCC=="AACL")
-~~~
-
-web anonymous:
-
-~~~go
-(type=="video"&&MaxHeight<=480)||(type=="audio"&&FourCC=="AACL")
-~~~
-
-web free:
-
-~~~
-(type=="video"&&MaxHeight<=480)||(type=="audio"&&FourCC=="AACL")
-~~~
 
 ## prior art
 
