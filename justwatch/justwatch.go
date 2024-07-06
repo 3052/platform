@@ -26,16 +26,16 @@ func (p Path) String() string {
 
 func (p Path) Content() (*ContentUrls, error) {
    address := "https://apis.justwatch.com/content/urls?path=" + string(p)
-   res, err := http.Get(address)
+   resp, err := http.Get(address)
    if err != nil {
       return nil, err
    }
-   defer res.Body.Close()
-   if res.StatusCode != http.StatusOK {
-      return nil, errors.New(res.Status)
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      return nil, errors.New(resp.Status)
    }
    content := new(ContentUrls)
-   err = json.NewDecoder(res.Body).Decode(content)
+   err = json.NewDecoder(resp.Body).Decode(content)
    if err != nil {
       return nil, err
    }
@@ -252,14 +252,14 @@ func (s *LocaleStates) Make(language string) error {
       "Content-Type": {"application/json"},
       "Device-Id": {device},
    }
-   res, err := http.DefaultClient.Do(req)
+   resp, err := http.DefaultClient.Do(req)
    if err != nil {
       return err
    }
-   defer res.Body.Close()
-   if res.StatusCode != http.StatusOK {
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
       var b bytes.Buffer
-      res.Write(&b)
+      resp.Write(&b)
       return errors.New(b.String())
    }
    var query struct {
@@ -267,7 +267,7 @@ func (s *LocaleStates) Make(language string) error {
          Locales LocaleStates
       }
    }
-   if err := json.NewDecoder(res.Body).Decode(&query); err != nil {
+   if err := json.NewDecoder(resp.Body).Decode(&query); err != nil {
       return err
    }
    *s = query.Data.Locales

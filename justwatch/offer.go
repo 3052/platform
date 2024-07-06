@@ -30,17 +30,17 @@ func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {
    if err != nil {
       return nil, err
    }
-   res, err := http.Post(
+   resp, err := http.Post(
       "https://apis.justwatch.com/graphql", "application/json",
       bytes.NewReader(body),
    )
    if err != nil {
       return nil, err
    }
-   defer res.Body.Close()
-   if res.StatusCode != http.StatusOK {
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
       var b strings.Builder
-      res.Write(&b)
+      resp.Write(&b)
       return nil, errors.New(b.String())
    }
    var v struct {
@@ -52,7 +52,7 @@ func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {
          }
       }
    }
-   if err := json.NewDecoder(res.Body).Decode(&v); err != nil {
+   if err := json.NewDecoder(resp.Body).Decode(&v); err != nil {
       return nil, err
    }
    return v.Data.URL.Node.Offers, nil
@@ -163,4 +163,3 @@ func (gs OfferGroups) String() string {
    }
    return b.String()
 }
-
