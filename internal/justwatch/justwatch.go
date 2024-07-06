@@ -24,7 +24,7 @@ func (f flags) stream() error {
          return err
       }
       if !f.all {
-         offers = slices.DeleteFunc(offers, justwatch.URL)
+         offers = slices.DeleteFunc(offers, justwatch.Url)
       }
       for _, offer := range slices.DeleteFunc(offers, justwatch.Monetization) {
          groups.Add(locale, offer)
