@@ -21,7 +21,7 @@ type AdaptiveFormat struct {
    Itag int
    MimeType string
    QualityLabel string
-   URL string
+   Url string
 }
 
 // we need the length for progress meter, so cannot use a channel

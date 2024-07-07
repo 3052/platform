@@ -50,12 +50,12 @@ func (f flags) download(format youtube.AdaptiveFormat, name string) error {
    meter.Set(len(ranges))
    for _, byte_range := range ranges {
       err := func() error {
-         res, err := http.Get(format.URL + byte_range)
+         resp, err := http.Get(format.Url + byte_range)
          if err != nil {
             return err
          }
-         defer res.Body.Close()
-         _, err = file.ReadFrom(meter.Reader(res))
+         defer resp.Body.Close()
+         _, err = file.ReadFrom(meter.Reader(resp))
          if err != nil {
             return err
          }
