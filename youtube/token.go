@@ -14,7 +14,7 @@ const (
 )
 
 func (d DeviceCode) Auth() (*AuthToken, error) {
-   res, err := http.PostForm(
+   resp, err := http.PostForm(
       "https://oauth2.googleapis.com/token", url.Values{
          "client_id": {client_id},
          "client_secret": {client_secret},
@@ -25,9 +25,9 @@ func (d DeviceCode) Auth() (*AuthToken, error) {
    if err != nil {
       return nil, err
    }
-   defer res.Body.Close()
+   defer resp.Body.Close()
    var auth AuthToken
-   auth.Data, err = io.ReadAll(res.Body)
+   auth.Data, err = io.ReadAll(resp.Body)
    if err != nil {
       return nil, err
    }
@@ -47,7 +47,7 @@ func (a *AuthToken) Unmarshal() error {
 }
 
 func (a *AuthToken) Refresh() error {
-   res, err := http.PostForm(
+   resp, err := http.PostForm(
       "https://oauth2.googleapis.com/token",
       url.Values{
          "client_id": {client_id},
@@ -59,6 +59,6 @@ func (a *AuthToken) Refresh() error {
    if err != nil {
       return err
    }
-   defer res.Body.Close()
-   return json.NewDecoder(res.Body).Decode(&a.V)
+   defer resp.Body.Close()
+   return json.NewDecoder(resp.Body).Decode(&a.V)
 }

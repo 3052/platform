@@ -8,12 +8,12 @@ import (
 )
 
 func (n *next_data) New() error {
-   res, err := http.Get("https://m.soundcloud.com")
+   resp, err := http.Get("https://m.soundcloud.com")
    if err != nil {
       return err
    }
-   defer res.Body.Close()
-   text, err := io.ReadAll(res.Body)
+   defer resp.Body.Close()
+   text, err := io.ReadAll(resp.Body)
    if err != nil {
       return err
    }

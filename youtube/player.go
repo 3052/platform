@@ -25,12 +25,12 @@ func (p *Player) Post(r Request, auth *AuthToken) error {
    if auth != nil {
       req.Header.Set("Authorization", "Bearer " + auth.V.AccessToken)
    }
-   res, err := http.DefaultClient.Do(req)
+   resp, err := http.DefaultClient.Do(req)
    if err != nil {
       return err
    }
-   defer res.Body.Close()
-   return json.NewDecoder(res.Body).Decode(p)
+   defer resp.Body.Close()
+   return json.NewDecoder(resp.Body).Decode(p)
 }
 
 type Player struct {

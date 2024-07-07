@@ -24,7 +24,7 @@ type DeviceCode struct {
 }
 
 func (d *DeviceCode) New() error {
-   res, err := http.PostForm(
+   resp, err := http.PostForm(
       "https://oauth2.googleapis.com/device/code",
       url.Values{
          "client_id": {client_id},
@@ -34,6 +34,6 @@ func (d *DeviceCode) New() error {
    if err != nil {
       return err
    }
-   defer res.Body.Close()
-   return json.NewDecoder(res.Body).Decode(d)
+   defer resp.Body.Close()
+   return json.NewDecoder(resp.Body).Decode(d)
 }

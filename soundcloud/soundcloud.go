@@ -17,68 +17,71 @@ func (c *ClientTrack) New(id int64) error {
       b = append(b, client_id...)
       return string(b)
    }()
-   res, err := http.Get(address)
+   resp, err := http.Get(address)
    if err != nil {
       return err
    }
-   defer res.Body.Close()
-   return json.NewDecoder(res.Body).Decode(c)
+   defer resp.Body.Close()
+   return json.NewDecoder(resp.Body).Decode(c)
 }
 
-type ClientTrack struct {
-   ArtworkUrl string `json:"artwork_url"`
-   DisplayDate string `json:"display_date"`
-   ID int64
-   Media struct {
-      Transcodings []struct {
-         Format struct {
-            Protocol string
-         }
-         URL string
-      }
+func Resolve(address string) (*ClientTrack, error) {
+   req, err := http.NewRequest("", "https://api-v2.soundcloud.com/resolve", nil)
+   if err != nil {
+      return nil, err
    }
-   Title string
-   User struct {
-      AvatarUrl string `json:"avatar_url"`
-      Username string
+   req.URL.RawQuery = url.Values{
+      "client_id": {client_id},
+      "url": {address},
+   }.Encode()
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return nil, err
    }
+   defer resp.Body.Close()
+   var resolve struct {
+      Track ClientTrack
+   }
+   err = json.NewDecoder(resp.Body).Decode(&resolve)
+   if err != nil {
+      return nil, err
+   }
+   return &resolve.Track, nil
 }
+
+//////////
 
 // Also available is "hls", but all transcodings are quality "sq".
 // Same for "api-mobile.soundcloud.com".
-func (t ClientTrack) Progressive() (*Media, error) {
-   ref := func() string {
-      for _, code := range t.Media.Transcodings {
+func (c ClientTrack) Progressive() (*Media, error) {
+   address := func() string {
+      for _, code := range c.Media.Transcodings {
          if code.Format.Protocol == "progressive" {
-            return code.URL
+            return code.Url
          }
       }
       return ""
    }
-   req, err := http.NewRequest("", ref(), nil)
+   req, err := http.NewRequest("", address(), nil)
    if err != nil {
       return nil, err
    }
    req.URL.RawQuery = "client_id=" + client_id
-   res, err := new(http.Transport).RoundTrip(req)
+   resp, err := http.DefaultClient.Do(req)
    if err != nil {
       return nil, err
    }
-   defer res.Body.Close()
+   defer resp.Body.Close()
    med := new(Media)
-   if err := json.NewDecoder(res.Body).Decode(med); err != nil {
+   if err := json.NewDecoder(resp.Body).Decode(med); err != nil {
       return nil, err
    }
    return med, nil
 }
 
-type Media struct {
-   URL string // cf-media.sndcdn.com/QaV7QR1lxpc6.128.mp3
-}
-
 type Image struct {
-   Size string
    Crop bool
+   Size string
 }
 
 var Images = []Image{
@@ -103,38 +106,37 @@ var Images = []Image{
 
 const client_id = "iZIs9mchVcX5lhVRyQGGAYlNPVldzAoX"
 
+type ClientTrack struct {
+   ArtworkUrl string `json:"artwork_url"`
+   DisplayDate string `json:"display_date"`
+   Id int64
+   Media struct {
+      Transcodings []struct {
+         Format struct {
+            Protocol string
+         }
+         Url string
+      }
+   }
+   Title string
+   User struct {
+      AvatarUrl string `json:"avatar_url"`
+      Username string
+   }
+}
+
+type Media struct {
+   Url string // cf-media.sndcdn.com/QaV7QR1lxpc6.128.mp3
+}
+
 // i1.sndcdn.com/artworks-000308141235-7ep8lo-large.jpg
-func (t ClientTrack) Artwork() string {
-   if t.ArtworkUrl == "" {
-      t.ArtworkUrl = t.User.AvatarUrl
+func (c ClientTrack) Artwork() string {
+   if c.ArtworkUrl == "" {
+      c.ArtworkUrl = c.User.AvatarUrl
    }
-   return strings.Replace(t.ArtworkUrl, "large", "t500x500", 1)
+   return strings.Replace(c.ArtworkUrl, "large", "t500x500", 1)
 }
 
-func (t ClientTrack) Time() (time.Time, error) {
-   return time.Parse(time.RFC3339, t.DisplayDate)
-}
-
-func Resolve(address string) (*ClientTrack, error) {
-   req, err := http.NewRequest("", "https://api-v2.soundcloud.com/resolve", nil)
-   if err != nil {
-      return nil, err
-   }
-   req.URL.RawQuery = url.Values{
-      "client_id": {client_id},
-      "url": {address},
-   }.Encode()
-   res, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return nil, err
-   }
-   defer res.Body.Close()
-   var s struct {
-      Track ClientTrack
-   }
-   err = json.NewDecoder(res.Body).Decode(&s)
-   if err != nil {
-      return nil, err
-   }
-   return &s.Track, nil
+func (c ClientTrack) Time() (time.Time, error) {
+   return time.Parse(time.RFC3339, c.DisplayDate)
 }

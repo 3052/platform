@@ -9,12 +9,12 @@ import (
 )
 
 func (r *ReportParams) New(address string) error {
-   res, err := http.Get(address)
+   resp, err := http.Get(address)
    if err != nil {
       return err
    }
-   defer res.Body.Close()
-   data, err := io.ReadAll(res.Body)
+   defer resp.Body.Close()
+   data, err := io.ReadAll(resp.Body)
    if err != nil {
       return err
    }

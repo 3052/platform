@@ -20,13 +20,13 @@ func new_tralbum(typ byte, id int) (*Tralbum, error) {
       "tralbum_id": {strconv.Itoa(id)},
       "tralbum_type": {string(typ)},
    }.Encode()
-   res, err := new(http.Transport).RoundTrip(req)
+   resp, err := new(http.Transport).RoundTrip(req)
    if err != nil {
       return nil, err
    }
-   defer res.Body.Close()
+   defer resp.Body.Close()
    tralb := new(Tralbum)
-   if err := json.NewDecoder(res.Body).Decode(tralb); err != nil {
+   if err := json.NewDecoder(resp.Body).Decode(tralb); err != nil {
       return nil, err
    }
    return tralb, nil
@@ -93,12 +93,12 @@ func (b *BandDetails) New(id int64) error {
       b = strconv.AppendInt(b, id, 10)
       return string(b)
    }()
-   res, err := http.Get(address)
+   resp, err := http.Get(address)
    if err != nil {
       return err
    }
-   defer res.Body.Close()
-   return json.NewDecoder(res.Body).Decode(b)
+   defer resp.Body.Close()
+   return json.NewDecoder(resp.Body).Decode(b)
 }
 
 type Image struct {

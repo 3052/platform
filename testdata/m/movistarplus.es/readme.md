@@ -8,14 +8,6 @@ monetization = FLATRATE
 country = Spain
 ~~~
 
-## x-forwarded-for
-
-403 Forbidden
-
-## mullvad
-
-403 Forbidden
-
 ## smart proxy
 
 1. Suscribirme ahora (subscribe now)
