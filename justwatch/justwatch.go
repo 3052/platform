@@ -9,6 +9,15 @@ import (
    "strings"
 )
 
+func (s LocaleStates) Locale(t LangTag) (*LocaleState, bool) {
+   for _, locale := range s {
+      if locale.FullLocale == t.Locale {
+         return &locale, true
+      }
+   }
+   return nil, false
+}
+
 type Path string
 
 // https://www.justwatch.com/us/movie/the-social-network
@@ -216,15 +225,6 @@ type LocaleState struct {
 }
 
 type LocaleStates []LocaleState
-
-func (s LocaleStates) Locale(t LangTag) (*LocaleState, bool) {
-   for _, locale := range s {
-      if locale.FullLocale == t.Locale {
-         return &locale, true
-      }
-   }
-   return nil, false
-}
 
 func (s *LocaleStates) Make(language string) error {
    body, err := func() ([]byte, error) {
