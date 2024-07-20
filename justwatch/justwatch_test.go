@@ -6,8 +6,7 @@ import (
 )
 
 func TestLocale(t *testing.T) {
-   var locales LocaleStates
-   err := locales.Make("en-US")
+   locales, err := NewLocaleStates("en-US")
    if err != nil {
       t.Fatal(err)
    }

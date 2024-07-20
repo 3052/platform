@@ -9,6 +9,66 @@ import (
    "strings"
 )
 
+type LocaleStates []LocaleState
+
+func NewLocaleStates(language string) (LocaleStates, error) {
+   body, err := func() ([]byte, error) {
+      var s struct {
+         Query string
+         Variables struct {
+            Language string `json:"language"`
+         }
+      }
+      s.Query = graphql_compact(fetcher_query)
+      s.Variables.Language = language
+      return json.Marshal(s)
+   }()
+   if err != nil {
+      return nil, err
+   }
+   req, err := http.NewRequest(
+      "POST", "https://apis.justwatch.com/graphql", bytes.NewReader(body),
+   )
+   if err != nil {
+      return nil, err
+   }
+   device := base64.RawStdEncoding.EncodeToString(make([]byte, 16))
+   req.Header = http.Header{
+      "content-type": {"application/json"},
+      "device-id": {device},
+   }
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      var b bytes.Buffer
+      resp.Write(&b)
+      return nil, errors.New(b.String())
+   }
+   var data struct {
+      Data struct {
+         Locales LocaleStates
+      }
+   }
+   err = json.NewDecoder(resp.Body).Decode(&data)
+   if err != nil {
+      return nil, err
+   }
+   return data.Data.Locales, nil
+}
+
+func (LocaleState) Error() string {
+   return "LocaleState"
+}
+
+type LocaleState struct {
+   Country string
+   CountryName string
+   FullLocale string
+}
+
 func (s LocaleStates) Locale(t LangTag) (*LocaleState, bool) {
    for _, locale := range s {
       if locale.FullLocale == t.Locale {
@@ -216,60 +276,4 @@ type ContentUrls struct {
 type LangTag struct {
    Locale string // es_AR
    Href string // /ar/pelicula/mulholland-drive
-}
-
-type LocaleState struct {
-   FullLocale string
-   Country string
-   CountryName string
-}
-
-type LocaleStates []LocaleState
-
-func (s *LocaleStates) Make(language string) error {
-   body, err := func() ([]byte, error) {
-      var s struct {
-         Query string
-         Variables struct {
-            Language string `json:"language"`
-         }
-      }
-      s.Query = graphql_compact(fetcher_query)
-      s.Variables.Language = language
-      return json.Marshal(s)
-   }()
-   if err != nil {
-      return err
-   }
-   req, err := http.NewRequest(
-      "POST", "https://apis.justwatch.com/graphql", bytes.NewReader(body),
-   )
-   if err != nil {
-      return err
-   }
-   device := base64.RawStdEncoding.EncodeToString(make([]byte, 16))
-   req.Header = http.Header{
-      "Content-Type": {"application/json"},
-      "Device-Id": {device},
-   }
-   resp, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      var b bytes.Buffer
-      resp.Write(&b)
-      return errors.New(b.String())
-   }
-   var query struct {
-      Data struct {
-         Locales LocaleStates
-      }
-   }
-   if err := json.NewDecoder(resp.Body).Decode(&query); err != nil {
-      return err
-   }
-   *s = query.Data.Locales
-   return nil
 }

@@ -78,19 +78,19 @@ type OfferNode struct {
    StandardWebUrl WebUrl
 }
 
-func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {
+func (t LangTag) Offers(state *LocaleState) ([]OfferNode, error) {
    body, err := func() ([]byte, error) {
-      var v struct {
+      var s struct {
          Variables struct {
             Country string `json:"country"`
             FullPath string `json:"fullPath"`
          }
          Query string
       }
-      v.Query = graphql_compact(title_details)
-      v.Variables.FullPath = t.Href
-      v.Variables.Country = s.Country
-      return json.Marshal(v)
+      s.Query = graphql_compact(title_details)
+      s.Variables.FullPath = t.Href
+      s.Variables.Country = state.Country
+      return json.Marshal(s)
    }()
    if err != nil {
       return nil, err
@@ -108,7 +108,7 @@ func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {
       resp.Write(&b)
       return nil, errors.New(b.String())
    }
-   var v struct {
+   var data struct {
       Data struct {
          Url struct {
             Node struct {
@@ -117,10 +117,10 @@ func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error) {
          }
       }
    }
-   if err := json.NewDecoder(resp.Body).Decode(&v); err != nil {
+   if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
       return nil, err
    }
-   return v.Data.Url.Node.Offers, nil
+   return data.Data.Url.Node.Offers, nil
 }
 
 const title_details = `
