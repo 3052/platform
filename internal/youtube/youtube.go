@@ -10,6 +10,54 @@ import (
    "slices"
 )
 
+func (f flags) do_refresh() error {
+   var code youtube.DeviceCode
+   code.New()
+   fmt.Println(code)
+   fmt.Scanln()
+   token, err := code.Token()
+   if err != nil {
+      return err
+   }
+   home, err := os.UserHomeDir()
+   if err != nil {
+      return err
+   }
+   return os.WriteFile(home+"/youtube.json", token.Data, 0666)
+}
+
+func (f flags) player() (*youtube.Player, error) {
+   var auth *youtube.AuthToken
+   switch f.request {
+   case 0:
+      f.r.Android()
+   case 1:
+      f.r.AndroidEmbed()
+   case 2:
+      f.r.AndroidCheck()
+      home, err := os.UserHomeDir()
+      if err != nil {
+         return nil, err
+      }
+      auth = new(youtube.AuthToken)
+      auth.Data, err = os.ReadFile(home + "/youtube.json")
+      if err != nil {
+         return nil, err
+      }
+      err = auth.Unmarshal()
+      if err != nil {
+         return nil, err
+      }
+      err = auth.Refresh()
+      if err != nil {
+         return nil, err
+      }
+   }
+   var play youtube.Player
+   play.Post(f.r, auth)
+   return &play, nil
+}
+
 func (f flags) loop() error {
    play, err := f.player()
    if err != nil {
@@ -66,48 +114,4 @@ func (f flags) download(format youtube.AdaptiveFormat, name string) error {
       }
    }
    return nil
-}
-
-func (f flags) do_refresh() error {
-   var code youtube.DeviceCode
-   code.New()
-   fmt.Println(code)
-   fmt.Scanln()
-   auth, err := code.Auth()
-   if err != nil {
-      return err
-   }
-   home, err := os.UserHomeDir()
-   if err != nil {
-      return err
-   }
-   return os.WriteFile(home+"/youtube.json", auth.Data, 0666)
-}
-
-func (f flags) player() (*youtube.Player, error) {
-   var auth *youtube.AuthToken
-   switch f.request {
-   case 0:
-      f.r.Android()
-   case 1:
-      f.r.AndroidEmbed()
-   case 2:
-      f.r.AndroidCheck()
-      home, err := os.UserHomeDir()
-      if err != nil {
-         return nil, err
-      }
-      auth = new(youtube.AuthToken)
-      auth.Data, err = os.ReadFile(home + "/youtube.json")
-      if err != nil {
-         return nil, err
-      }
-      auth.Unmarshal()
-      if err := auth.Refresh(); err != nil {
-         return nil, err
-      }
-   }
-   var play youtube.Player
-   play.Post(f.r, auth)
-   return &play, nil
 }

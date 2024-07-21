@@ -21,9 +21,9 @@ func (p *Player) Post(r Request, auth *AuthToken) error {
    if err != nil {
       return err
    }
-   req.Header.Set("User-Agent", user_agent + r.Context.Client.ClientVersion)
+   req.Header.Set("user-agent", user_agent + r.Context.Client.ClientVersion)
    if auth != nil {
-      req.Header.Set("Authorization", "Bearer " + auth.V.AccessToken)
+      req.Header.Set("authorization", "Bearer " + auth.v.AccessToken)
    }
    resp, err := http.DefaultClient.Do(req)
    if err != nil {

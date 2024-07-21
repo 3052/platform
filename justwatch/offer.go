@@ -12,6 +12,11 @@ import (
    "strings"
 )
 
+var contains = []string{
+   // 2024-7-20
+   "/www.stan.com.au/",
+}
+
 func (gs OfferGroups) String() string {
    var b []byte
    slices.SortFunc(gs, func(c, d *OfferGroup) int {
@@ -142,8 +147,6 @@ query(
    }
 }
 `
-
-var contains []string
 
 func Monetization(o OfferNode) bool {
    switch o.MonetizationType {
