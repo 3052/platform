@@ -6,7 +6,24 @@ import (
    "os"
    "testing"
 )
+package soundcloud
 
+import (
+   "encoding/json"
+   "os"
+   "testing"
+)
+
+func TestNextData(t *testing.T) {
+   var next next_data
+   err := next.New()
+   if err != nil {
+      t.Fatal(err)
+   }
+   enc := json.NewEncoder(os.Stdout)
+   enc.SetIndent("", " ")
+   enc.Encode(next)
+}
 const (
    id = 936653761
    address = "https://soundcloud.com/kino-scmusic/mqymd53jtwag"
