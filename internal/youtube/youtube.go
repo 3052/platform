@@ -27,7 +27,7 @@ func (f flags) do_refresh() error {
 }
 
 func (f flags) player() (*youtube.Player, error) {
-   var auth *youtube.AuthToken
+   var token *youtube.AuthToken
    switch f.request {
    case 0:
       f.r.Android()
@@ -39,22 +39,22 @@ func (f flags) player() (*youtube.Player, error) {
       if err != nil {
          return nil, err
       }
-      auth = new(youtube.AuthToken)
-      auth.Data, err = os.ReadFile(home + "/youtube.json")
+      token = new(youtube.AuthToken)
+      token.Data, err = os.ReadFile(home + "/youtube.json")
       if err != nil {
          return nil, err
       }
-      err = auth.Unmarshal()
+      err = token.Unmarshal()
       if err != nil {
          return nil, err
       }
-      err = auth.Refresh()
+      err = token.Refresh()
       if err != nil {
          return nil, err
       }
    }
    var play youtube.Player
-   play.Post(f.r, auth)
+   play.Post(f.r, token)
    return &play, nil
 }
 

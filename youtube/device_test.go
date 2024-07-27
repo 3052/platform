@@ -3,31 +3,42 @@ package youtube
 import (
    "fmt"
    "testing"
-   "time"
 )
 
-func TestCode(t *testing.T) {
+func TestCodeWrite(t *testing.T) {
    var code DeviceCode
    err := code.New()
    if err != nil {
       t.Fatal(err)
    }
-   fmt.Printf(
-      "1. go to\n%v\n\n2. enter this code\n%v\n",
-      code.VerificationUrl, code.UserCode,
-   )
-   for range 9 {
-      time.Sleep(9 * time.Second)
-      auth, err := code.Auth()
-      if err != nil {
-         t.Fatal(err)
-      }
-      if err := auth.Unmarshal(); err != nil {
-         t.Fatal(err)
-      }
-      fmt.Printf("%+v\n", auth)
-      if auth.V.AccessToken != "" {
-         break
-      }
+   os.WriteFile("code.json", code.Data, 0666)
+   err = code.Unmarshal()
+   if err != nil {
+      t.Fatal(err)
    }
+   fmt.Println(code)
+}
+
+func TestCodeRead(t *testing.T) {
+   var (
+      code DeviceCode
+      err error
+   )
+   code.Data, err = os.ReadFile("code.json")
+   if err != nil {
+      t.Fatal(err)
+   }
+   err = code.Unmarshal()
+   if err != nil {
+      t.Fatal(err)
+   }
+   token, err := code.Token()
+   if err != nil {
+      t.Fatal(err)
+   }
+   err = token.Unmarshal()
+   if err != nil {
+      t.Fatal(err)
+   }
+   fmt.Printf("%+v\n", token)
 }
