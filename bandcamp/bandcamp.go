@@ -32,9 +32,9 @@ func (r *ReportParams) New(address string) error {
    return json.Unmarshal(p.DataTouReportParams, r)
 }
 
-func (p ReportParams) Band() (*BandDetails, error) {
+func (r ReportParams) Band() (*BandDetails, error) {
    var band BandDetails
-   err := band.New(p.Aid)
+   err := band.New(r.Aid)
    if err != nil {
       return nil, err
    }
@@ -47,15 +47,16 @@ type ReportParams struct {
    Itype string `json:"i_type"`
 }
 
-func (p ReportParams) Tralbum() (*Tralbum, error) {
-   switch p.Itype {
+func (r ReportParams) Tralbum() (*Tralbum, error) {
+   switch r.Itype {
    case "a":
-      return new_tralbum('a', p.Iid)
+      return new_tralbum('a', r.Iid)
    case "t":
-      return new_tralbum('t', p.Iid)
+      return new_tralbum('t', r.Iid)
    }
-   return nil, invalid_type{p.Itype}
+   return nil, invalid_type{r.Itype}
 }
+
 func new_tralbum(typ byte, id int) (*Tralbum, error) {
    req, err := http.NewRequest(
       "GET", "http://bandcamp.com/api/mobile/24/tralbum_details", nil,
