@@ -77,7 +77,14 @@ func (a *AdaptiveFormat) String() string {
    return string(b)
 }
 
-var Images = []Image{
+type YtImg struct {
+   Height int
+   Name string
+   VideoId string
+   Width int
+}
+
+var YtImgs = []YtImg{
    {Width:120, Height:90, Name:"default.jpg"},
    {Width:120, Height:90, Name:"1.jpg"},
    {Width:120, Height:90, Name:"2.jpg"},
@@ -124,67 +131,24 @@ var Images = []Image{
    {Width:1280, Height:720, Name:"maxres3.webp"},
 }
 
-type Image struct {
-   Height int
-   Name string
-   VideoId string
-   Width int
-}
-
-func (i *Image) String() string {
+func (y *YtImg) String() string {
    var b strings.Builder
    b.WriteString("http://i.ytimg.com/vi")
-   if strings.HasSuffix(i.Name, ".webp") {
+   if strings.HasSuffix(y.Name, ".webp") {
       b.WriteString("_webp")
    }
    b.WriteByte('/')
-   b.WriteString(i.VideoId)
+   b.WriteString(y.VideoId)
    b.WriteByte('/')
-   b.WriteString(i.Name)
+   b.WriteString(y.Name)
    return b.String()
 }
 
-///
-
-func (i *InnerTube) Set(s string) error {
-   base, err := url.Parse(s)
-   if err != nil {
-      return err
-   }
-   i.VideoId = base.Query().Get("v")
-   if i.VideoId == "" {
-      i.VideoId = path.Base(base.Path)
-   }
-   return nil
-}
-
-func (i InnerTube) String() string {
-   return i.VideoId
-}
-
-func (i *InnerTube) Web() {
-   i.Context.Client.ClientName = "WEB"
-   i.Context.Client.ClientVersion = web_version
-}
-
-func (i *InnerTube) AndroidEmbed() {
-   i.Context.Client.ClientName = "ANDROID_EMBEDDED_PLAYER"
-   i.Context.Client.ClientVersion = android_version
-}
-
-func (i *InnerTube) Android() {
-   i.ContentCheckOk = true
-   i.Context.Client.ClientName = "ANDROID"
-   i.Context.Client.ClientVersion = android_version
-}
-
-func (i *InnerTube) AndroidCheck() {
-   i.ContentCheckOk = true
-   i.Context.Client.ClientName = "ANDROID"
-   i.Context.Client.ClientVersion = android_version
-   i.RacyCheckOk = true
-}
-
+// need `osVersion` this to get the correct:
+// This video requires payment to watch
+// instead of the invalid:
+// This video can only be played on newer versions of Android or other
+// supported devices.
 type InnerTube struct {
    ContentCheckOk bool `json:"contentCheckOk,omitempty"`
    Context struct {
@@ -192,14 +156,34 @@ type InnerTube struct {
          AndroidSdkVersion int `json:"androidSdkVersion"`
          ClientName string `json:"clientName"`
          ClientVersion string `json:"clientVersion"`
-         // need this to get the correct:
-         // This video requires payment to watch
-         // instead of the invalid:
-         // This video can only be played on newer versions of Android or other
-         // supported devices.
          OsVersion string `json:"osVersion"`
       } `json:"client"`
    } `json:"context"`
    RacyCheckOk bool `json:"racyCheckOk,omitempty"`
    VideoId string `json:"videoId"`
+}
+
+var ClientName = []string{
+   "ANDROID",
+   "ANDROID_EMBEDDED_PLAYER",
+   "WEB",
+}
+
+func (v VideoId) String() string {
+   return string(v)
+}
+
+type VideoId string
+
+func (v *VideoId) Set(text string) error {
+   address, err := url.Parse(text)
+   if err != nil {
+      return err
+   }
+   id := address.Query().Get("v")
+   if id == "" {
+      id = path.Base(address.Path)
+   }
+   *v = VideoId(id)
+   return nil
 }

@@ -13,19 +13,19 @@ func main() {
    if err != nil {
       panic(err)
    }
-   flag.Var(&f.r, "a", "address")
-   flag.StringVar(&f.r.VideoId, "b", "", "video ID")
    flag.BoolVar(&f.code, "c", false, "write code")
    flag.IntVar(&f.itag, "i", 0, "itag")
-   {
-      var b strings.Builder
-      b.WriteString("0: Android\n")
-      b.WriteString("1: Android embed\n")
-      b.WriteString("2: Android check")
-      flag.IntVar(&f.request, "r", 0, b.String())
-   }
    flag.BoolVar(&f.token, "t", false, "write token")
+   flag.StringVar(
+      &f.tube.Context.Client.ClientName, "n",
+      youtube.ClientName[0], strings.Join(youtube.ClientName[1:], " "),
+   )
+   flag.StringVar(&f.tube.VideoId, "b", "", "video ID")
+   flag.Var(&f.id, "a", "address")
    flag.Parse()
+   if f.tube.VideoId == "" {
+      f.tube.VideoId = f.id.String()
+   }
    text.Transport{}.Set(true)
    switch {
    case f.code:
@@ -38,7 +38,7 @@ func main() {
       if err != nil {
          panic(err)
       }
-   case f.r.VideoId != "":
+   case f.tube.VideoId != "":
       err := f.loop()
       if err != nil {
          panic(err)
@@ -52,7 +52,8 @@ type flags struct {
    code bool
    home string
    itag int
-   r youtube.Request
    request int
    token bool
+   tube youtube.InnerTube
+   id youtube.VideoId
 }

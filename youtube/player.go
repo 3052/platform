@@ -22,9 +22,42 @@ func (d *Date) UnmarshalText(text []byte) error {
    return nil
 }
 
+type Player struct {
+   Microformat struct {
+      PlayerMicroformatRenderer struct {
+         PublishDate Date
+      }
+   }
+   PlayabilityStatus struct {
+      Status string
+      Reason string
+   }
+   StreamingData struct {
+      AdaptiveFormats []AdaptiveFormat
+   }
+   VideoDetails struct {
+      Author string
+      LengthSeconds int64 `json:",string"`
+      ShortDescription string
+      Title string
+      VideoId string
+      ViewCount int64 `json:",string"`
+   }
+}
+
 func (i *InnerTube) Player(token *AuthToken) (*Player, error) {
    i.Context.Client.AndroidSdkVersion = 32
    i.Context.Client.OsVersion = "12"
+   switch i.Context.Client.ClientName {
+   case "ANDROID":
+      i.ContentCheckOk = true
+      i.Context.Client.ClientVersion = android_version
+      i.RacyCheckOk = true
+   case "ANDROID_EMBEDDED_PLAYER":
+      i.Context.Client.ClientVersion = android_version
+   case "WEB":
+      i.Context.Client.ClientVersion = web_version
+   }
    body, err := json.Marshal(i)
    if err != nil {
       return nil, err
@@ -51,27 +84,4 @@ func (i *InnerTube) Player(token *AuthToken) (*Player, error) {
       return nil, err
    }
    return play, nil
-}
-
-type Player struct {
-   Microformat struct {
-      PlayerMicroformatRenderer struct {
-         PublishDate Date
-      }
-   }
-   PlayabilityStatus struct {
-      Status string
-      Reason string
-   }
-   StreamingData struct {
-      AdaptiveFormats []AdaptiveFormat
-   }
-   VideoDetails struct {
-      Author string
-      LengthSeconds int64 `json:",string"`
-      ShortDescription string
-      Title string
-      VideoId string
-      ViewCount int64 `json:",string"`
-   }
 }

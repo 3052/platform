@@ -10,50 +10,6 @@ import (
    "slices"
 )
 
-func (f *flags) New() error {
-   var err error
-   f.home, err = os.UserHomeDir()
-   if err != nil {
-      return err
-   }
-   return nil
-}
-
-func write_code() error {
-   var code youtube.DeviceCode
-   err := code.New()
-   if err != nil {
-      return err
-   }
-   text, err := code.Marshal()
-   if err != nil {
-      return err
-   }
-   fmt.Println(code)
-   return os.WriteFile("code.json", text, 0666)
-}
-
-func (f *flags) write_token() error {
-   text, err := os.ReadFile("code.json")
-   if err != nil {
-      return err
-   }
-   var code youtube.DeviceCode
-   err = code.Unmarshal(text)
-   if err != nil {
-      return err
-   }
-   token, err := code.Token()
-   if err != nil {
-      return err
-   }
-   text, err = token.Marshal()
-   if err != nil {
-      return err
-   }
-   return os.WriteFile(f.home + "/youtube.json", text, 0666)
-}
-
 func (f *flags) loop() error {
    var token *youtube.AuthToken
    switch f.request {
@@ -133,4 +89,47 @@ func download(format youtube.AdaptiveFormat, name string) error {
       }
    }
    return nil
+}
+func (f *flags) New() error {
+   var err error
+   f.home, err = os.UserHomeDir()
+   if err != nil {
+      return err
+   }
+   return nil
+}
+
+func write_code() error {
+   var code youtube.DeviceCode
+   err := code.New()
+   if err != nil {
+      return err
+   }
+   text, err := code.Marshal()
+   if err != nil {
+      return err
+   }
+   fmt.Println(code)
+   return os.WriteFile("code.json", text, 0666)
+}
+
+func (f *flags) write_token() error {
+   text, err := os.ReadFile("code.json")
+   if err != nil {
+      return err
+   }
+   var code youtube.DeviceCode
+   err = code.Unmarshal(text)
+   if err != nil {
+      return err
+   }
+   token, err := code.Token()
+   if err != nil {
+      return err
+   }
+   text, err = token.Marshal()
+   if err != nil {
+      return err
+   }
+   return os.WriteFile(f.home + "/youtube.json", text, 0666)
 }
