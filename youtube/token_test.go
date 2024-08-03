@@ -6,15 +6,6 @@ import (
    "time"
 )
 
-var check_ids = []string{
-   "Cr381pDsSsA", // racy check
-   "HsUATh_Nc2U", // racy check
-   "SZJvDhaSDnc", // racy check
-   "Tq92D6wQ1mg", // racy check
-   "dqRZDebPIGs", // racy check
-   "nGC3D_FkCmg", // content check
-}
-
 func TestAndroidCheck(t *testing.T) {
    home, err := os.UserHomeDir()
    if err != nil {
@@ -24,13 +15,16 @@ func TestAndroidCheck(t *testing.T) {
    if err != nil {
       t.Fatal(err)
    }
+   var token AuthToken
+   err = token.Unmarshal(text)
+   if err != nil {
+      t.Fatal(err)
+   }
    for _, check_id := range check_ids {
-      var play Player
-      req := Request{VideoId: check_id}
-      req.AndroidCheck()
-      token := AuthToken{Data: text}
-      token.Unmarshal()
-      err := play.Post(req, &token)
+      var tube InnerTube
+      tube.VideoId = check_id
+      tube.Context.Client.ClientName = android
+      play, err := tube.Player(&token)
       if err != nil {
          t.Fatal(err)
       }
@@ -39,4 +33,13 @@ func TestAndroidCheck(t *testing.T) {
       }
       time.Sleep(time.Second)
    }
+}
+
+var check_ids = []string{
+   "Cr381pDsSsA", // racy check
+   "HsUATh_Nc2U", // racy check
+   "SZJvDhaSDnc", // racy check
+   "Tq92D6wQ1mg", // racy check
+   "dqRZDebPIGs", // racy check
+   "nGC3D_FkCmg", // content check
 }

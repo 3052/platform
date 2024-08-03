@@ -7,21 +7,6 @@ import (
    "time"
 )
 
-const user_agent = "com.google.android.youtube/"
-
-type Date struct {
-   Time time.Time
-}
-
-func (d *Date) UnmarshalText(text []byte) error {
-   var err error
-   d.Time, err = time.Parse(time.RFC3339, string(text))
-   if err != nil {
-      return err
-   }
-   return nil
-}
-
 type Player struct {
    Microformat struct {
       PlayerMicroformatRenderer struct {
@@ -45,17 +30,32 @@ type Player struct {
    }
 }
 
+const user_agent = "com.google.android.youtube/"
+
+type Date struct {
+   Time time.Time
+}
+
+func (d *Date) UnmarshalText(text []byte) error {
+   var err error
+   d.Time, err = time.Parse(time.RFC3339, string(text))
+   if err != nil {
+      return err
+   }
+   return nil
+}
+
 func (i *InnerTube) Player(token *AuthToken) (*Player, error) {
    i.Context.Client.AndroidSdkVersion = 32
    i.Context.Client.OsVersion = "12"
    switch i.Context.Client.ClientName {
-   case "ANDROID":
+   case android:
       i.ContentCheckOk = true
       i.Context.Client.ClientVersion = android_version
       i.RacyCheckOk = true
-   case "ANDROID_EMBEDDED_PLAYER":
+   case android_embedded_player:
       i.Context.Client.ClientVersion = android_version
-   case "WEB":
+   case web:
       i.Context.Client.ClientVersion = web_version
    }
    body, err := json.Marshal(i)

@@ -7,12 +7,12 @@ import (
    "time"
 )
 
-func TestModeLine(t *testing.T) {
-   var req Request
-   req.Android()
-   req.VideoId = android_ids[0]
-   var play Player
-   if err := play.Post(req, nil); err != nil {
+func TestFormat(t *testing.T) {
+   var tube InnerTube
+   tube.VideoId = android_ids[0]
+   tube.Context.Client.ClientName = android
+   play, err := tube.Player(nil)
+   if err != nil {
       t.Fatal(err)
    }
    for _, format := range play.StreamingData.AdaptiveFormats {
@@ -22,12 +22,12 @@ func TestModeLine(t *testing.T) {
 
 func TestId(t *testing.T) {
    for _, test := range id_tests {
-      var req Request
-      err := req.Set(test)
+      var tube InnerTube
+      err := tube.Set(test)
       if err != nil {
          t.Fatal(err)
       }
-      fmt.Println(req.VideoId)
+      fmt.Println(tube.VideoId)
    }
 }
 

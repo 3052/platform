@@ -5,10 +5,50 @@ import (
    "time"
 )
 
+func TestWeb(t *testing.T) {
+   var tube InnerTube
+   tube.VideoId = web_id
+   tube.Context.Client.ClientName = web
+   play, err := tube.Player(nil)
+   if err != nil {
+      t.Fatal(err)
+   }
+   if play.Microformat.PlayerMicroformatRenderer.PublishDate.Time.IsZero() {
+      t.Fatal("PublishDate")
+   }
+   if play.PlayabilityStatus.Reason != "" {
+      t.Fatal("reason")
+   }
+   if play.PlayabilityStatus.Status != "OK" {
+      t.Fatal("status")
+   }
+   if len(play.StreamingData.AdaptiveFormats) == 0 {
+      t.Fatal("adaptiveFormats")
+   }
+   if play.VideoDetails.Author == "" {
+      t.Fatal("author")
+   }
+   if play.VideoDetails.LengthSeconds <= 0 {
+      t.Fatal("duration")
+   }
+   if play.VideoDetails.ShortDescription == "" {
+      t.Fatal("shortDescription")
+   }
+   if play.VideoDetails.Title == "" {
+      t.Fatal("title")
+   }
+   if play.VideoDetails.VideoId == "" {
+      t.Fatal("videoId")
+   }
+   if play.VideoDetails.ViewCount <= 0 {
+      t.Fatal("viewCount")
+   }
+}
+
 func TestAndroid(t *testing.T) {
    for _, android_id := range android_ids {
       var tube InnerTube
-      tube.Context.Client.Client.Name = "ANDROID"
+      tube.Context.Client.ClientName = android
       tube.VideoId = android_id
       play, err := tube.Player(nil)
       if err != nil {
@@ -36,13 +76,12 @@ var embed_ids = []string{
    "HtVdAasjOgU",
    "WaOKSUlf4TM",
 }
-
 func TestAndroidEmbed(t *testing.T) {
    for _, embed_id := range embed_ids {
-      var play Player
-      tube := InnerTube{VideoId: embed_id}
-      tube.AndroidEmbed()
-      err := play.Post(tube, nil)
+      var tube InnerTube
+      tube.VideoId = embed_id
+      tube.Context.Client.ClientName = android_embedded_player
+      play, err := tube.Player(nil)
       if err != nil {
          t.Fatal(err)
       }
@@ -54,43 +93,3 @@ func TestAndroidEmbed(t *testing.T) {
 }
 
 const web_id = "HPkDFc8hq5c"
-
-func TestWeb(t *testing.T) {
-   tube := InnerTube{VideoId: web_id}
-   tube.Web()
-   var p Player
-   err := p.Post(tube, nil)
-   if err != nil {
-      t.Fatal(err)
-   }
-   if p.Author() == "" {
-      t.Fatal("author")
-   }
-   if p.PlayabilityStatus.Reason != "" {
-      t.Fatal("reason")
-   }
-   if p.PlayabilityStatus.Status != "OK" {
-      t.Fatal("status")
-   }
-   if len(p.StreamingData.AdaptiveFormats) == 0 {
-      t.Fatal("adaptiveFormats")
-   }
-   if _, err := p.Time(); err != nil {
-      t.Fatal(err)
-   }
-   if p.Title() == "" {
-      t.Fatal("title")
-   }
-   if p.VideoDetails.LengthSeconds <= 0 {
-      t.Fatal("duration")
-   }
-   if p.VideoDetails.ShortDescription == "" {
-      t.Fatal("shortDescription")
-   }
-   if p.VideoDetails.VideoId == "" {
-      t.Fatal("videoId")
-   }
-   if p.VideoDetails.ViewCount <= 0 {
-      t.Fatal("viewCount")
-   }
-}

@@ -10,6 +10,18 @@ import (
    "strings"
 )
 
+const (
+   android = "ANDROID"
+   android_embedded_player = "ANDROID_EMBEDDED_PLAYER"
+   web = "WEB"
+)
+
+var ClientName = []string{
+   android,
+   android_embedded_player,
+   web,
+}
+
 // need `osVersion` this to get the correct:
 // This video requires payment to watch
 // instead of the invalid:
@@ -27,12 +39,6 @@ type InnerTube struct {
    } `json:"context"`
    RacyCheckOk bool `json:"racyCheckOk,omitempty"`
    VideoId string `json:"videoId"`
-}
-
-var ClientName = []string{
-   "ANDROID",
-   "ANDROID_EMBEDDED_PLAYER",
-   "WEB",
 }
 
 const (
