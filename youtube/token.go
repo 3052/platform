@@ -12,27 +12,6 @@ const (
    client_secret = "SboVhoG9s0rNafixCSGGKXAT"
 )
 
-func (d *DeviceCode) Token() (*AuthToken, error) {
-   resp, err := http.PostForm(
-      "https://oauth2.googleapis.com/token", url.Values{
-         "client_id": {client_id},
-         "client_secret": {client_secret},
-         "device_code": {d.DeviceCode},
-         "grant_type":  {"urn:ietf:params:oauth:grant-type:device_code"},
-      },
-   )
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   token := new(AuthToken)
-   err = json.NewDecoder(resp.Body).Decode(token)
-   if err != nil {
-      return nil, err
-   }
-   return token, nil
-}
-
 func (a *AuthToken) Refresh() error {
    resp, err := http.PostForm(
       "https://oauth2.googleapis.com/token", url.Values{
@@ -60,4 +39,25 @@ type AuthToken struct {
 
 func (a *AuthToken) Unmarshal(text []byte) error {
    return json.Unmarshal(text, a)
+}
+
+func (d *DeviceCode) Token() (*AuthToken, error) {
+   resp, err := http.PostForm(
+      "https://oauth2.googleapis.com/token", url.Values{
+         "client_id": {client_id},
+         "client_secret": {client_secret},
+         "device_code": {d.DeviceCode},
+         "grant_type":  {"urn:ietf:params:oauth:grant-type:device_code"},
+      },
+   )
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   token := new(AuthToken)
+   err = json.NewDecoder(resp.Body).Decode(token)
+   if err != nil {
+      return nil, err
+   }
+   return token, nil
 }

@@ -7,12 +7,12 @@ import (
    "net/http"
 )
 
-type innertube struct {
+type ytcfg struct {
    InnertubeClientName string `json:"innertube_client_name"`
    InnertubeClientVersion string `json:"innertube_client_version"`
 }
 
-func (i *innertube) New() error {
+func (y *ytcfg) New() error {
    resp, err := http.Get("https://www.youtube.com")
    if err != nil {
       return err
@@ -23,5 +23,5 @@ func (i *innertube) New() error {
       return err
    }
    _, text, _ = bytes.Cut(text, []byte("\nytcfg.set("))
-   return json.NewDecoder(bytes.NewReader(text)).Decode(i)
+   return json.NewDecoder(bytes.NewReader(text)).Decode(y)
 }

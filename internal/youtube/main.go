@@ -7,15 +7,6 @@ import (
    "strings"
 )
 
-type flags struct {
-   code bool
-   home string
-   itag int
-   r youtube.Request
-   request int
-   token bool
-}
-
 func main() {
    var f flags
    err := f.New()
@@ -55,4 +46,13 @@ func main() {
    default:
       flag.Usage()
    }
+}
+
+type flags struct {
+   code bool
+   home string
+   itag int
+   r youtube.Request
+   request int
+   token bool
 }

@@ -7,36 +7,56 @@ import (
    "time"
 )
 
-func (p *Player) New(r Request, token *AuthToken) error {
-   r.Context.Client.AndroidSdkVersion = 32
-   r.Context.Client.OsVersion = "12"
-   body, err := json.Marshal(r)
+const user_agent = "com.google.android.youtube/"
+
+type Date struct {
+   Time time.Time
+}
+
+func (d *Date) UnmarshalText(text []byte) error {
+   var err error
+   d.Time, err = time.Parse(time.RFC3339, string(text))
    if err != nil {
       return err
+   }
+   return nil
+}
+
+func (i *InnerTube) Player(token *AuthToken) (*Player, error) {
+   i.Context.Client.AndroidSdkVersion = 32
+   i.Context.Client.OsVersion = "12"
+   body, err := json.Marshal(i)
+   if err != nil {
+      return nil, err
    }
    req, err := http.NewRequest(
       "POST", "https://www.youtube.com/youtubei/v1/player",
       bytes.NewReader(body),
    )
    if err != nil {
-      return err
+      return nil, err
    }
-   req.Header.Set("user-agent", user_agent + r.Context.Client.ClientVersion)
+   req.Header.Set("user-agent", user_agent + i.Context.Client.ClientVersion)
    if token != nil {
       req.Header.Set("authorization", "Bearer " + token.AccessToken)
    }
    resp, err := http.DefaultClient.Do(req)
    if err != nil {
-      return err
+      return nil, err
    }
    defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(p)
+   play := new(Player)
+   err = json.NewDecoder(resp.Body).Decode(play)
+   if err != nil {
+      return nil, err
+   }
+   return play, nil
 }
 
 type Player struct {
    Microformat struct {
       PlayerMicroformatRenderer struct {
-         PublishDate string
+         PublishDate Date
       }
    }
    PlayabilityStatus struct {
@@ -54,20 +74,4 @@ type Player struct {
       VideoId string
       ViewCount int64 `json:",string"`
    }
-}
-
-const user_agent = "com.google.android.youtube/"
-
-func (p Player) Author() string {
-   return p.VideoDetails.Author
-}
-
-func (p Player) Time() (time.Time, error) {
-   return time.Parse(
-      time.RFC3339, p.Microformat.PlayerMicroformatRenderer.PublishDate,
-   )
-}
-
-func (p Player) Title() string {
-   return p.VideoDetails.Title
 }
