@@ -2,7 +2,6 @@ package youtube
 
 import (
    "encoding/json"
-   "io"
    "net/http"
    "net/url"
 )
@@ -13,7 +12,7 @@ const (
    client_secret = "SboVhoG9s0rNafixCSGGKXAT"
 )
 
-func (d DeviceCode) Token() (*AuthToken, error) {
+func (d *DeviceCode) Token() (*AuthToken, error) {
    resp, err := http.PostForm(
       "https://oauth2.googleapis.com/token", url.Values{
          "client_id": {client_id},
@@ -26,28 +25,12 @@ func (d DeviceCode) Token() (*AuthToken, error) {
       return nil, err
    }
    defer resp.Body.Close()
-   data, err := io.ReadAll(resp.Body)
+   token := new(AuthToken)
+   err = json.NewDecoder(resp.Body).Decode(token)
    if err != nil {
       return nil, err
    }
-   return &AuthToken{Data: data}, nil
-}
-
-func pointer[T any](value *T) *T {
-   return new(T)
-}
-
-func (a *AuthToken) Unmarshal() error {
-   a.v = pointer(a.v)
-   return json.Unmarshal(a.Data, a.v)
-}
-
-type AuthToken struct {
-   Data []byte
-   v *struct {
-      AccessToken string `json:"access_token"`
-      RefreshToken string `json:"refresh_token"`
-   }
+   return token, nil
 }
 
 func (a *AuthToken) Refresh() error {
@@ -56,12 +39,25 @@ func (a *AuthToken) Refresh() error {
          "client_id": {client_id},
          "client_secret": {client_secret},
          "grant_type": {"refresh_token"},
-         "refresh_token": {a.v.RefreshToken},
+         "refresh_token": {a.RefreshToken},
       },
    )
    if err != nil {
       return err
    }
    defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(a.v)
+   return json.NewDecoder(resp.Body).Decode(a)
+}
+
+func (a *AuthToken) Marshal() ([]byte, error) {
+   return json.Marshal(a)
+}
+
+type AuthToken struct {
+   AccessToken string `json:"access_token"`
+   RefreshToken string `json:"refresh_token"`
+}
+
+func (a *AuthToken) Unmarshal(text []byte) error {
+   return json.Unmarshal(text, a)
 }

@@ -8,16 +8,23 @@ import (
 )
 
 type flags struct {
+   code bool
+   home string
    itag int
    r youtube.Request
-   refresh bool
    request int
+   token bool
 }
 
 func main() {
    var f flags
+   err := f.New()
+   if err != nil {
+      panic(err)
+   }
    flag.Var(&f.r, "a", "address")
    flag.StringVar(&f.r.VideoId, "b", "", "video ID")
+   flag.BoolVar(&f.code, "c", false, "write code")
    flag.IntVar(&f.itag, "i", 0, "itag")
    {
       var b strings.Builder
@@ -26,17 +33,22 @@ func main() {
       b.WriteString("2: Android check")
       flag.IntVar(&f.request, "r", 0, b.String())
    }
-   flag.BoolVar(&f.refresh, "refresh", false, "create OAuth refresh token")
+   flag.BoolVar(&f.token, "t", false, "write token")
    flag.Parse()
    text.Transport{}.Set(true)
    switch {
-   case f.r.VideoId != "":
-      err := f.loop()
+   case f.code:
+      err := write_code()
       if err != nil {
          panic(err)
       }
-   case f.refresh:
-      err := f.do_refresh()
+   case f.token:
+      err := f.write_token()
+      if err != nil {
+         panic(err)
+      }
+   case f.r.VideoId != "":
+      err := f.loop()
       if err != nil {
          panic(err)
       }

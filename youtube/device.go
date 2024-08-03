@@ -7,26 +7,12 @@ import (
    "strings"
 )
 
-func (d *DeviceCode) Unmarshal() error {
-   d.v = pointer(d.v)
-   return json.Unmarshal(d.Data, d.v)
-}
-
-type DeviceCode struct {
-   Data []byte
-   v *struct {
-      DeviceCode string `json:"device_code"`
-      UserCode string `json:"user_code"`
-      VerificationUrl string `json:"verification_url"`
-   }
-}
-
-func (d DeviceCode) String() string {
+func (d *DeviceCode) String() string {
    var b strings.Builder
    b.WriteString("1. Go to\n")
-   b.WriteString(d.v.VerificationUrl)
+   b.WriteString(d.VerificationUrl)
    b.WriteString("\n\n2. Enter this code\n")
-   b.WriteString(d.v.UserCode)
+   b.WriteString(d.UserCode)
    b.WriteString("\n\n3. Press Enter to continue")
    return b.String()
 }
@@ -43,9 +29,19 @@ func (d *DeviceCode) New() error {
       return err
    }
    defer resp.Body.Close()
-   d.Data, err = io.ReadAll(resp.Body)
-   if err != nil {
-      return err
-   }
-   return nil
+   return json.NewDecoder(resp.Body).Decode(d)
+}
+
+func (d *DeviceCode) Marshal() ([]byte, error) {
+   return json.Marshal(d)
+}
+
+type DeviceCode struct {
+   DeviceCode string `json:"device_code"`
+   UserCode string `json:"user_code"`
+   VerificationUrl string `json:"verification_url"`
+}
+
+func (d *DeviceCode) Unmarshal(text []byte) error {
+   return json.Unmarshal(text, d)
 }

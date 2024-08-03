@@ -10,23 +10,51 @@ import (
    "slices"
 )
 
-func (f flags) do_refresh() error {
+func (f *flags) New() error {
+   var err error
+   f.home, err = os.UserHomeDir()
+   if err != nil {
+      return err
+   }
+   return nil
+}
+
+func write_code() error {
    var code youtube.DeviceCode
-   code.New()
+   err := code.New()
+   if err != nil {
+      return err
+   }
+   text, err := code.Marshal()
+   if err != nil {
+      return err
+   }
    fmt.Println(code)
-   fmt.Scanln()
+   return os.WriteFile("code.json", text, 0666)
+}
+
+func (f *flags) write_token() error {
+   text, err := os.ReadFile("code.json")
+   if err != nil {
+      return err
+   }
+   var code youtube.DeviceCode
+   err = code.Unmarshal(text)
+   if err != nil {
+      return err
+   }
    token, err := code.Token()
    if err != nil {
       return err
    }
-   home, err := os.UserHomeDir()
+   text, err = token.Marshal()
    if err != nil {
       return err
    }
-   return os.WriteFile(home+"/youtube.json", token.Data, 0666)
+   return os.WriteFile(f.home + "/youtube.json", text, 0666)
 }
 
-func (f flags) player() (*youtube.Player, error) {
+func (f *flags) loop() error {
    var token *youtube.AuthToken
    switch f.request {
    case 0:
@@ -34,32 +62,23 @@ func (f flags) player() (*youtube.Player, error) {
    case 1:
       f.r.AndroidEmbed()
    case 2:
-      f.r.AndroidCheck()
-      home, err := os.UserHomeDir()
+      text, err := os.ReadFile(f.home + "/youtube.json")
       if err != nil {
-         return nil, err
+         return err
       }
       token = new(youtube.AuthToken)
-      token.Data, err = os.ReadFile(home + "/youtube.json")
+      err = token.Unmarshal(text)
       if err != nil {
-         return nil, err
-      }
-      err = token.Unmarshal()
-      if err != nil {
-         return nil, err
+         return err
       }
       err = token.Refresh()
       if err != nil {
-         return nil, err
+         return err
       }
+      f.r.AndroidCheck()
    }
    var play youtube.Player
-   play.Post(f.r, token)
-   return &play, nil
-}
-
-func (f flags) loop() error {
-   play, err := f.player()
+   err := play.New(f.r, token)
    if err != nil {
       return err
    }
@@ -67,7 +86,7 @@ func (f flags) loop() error {
    // download one
    for _, format := range play.StreamingData.AdaptiveFormats {
       if format.Itag == f.itag {
-         return f.download(format, play.VideoDetails.Title)
+         return download(format, play.VideoDetails.Title)
       }
    }
    // print all
@@ -83,7 +102,7 @@ func (f flags) loop() error {
    return nil
 }
 
-func (f flags) download(format youtube.AdaptiveFormat, name string) error {
+func download(format youtube.AdaptiveFormat, name string) error {
    ext, err := format.Ext()
    if err != nil {
       return err

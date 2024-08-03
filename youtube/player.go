@@ -7,7 +7,7 @@ import (
    "time"
 )
 
-func (p *Player) Post(r Request, token *AuthToken) error {
+func (p *Player) New(r Request, token *AuthToken) error {
    r.Context.Client.AndroidSdkVersion = 32
    r.Context.Client.OsVersion = "12"
    body, err := json.Marshal(r)
@@ -23,7 +23,7 @@ func (p *Player) Post(r Request, token *AuthToken) error {
    }
    req.Header.Set("user-agent", user_agent + r.Context.Client.ClientVersion)
    if token != nil {
-      req.Header.Set("authorization", "Bearer " + token.v.AccessToken)
+      req.Header.Set("authorization", "Bearer " + token.AccessToken)
    }
    resp, err := http.DefaultClient.Do(req)
    if err != nil {
