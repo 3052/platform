@@ -7,34 +7,46 @@ import (
    "strings"
 )
 
+type flags struct {
+   home string
+   itag int
+   request int
+   tube youtube.InnerTube
+   id youtube.VideoId
+   write_code bool
+   write_token bool
+   read_token bool
+}
+
 func main() {
    var f flags
    err := f.New()
    if err != nil {
       panic(err)
    }
-   flag.BoolVar(&f.code, "c", false, "write code")
+   flag.Var(&f.id, "a", "address")
+   flag.StringVar(&f.tube.VideoId, "b", "", "video ID")
+   flag.BoolVar(&f.write_code, "code", false, "write code")
    flag.IntVar(&f.itag, "i", 0, "itag")
-   flag.BoolVar(&f.token, "t", false, "write token")
    flag.StringVar(
       &f.tube.Context.Client.ClientName, "n",
-      youtube.ClientName[0], strings.Join(youtube.ClientName[1:], " "),
+      youtube.ClientName[0], strings.Join(youtube.ClientName[1:], "\n"),
    )
-   flag.StringVar(&f.tube.VideoId, "b", "", "video ID")
-   flag.Var(&f.id, "a", "address")
+   flag.BoolVar(&f.read_token, "t", false, "read token")
+   flag.BoolVar(&f.write_token, "token", false, "write token")
    flag.Parse()
    if f.tube.VideoId == "" {
       f.tube.VideoId = f.id.String()
    }
    text.Transport{}.Set(true)
    switch {
-   case f.code:
-      err := write_code()
+   case f.write_code:
+      err := code()
       if err != nil {
          panic(err)
       }
-   case f.token:
-      err := f.write_token()
+   case f.write_token:
+      err := f.token()
       if err != nil {
          panic(err)
       }
@@ -46,14 +58,4 @@ func main() {
    default:
       flag.Usage()
    }
-}
-
-type flags struct {
-   code bool
-   home string
-   itag int
-   request int
-   token bool
-   tube youtube.InnerTube
-   id youtube.VideoId
 }

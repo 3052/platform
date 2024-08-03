@@ -5,31 +5,31 @@ import (
    "time"
 )
 
-var android_ids = []string{
-   "H1BuwMTrtLQ", // content check
-   "zv9NimPx3Es",
-}
-
 func TestAndroid(t *testing.T) {
    for _, android_id := range android_ids {
-      var p Player
-      req := Request{VideoId: android_id}
-      req.Android()
-      err := p.Post(req, nil)
+      var tube InnerTube
+      tube.Context.Client.Client.Name = "ANDROID"
+      tube.VideoId = android_id
+      play, err := tube.Player(nil)
       if err != nil {
          t.Fatal(err)
       }
-      if p.PlayabilityStatus.Status != "OK" {
-         t.Fatal(p)
+      if play.PlayabilityStatus.Status != "OK" {
+         t.Fatal(play)
       }
-      if len(p.StreamingData.AdaptiveFormats) == 0 {
+      if len(play.StreamingData.AdaptiveFormats) == 0 {
          t.Fatal("adaptiveFormats")
       }
-      if p.VideoDetails.ViewCount == 0 {
+      if play.VideoDetails.ViewCount == 0 {
          t.Fatal("viewCount")
       }
       time.Sleep(time.Second)
    }
+}
+
+var android_ids = []string{
+   "H1BuwMTrtLQ", // content check
+   "zv9NimPx3Es",
 }
 
 var embed_ids = []string{
@@ -40,9 +40,9 @@ var embed_ids = []string{
 func TestAndroidEmbed(t *testing.T) {
    for _, embed_id := range embed_ids {
       var play Player
-      req := Request{VideoId: embed_id}
-      req.AndroidEmbed()
-      err := play.Post(req, nil)
+      tube := InnerTube{VideoId: embed_id}
+      tube.AndroidEmbed()
+      err := play.Post(tube, nil)
       if err != nil {
          t.Fatal(err)
       }
@@ -56,10 +56,10 @@ func TestAndroidEmbed(t *testing.T) {
 const web_id = "HPkDFc8hq5c"
 
 func TestWeb(t *testing.T) {
-   r := Request{VideoId: web_id}
-   r.Web()
+   tube := InnerTube{VideoId: web_id}
+   tube.Web()
    var p Player
-   err := p.Post(r, nil)
+   err := p.Post(tube, nil)
    if err != nil {
       t.Fatal(err)
    }

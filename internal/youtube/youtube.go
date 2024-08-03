@@ -12,12 +12,7 @@ import (
 
 func (f *flags) loop() error {
    var token *youtube.AuthToken
-   switch f.request {
-   case 0:
-      f.r.Android()
-   case 1:
-      f.r.AndroidEmbed()
-   case 2:
+   if f.read_token {
       text, err := os.ReadFile(f.home + "/youtube.json")
       if err != nil {
          return err
@@ -31,10 +26,8 @@ func (f *flags) loop() error {
       if err != nil {
          return err
       }
-      f.r.AndroidCheck()
    }
-   var play youtube.Player
-   err := play.New(f.r, token)
+   play, err := f.tube.Player(token)
    if err != nil {
       return err
    }
@@ -90,6 +83,7 @@ func download(format youtube.AdaptiveFormat, name string) error {
    }
    return nil
 }
+
 func (f *flags) New() error {
    var err error
    f.home, err = os.UserHomeDir()
@@ -99,7 +93,7 @@ func (f *flags) New() error {
    return nil
 }
 
-func write_code() error {
+func code() error {
    var code youtube.DeviceCode
    err := code.New()
    if err != nil {
@@ -113,7 +107,7 @@ func write_code() error {
    return os.WriteFile("code.json", text, 0666)
 }
 
-func (f *flags) write_token() error {
+func (f *flags) token() error {
    text, err := os.ReadFile("code.json")
    if err != nil {
       return err

@@ -2,33 +2,17 @@ package youtube
 
 import (
    "fmt"
+   "os"
    "testing"
 )
 
-func TestCodeWrite(t *testing.T) {
-   var code DeviceCode
-   err := code.New()
-   if err != nil {
-      t.Fatal(err)
-   }
-   os.WriteFile("code.json", code.Data, 0666)
-   err = code.Unmarshal()
-   if err != nil {
-      t.Fatal(err)
-   }
-   fmt.Println(code)
-}
-
 func TestCodeRead(t *testing.T) {
-   var (
-      code DeviceCode
-      err error
-   )
-   code.Data, err = os.ReadFile("code.json")
+   text, err := os.ReadFile("code.json")
    if err != nil {
       t.Fatal(err)
    }
-   err = code.Unmarshal()
+   var code DeviceCode
+   err = code.Unmarshal(text)
    if err != nil {
       t.Fatal(err)
    }
@@ -36,9 +20,19 @@ func TestCodeRead(t *testing.T) {
    if err != nil {
       t.Fatal(err)
    }
-   err = token.Unmarshal()
+   fmt.Printf("%+v\n", token)
+}
+
+func TestCodeWrite(t *testing.T) {
+   var code DeviceCode
+   err := code.New()
    if err != nil {
       t.Fatal(err)
    }
-   fmt.Printf("%+v\n", token)
+   fmt.Println(code)
+   text, err := code.Marshal()
+   if err != nil {
+      t.Fatal(err)
+   }
+   os.WriteFile("code.json", text, 0666)
 }

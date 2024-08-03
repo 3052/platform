@@ -10,6 +10,31 @@ import (
    "strings"
 )
 
+// need `osVersion` this to get the correct:
+// This video requires payment to watch
+// instead of the invalid:
+// This video can only be played on newer versions of Android or other
+// supported devices.
+type InnerTube struct {
+   ContentCheckOk bool `json:"contentCheckOk,omitempty"`
+   Context struct {
+      Client struct {
+         AndroidSdkVersion int `json:"androidSdkVersion"`
+         ClientName string `json:"clientName"`
+         ClientVersion string `json:"clientVersion"`
+         OsVersion string `json:"osVersion"`
+      } `json:"client"`
+   } `json:"context"`
+   RacyCheckOk bool `json:"racyCheckOk,omitempty"`
+   VideoId string `json:"videoId"`
+}
+
+var ClientName = []string{
+   "ANDROID",
+   "ANDROID_EMBEDDED_PLAYER",
+   "WEB",
+}
+
 const (
    android_version = "18.43.39"
    web_version = "2.20231219.04.00"
@@ -33,7 +58,7 @@ func (a *AdaptiveFormat) Ext() (string, error) {
    return "", errors.New(a.MimeType)
 }
 
-func (a *AdaptiveFormat) CompareBitrate(b *AdaptiveFormat) int {
+func (a AdaptiveFormat) CompareBitrate(b AdaptiveFormat) int {
    return a.Bitrate - b.Bitrate
 }
 
@@ -142,31 +167,6 @@ func (y *YtImg) String() string {
    b.WriteByte('/')
    b.WriteString(y.Name)
    return b.String()
-}
-
-// need `osVersion` this to get the correct:
-// This video requires payment to watch
-// instead of the invalid:
-// This video can only be played on newer versions of Android or other
-// supported devices.
-type InnerTube struct {
-   ContentCheckOk bool `json:"contentCheckOk,omitempty"`
-   Context struct {
-      Client struct {
-         AndroidSdkVersion int `json:"androidSdkVersion"`
-         ClientName string `json:"clientName"`
-         ClientVersion string `json:"clientVersion"`
-         OsVersion string `json:"osVersion"`
-      } `json:"client"`
-   } `json:"context"`
-   RacyCheckOk bool `json:"racyCheckOk,omitempty"`
-   VideoId string `json:"videoId"`
-}
-
-var ClientName = []string{
-   "ANDROID",
-   "ANDROID_EMBEDDED_PLAYER",
-   "WEB",
 }
 
 func (v VideoId) String() string {

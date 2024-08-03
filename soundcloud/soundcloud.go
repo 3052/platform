@@ -24,7 +24,7 @@ type hero_artwork struct {
    size string
 }
 
-var artwork = []hero_artwork{
+var Artwork = []hero_artwork{
    {size: "t120x120"},
    {size: "t1240x260", crop: true},
    {size: "t200x200"},
