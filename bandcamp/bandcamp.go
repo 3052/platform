@@ -32,7 +32,7 @@ func (r *ReportParams) New(address string) error {
    return json.Unmarshal(p.DataTouReportParams, r)
 }
 
-func (r ReportParams) Band() (*BandDetails, error) {
+func (r *ReportParams) Band() (*BandDetails, error) {
    var band BandDetails
    err := band.New(r.Aid)
    if err != nil {
