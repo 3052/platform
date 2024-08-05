@@ -59,7 +59,7 @@ func (r ReportParams) Tralbum() (*Tralbum, error) {
 
 func new_tralbum(typ byte, id int) (*Tralbum, error) {
    req, err := http.NewRequest(
-      "GET", "http://bandcamp.com/api/mobile/24/tralbum_details", nil,
+      "", "http://bandcamp.com/api/mobile/24/tralbum_details", nil,
    )
    if err != nil {
       return nil, err
@@ -69,16 +69,16 @@ func new_tralbum(typ byte, id int) (*Tralbum, error) {
       "tralbum_id": {strconv.Itoa(id)},
       "tralbum_type": {string(typ)},
    }.Encode()
-   resp, err := new(http.Transport).RoundTrip(req)
+   resp, err := http.DefaultClient.Do(req)
    if err != nil {
       return nil, err
    }
    defer resp.Body.Close()
-   tralb := new(Tralbum)
-   if err := json.NewDecoder(resp.Body).Decode(tralb); err != nil {
+   album := &Tralbum{}
+   if err := json.NewDecoder(resp.Body).Decode(album); err != nil {
       return nil, err
    }
-   return tralb, nil
+   return album, nil
 }
 
 type invalid_type struct {
@@ -136,6 +136,7 @@ func (i Item) Band() (*BandDetails, error) {
    }
    return &band, nil
 }
+
 func (b *BandDetails) New(id int64) error {
    address := func() string {
       b := []byte("http://bandcamp.com/api/mobile/24/band_details?band_id=")

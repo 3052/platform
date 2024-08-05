@@ -54,7 +54,7 @@ func (d *DeviceCode) Token() (*AuthToken, error) {
       return nil, err
    }
    defer resp.Body.Close()
-   token := new(AuthToken)
+   token := &AuthToken{}
    err = json.NewDecoder(resp.Body).Decode(token)
    if err != nil {
       return nil, err

@@ -10,47 +10,6 @@ import (
    "slices"
 )
 
-func (f *flags) loop() error {
-   var token *youtube.AuthToken
-   if f.read_token {
-      text, err := os.ReadFile(f.home + "/youtube.json")
-      if err != nil {
-         return err
-      }
-      token = new(youtube.AuthToken)
-      err = token.Unmarshal(text)
-      if err != nil {
-         return err
-      }
-      err = token.Refresh()
-      if err != nil {
-         return err
-      }
-   }
-   play, err := f.tube.Player(token)
-   if err != nil {
-      return err
-   }
-   slog.Info("playability", "status", play.PlayabilityStatus.Status)
-   // download one
-   for _, format := range play.StreamingData.AdaptiveFormats {
-      if format.Itag == f.itag {
-         return download(format, play.VideoDetails.Title)
-      }
-   }
-   // print all
-   slices.SortFunc(
-      play.StreamingData.AdaptiveFormats, youtube.AdaptiveFormat.CompareBitrate,
-   )
-   for i, format := range play.StreamingData.AdaptiveFormats {
-      if i >= 1 {
-         fmt.Println()
-      }
-      fmt.Println(format)
-   }
-   return nil
-}
-
 func download(format youtube.AdaptiveFormat, name string) error {
    ext, err := format.Ext()
    if err != nil {
@@ -61,9 +20,10 @@ func download(format youtube.AdaptiveFormat, name string) error {
       return err
    }
    defer file.Close()
-   var meter text.ProgressMeter
    ranges := format.Ranges()
+   var meter text.ProgressMeter
    meter.Set(len(ranges))
+   text.Transport{}.Set(false)
    for _, byte_range := range ranges {
       err := func() error {
          resp, err := http.Get(format.Url + byte_range)
@@ -104,11 +64,11 @@ func code() error {
       return err
    }
    fmt.Println(code)
-   return os.WriteFile("code.json", text, 0666)
+   return os.WriteFile("code.txt", text, 0666)
 }
 
 func (f *flags) token() error {
-   text, err := os.ReadFile("code.json")
+   text, err := os.ReadFile("code.txt")
    if err != nil {
       return err
    }
@@ -125,5 +85,46 @@ func (f *flags) token() error {
    if err != nil {
       return err
    }
-   return os.WriteFile(f.home + "/youtube.json", text, 0666)
+   return os.WriteFile(f.home + "/youtube.txt", text, 0666)
+}
+
+func (f *flags) loop() error {
+   var token *youtube.AuthToken
+   if f.read_token {
+      text, err := os.ReadFile(f.home + "/youtube.txt")
+      if err != nil {
+         return err
+      }
+      token = &youtube.AuthToken{}
+      err = token.Unmarshal(text)
+      if err != nil {
+         return err
+      }
+      err = token.Refresh()
+      if err != nil {
+         return err
+      }
+   }
+   play, err := f.tube.Player(token)
+   if err != nil {
+      return err
+   }
+   slog.Info("playability", "status", play.PlayabilityStatus.Status)
+   // download one
+   for _, format := range play.StreamingData.AdaptiveFormats {
+      if format.Itag == f.itag {
+         return download(format, play.VideoDetails.Title)
+      }
+   }
+   // print all
+   slices.SortFunc(
+      play.StreamingData.AdaptiveFormats, youtube.AdaptiveFormat.CompareBitrate,
+   )
+   for i, format := range play.StreamingData.AdaptiveFormats {
+      if i >= 1 {
+         fmt.Println()
+      }
+      fmt.Println(&format)
+   }
+   return nil
 }

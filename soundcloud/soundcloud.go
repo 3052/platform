@@ -63,8 +63,6 @@ type ClientTrack struct {
    }
 }
 
-////////////////
-
 type Media struct {
    Url string // cf-media.sndcdn.com/QaV7QR1lxpc6.128.mp3
 }
@@ -145,11 +143,11 @@ func (c ClientTrack) Progressive() (*Media, error) {
       return nil, err
    }
    defer resp.Body.Close()
-   med := new(Media)
-   if err := json.NewDecoder(resp.Body).Decode(med); err != nil {
+   data := &Media{}
+   if err := json.NewDecoder(resp.Body).Decode(data); err != nil {
       return nil, err
    }
-   return med, nil
+   return data, nil
 }
 
 // i1.sndcdn.com/artworks-000308141235-7ep8lo-large.jpg

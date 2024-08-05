@@ -7,7 +7,7 @@ import (
 )
 
 func TestCodeRead(t *testing.T) {
-   text, err := os.ReadFile("code.json")
+   text, err := os.ReadFile("code.txt")
    if err != nil {
       t.Fatal(err)
    }
@@ -34,5 +34,5 @@ func TestCodeWrite(t *testing.T) {
    if err != nil {
       t.Fatal(err)
    }
-   os.WriteFile("code.json", text, 0666)
+   os.WriteFile("code.txt", text, 0666)
 }

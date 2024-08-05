@@ -11,7 +11,7 @@ func TestAndroidCheck(t *testing.T) {
    if err != nil {
       t.Fatal(err)
    }
-   text, err := os.ReadFile(home + "/youtube.json")
+   text, err := os.ReadFile(home + "/youtube.txt")
    if err != nil {
       t.Fatal(err)
    }

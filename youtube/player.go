@@ -78,7 +78,7 @@ func (i *InnerTube) Player(token *AuthToken) (*Player, error) {
       return nil, err
    }
    defer resp.Body.Close()
-   play := new(Player)
+   play := &Player{}
    err = json.NewDecoder(resp.Body).Decode(play)
    if err != nil {
       return nil, err

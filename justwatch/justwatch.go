@@ -97,7 +97,7 @@ func (p Path) Content() (*ContentUrls, error) {
    if resp.StatusCode != http.StatusOK {
       return nil, errors.New(resp.Status)
    }
-   content := new(ContentUrls)
+   content := &ContentUrls{}
    err = json.NewDecoder(resp.Body).Decode(content)
    if err != nil {
       return nil, err
