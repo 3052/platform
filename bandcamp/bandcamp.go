@@ -47,7 +47,7 @@ type ReportParams struct {
    Itype string `json:"i_type"`
 }
 
-func (r ReportParams) Tralbum() (*Tralbum, error) {
+func (r *ReportParams) Tralbum() (*Tralbum, error) {
    switch r.Itype {
    case "a":
       return new_tralbum('a', r.Iid)
