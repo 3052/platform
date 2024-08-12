@@ -13,7 +13,6 @@ func (d *DeviceCode) String() string {
    b.WriteString(d.VerificationUrl)
    b.WriteString("\n\n2. Enter this code\n")
    b.WriteString(d.UserCode)
-   b.WriteString("\n\n3. Press Enter to continue")
    return b.String()
 }
 

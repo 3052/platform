@@ -4,8 +4,20 @@ import (
    "154.pages.dev/platform/youtube"
    "154.pages.dev/text"
    "flag"
+   "os"
+   "path/filepath"
    "strings"
 )
+
+func (f *flags) New() error {
+   var err error
+   f.home, err = os.UserHomeDir()
+   if err != nil {
+      return err
+   }
+   f.home = filepath.ToSlash(f.home)
+   return nil
+}
 
 type flags struct {
    home string

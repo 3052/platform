@@ -10,6 +10,20 @@ import (
    "slices"
 )
 
+func code() error {
+   var code youtube.DeviceCode
+   err := code.New()
+   if err != nil {
+      return err
+   }
+   text, err := code.Marshal()
+   if err != nil {
+      return err
+   }
+   fmt.Println(&code)
+   return os.WriteFile("code.txt", text, 0666)
+}
+
 func download(format youtube.AdaptiveFormat, name string) error {
    ext, err := format.Ext()
    if err != nil {
@@ -42,29 +56,6 @@ func download(format youtube.AdaptiveFormat, name string) error {
       }
    }
    return nil
-}
-
-func (f *flags) New() error {
-   var err error
-   f.home, err = os.UserHomeDir()
-   if err != nil {
-      return err
-   }
-   return nil
-}
-
-func code() error {
-   var code youtube.DeviceCode
-   err := code.New()
-   if err != nil {
-      return err
-   }
-   text, err := code.Marshal()
-   if err != nil {
-      return err
-   }
-   fmt.Println(code)
-   return os.WriteFile("code.txt", text, 0666)
 }
 
 func (f *flags) token() error {
