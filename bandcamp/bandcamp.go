@@ -57,30 +57,6 @@ func (r *ReportParams) Tralbum() (*Tralbum, error) {
    return nil, invalid_type{r.Itype}
 }
 
-func new_tralbum(typ byte, id int) (*Tralbum, error) {
-   req, err := http.NewRequest(
-      "", "http://bandcamp.com/api/mobile/24/tralbum_details", nil,
-   )
-   if err != nil {
-      return nil, err
-   }
-   req.URL.RawQuery = url.Values{
-      "band_id": {"1"},
-      "tralbum_id": {strconv.Itoa(id)},
-      "tralbum_type": {string(typ)},
-   }.Encode()
-   resp, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   album := &Tralbum{}
-   if err := json.NewDecoder(resp.Body).Decode(album); err != nil {
-      return nil, err
-   }
-   return album, nil
-}
-
 type invalid_type struct {
    value string
 }
@@ -225,3 +201,26 @@ func (i Item) Tralbum() (*Tralbum, error) {
    return nil, invalid_type{i.ItemType}
 }
 
+func new_tralbum(typ byte, id int) (*Tralbum, error) {
+   req, err := http.NewRequest(
+      "", "http://bandcamp.com/api/mobile/24/tralbum_details", nil,
+   )
+   if err != nil {
+      return nil, err
+   }
+   req.URL.RawQuery = url.Values{
+      "band_id": {"1"},
+      "tralbum_id": {strconv.Itoa(id)},
+      "tralbum_type": {string(typ)},
+   }.Encode()
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   album := &Tralbum{}
+   if err := json.NewDecoder(resp.Body).Decode(album); err != nil {
+      return nil, err
+   }
+   return album, nil
+}
