@@ -3,26 +3,13 @@ package main
 import (
    "154.pages.dev/platform/youtube"
    "154.pages.dev/text"
+   "errors"
    "fmt"
    "log/slog"
    "net/http"
    "os"
    "slices"
 )
-
-func code() error {
-   var code youtube.DeviceCode
-   err := code.New()
-   if err != nil {
-      return err
-   }
-   text, err := code.Marshal()
-   if err != nil {
-      return err
-   }
-   fmt.Println(&code)
-   return os.WriteFile("code.txt", text, 0666)
-}
 
 func download(format youtube.AdaptiveFormat, name string) error {
    ext, err := format.Ext()
@@ -45,6 +32,9 @@ func download(format youtube.AdaptiveFormat, name string) error {
             return err
          }
          defer resp.Body.Close()
+         if resp.StatusCode != http.StatusOK {
+            return errors.New(resp.Status)
+         }
          _, err = file.ReadFrom(meter.Reader(resp))
          if err != nil {
             return err
@@ -118,4 +108,17 @@ func (f *flags) loop() error {
       fmt.Println(&format)
    }
    return nil
+}
+func code() error {
+   var code youtube.DeviceCode
+   err := code.New()
+   if err != nil {
+      return err
+   }
+   text, err := code.Marshal()
+   if err != nil {
+      return err
+   }
+   fmt.Println(&code)
+   return os.WriteFile("code.txt", text, 0666)
 }

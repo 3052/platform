@@ -9,6 +9,16 @@ import (
    "strings"
 )
 
+type flags struct {
+   home string
+   itag int
+   tube youtube.InnerTube
+   id youtube.VideoId
+   write_code bool
+   write_token bool
+   read_token bool
+}
+
 func (f *flags) New() error {
    var err error
    f.home, err = os.UserHomeDir()
@@ -17,17 +27,6 @@ func (f *flags) New() error {
    }
    f.home = filepath.ToSlash(f.home)
    return nil
-}
-
-type flags struct {
-   home string
-   itag int
-   request int
-   tube youtube.InnerTube
-   id youtube.VideoId
-   write_code bool
-   write_token bool
-   read_token bool
 }
 
 func main() {

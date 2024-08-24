@@ -2,19 +2,19 @@
 
 ## Android Studio
 
-https://play.google.com/store/apps/details?id=com.google.android.youtube
-
 Android API | result
 ------------|-------
-31          | fail
 32          | pass
+31          | fail
 
-Then install system certificate.
+YouTube should already be installed. Then install system certificate
 
 ~~~
 adb shell am start -a android.intent.action.VIEW `
--d https://www.youtube.com/watch?v=k5dX9sjXYVk
+-d https://www.youtube.com/watch?v=40wkJJXfwQ0
 ~~~
+
+https://play.google.com/store/apps/details?id=com.google.android.youtube
 
 ## Device OAuth
 
