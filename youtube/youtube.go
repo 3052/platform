@@ -10,6 +10,21 @@ import (
    "strings"
 )
 
+// we need the length for progress meter, so cannot use a channel
+func (a *AdaptiveFormat) Ranges() []string {
+   const bytes = 10_000_000
+   var (
+      byte_ranges []string
+      pos int64
+   )
+   for pos < a.ContentLength {
+      byte_range := fmt.Sprintf("&range=%v-%v", pos, pos+bytes-1)
+      byte_ranges = append(byte_ranges, byte_range)
+      pos += bytes
+   }
+   return byte_ranges
+}
+
 type VideoId string
 
 func (v *VideoId) Set(text string) error {
@@ -162,21 +177,6 @@ type AdaptiveFormat struct {
    MimeType string
    QualityLabel string
    Url string
-}
-
-// we need the length for progress meter, so cannot use a channel
-func (a *AdaptiveFormat) Ranges() []string {
-   const bytes = 10_000_000
-   var (
-      byte_ranges []string
-      pos int64
-   )
-   for pos < a.ContentLength {
-      byte_range := fmt.Sprintf("&range=%v-%v", pos, pos+bytes-1)
-      byte_ranges = append(byte_ranges, byte_range)
-      pos += bytes
-   }
-   return byte_ranges
 }
 
 func (a *AdaptiveFormat) String() string {
