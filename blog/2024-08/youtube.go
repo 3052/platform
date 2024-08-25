@@ -43,6 +43,7 @@ func main() {
    if err != nil {
       panic(err)
    }
+   protobuf.Length = 9
    fmt.Printf("%#v\n", resp_body)
 }
 
