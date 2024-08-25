@@ -10,6 +10,25 @@ import (
    "strings"
 )
 
+type VideoId string
+
+func (v *VideoId) Set(text string) error {
+   address, err := url.Parse(text)
+   if err != nil {
+      return err
+   }
+   id := address.Query().Get("v")
+   if id == "" {
+      id = path.Base(address.Path)
+   }
+   *v = VideoId(id)
+   return nil
+}
+
+func (v VideoId) String() string {
+   return string(v)
+}
+
 type YtImg struct {
    Height int
    Name string
@@ -77,24 +96,6 @@ func (y *YtImg) String() string {
    return b.String()
 }
 
-func (v VideoId) String() string {
-   return string(v)
-}
-
-type VideoId string
-
-func (v *VideoId) Set(text string) error {
-   address, err := url.Parse(text)
-   if err != nil {
-      return err
-   }
-   id := address.Query().Get("v")
-   if id == "" {
-      id = path.Base(address.Path)
-   }
-   *v = VideoId(id)
-   return nil
-}
 const (
    android_version = "19.33.35"
    web_version = "2.20231219.04.00"
