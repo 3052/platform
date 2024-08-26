@@ -1,6 +1,68 @@
-package youtube
+package main
 
-import "154.pages.dev/protobuf"
+import (
+   "154.pages.dev/protobuf"
+   "bytes"
+   "fmt"
+   "io"
+   "net/http"
+   "net/url"
+   "time"
+)
+
+func main() {
+   var req http.Request
+   req.URL = &url.URL{}
+   req.URL.Path = "/youtubei/v1/get_watch"
+   req.Header = http.Header{}
+   req.Method = "POST"
+   req.ProtoMajor = 1
+   req.ProtoMinor = 1
+   req.URL.Host = "youtubei.googleapis.com"
+   req.URL.Scheme = "https"
+   req.Body = io.NopCloser(bytes.NewReader(Request.Marshal()))
+   req.Header["Content-Type"] = []string{"application/x-protobuf"}
+   req.Header["X-Goog-Visitor-Id"] = []string{"Cgt0OV94ZHc0Q1hnQSjUja-2BjIKCgJVUxIEGgAgTzoMCAEgwKfTncLa8eVm"}
+   resp, err := http.DefaultClient.Do(&req)
+   if err != nil {
+      panic(err)
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      panic(resp.Status)
+   }
+   data, err := io.ReadAll(resp.Body)
+   if err != nil {
+      panic(err)
+   }
+   message := protobuf.Message{}
+   err = message.Unmarshal(data)
+   if err != nil {
+      panic(err)
+   }
+   message, _ = message.Get(1)()
+   message, _ = message.Get(2)()
+   message, _ = message.Get(4)()
+   message, _ = message.Get(3)()
+   address := func() string {
+      b, _ := message.GetBytes(2)()
+      return string(b)
+   }()
+   fmt.Println(address)
+   after := time.After(32 * time.Second)
+   for {
+      select {
+      case <-time.After(time.Second):
+         resp, err := http.Head(address)
+         if err != nil {
+            panic(err)
+         }
+         fmt.Println(resp.Status)
+      case <-after:
+         return
+      }
+   }
+}
 
 var Request = protobuf.Message{
    1: {
