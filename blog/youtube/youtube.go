@@ -1,39 +1,8 @@
-package main
+package youtube
 
-import (
-   "154.pages.dev/protobuf"
-   "bytes"
-   "io"
-   "net/http"
-   "net/url"
-   "os"
-)
+import "154.pages.dev/protobuf"
 
-func main() {
-   var req http.Request
-   req.Header = http.Header{}
-   req.Method = "POST"
-   req.ProtoMajor = 1
-   req.ProtoMinor = 1
-   req.URL = &url.URL{}
-   req.URL.Host = "youtubei.googleapis.com"
-   req.URL.Path = "/youtubei/v1/get_watch"
-   req.URL.Scheme = "https"
-   req.Body = io.NopCloser(bytes.NewReader(req_body.Marshal()))
-   req.Header["Content-Type"] = []string{"application/x-protobuf"}
-   req.Header["Priority"] = []string{"u=0, i"}
-   req.Header["User-Agent"] = []string{"com.google.android.youtube/19.33.35(Linux; U; Android 9; en_US; Android SDK built for x86 Build/PSR1.180720.012) gzip"}
-   req.Header["X-Goog-Api-Format-Version"] = []string{"2"}
-   req.Header["X-Goog-Visitor-Id"] = []string{"Cgt0OV94ZHc0Q1hnQSjUja-2BjIKCgJVUxIEGgAgTzoMCAEgwKfTncLa8eVm"}
-   resp, err := http.DefaultClient.Do(&req)
-   if err != nil {
-      panic(err)
-   }
-   defer resp.Body.Close()
-   resp.Write(os.Stdout)
-}
-
-var req_body = protobuf.Message{
+var Request = protobuf.Message{
    1: {
       protobuf.Message{
          1: {
