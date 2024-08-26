@@ -34,5 +34,5 @@ func TestCodeWrite(t *testing.T) {
    if err != nil {
       t.Fatal(err)
    }
-   os.WriteFile("code.txt", text, 0666)
+   os.WriteFile("code.txt", text, os.ModePerm)
 }

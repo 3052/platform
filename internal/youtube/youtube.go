@@ -66,7 +66,7 @@ func (f *flags) token() error {
    if err != nil {
       return err
    }
-   return os.WriteFile(f.home + "/youtube.txt", text, 0666)
+   return os.WriteFile(f.home + "/youtube.txt", text, os.ModePerm)
 }
 
 func (f *flags) loop() error {
@@ -120,5 +120,5 @@ func code() error {
       return err
    }
    fmt.Println(&code)
-   return os.WriteFile("code.txt", text, 0666)
+   return os.WriteFile("code.txt", text, os.ModePerm)
 }
