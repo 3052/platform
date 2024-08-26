@@ -8,7 +8,6 @@ import (
    "io"
    "net/http"
    "net/url"
-   "os"
 )
 
 func main() {
@@ -36,12 +35,15 @@ func main() {
    if err != nil {
       panic(err)
    }
-   os.WriteFile("response.txt", data, os.ModePerm)
    message := protobuf.Message{}
    err = message.Unmarshal(data)
    if err != nil {
       panic(err)
    }
-   protobuf.Length = 9
-   fmt.Printf("%#v\n", message)
+   message, _ = message.Get(1)()
+   message, _ = message.Get(2)()
+   message, _ = message.Get(4)()
+   message, _ = message.Get(3)()
+   address, _ := message.GetBytes(2)()
+   fmt.Println(string(address))
 }
