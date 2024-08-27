@@ -77,11 +77,6 @@ var Request = protobuf.Message{
    },
    2: { protobuf.Message{ // keep
          2: {protobuf.Bytes("40wkJJXfwQ0")}, // keep
-         3: {protobuf.Varint(0)},
-         5:  {protobuf.Varint(0)},
-         8:  {protobuf.Varint(0)},
-         23: {protobuf.Bytes("Fb3SDK0qUXpDTg48")},
-         26: {protobuf.Bytes("")},
          27: { protobuf.Message{
                1: { protobuf.Message{
                      1: { protobuf.Message{
@@ -91,12 +86,6 @@ var Request = protobuf.Message{
                      },
                   },
                },
-            },
-         },
-         28: { protobuf.Message{
-               1: {protobuf.Varint(0)},
-               2: {protobuf.Varint(0)},
-               3: {protobuf.Varint(0)},
             },
          },
       },
