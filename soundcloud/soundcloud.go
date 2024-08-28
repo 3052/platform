@@ -3,40 +3,44 @@ package soundcloud
 import (
    "bytes"
    "encoding/json"
+   "errors"
    "io"
    "net/http"
    "net/url"
    "strconv"
-   "strings"
    "time"
 )
+
+const client_id = "iZIs9mchVcX5lhVRyQGGAYlNPVldzAoX"
+
+func (c *ClientTrack) New(id int64) error {
+   req, err := http.NewRequest("", "https://api-v2.soundcloud.com", nil)
+   if err != nil {
+      return err
+   }
+   req.URL.Path = func() string {
+      b := []byte("/tracks/")
+      b = strconv.AppendInt(b, id, 10)
+      return string(b)
+   }()
+   req.URL.RawQuery = url.Values{
+      "client_id": {client_id},
+   }.Encode()
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      return errors.New(resp.Status)
+   }
+   return json.NewDecoder(resp.Body).Decode(c)
+}
 
 type hero_artwork struct {
    crop bool
    size string
 }
-
-var artworks = []hero_artwork{
-   {size: "t120x120"},
-   {size: "t1240x260", crop: true},
-   {size: "t200x200"},
-   {size: "t20x20"},
-   {size: "t240x240"},
-   {size: "t2480x520", crop: true},
-   {size: "t250x250"},
-   {size: "t300x300"},
-   {size: "t40x40"},
-   {size: "t47x47"},
-   {size: "t500x"},
-   {size: "t500x500"},
-   {size: "t50x50"},
-   {size: "t60x60"},
-   {size: "t67x67"},
-   {size: "t80x80"},
-   {size: "tx250"},
-}
-
-const client_id = "iZIs9mchVcX5lhVRyQGGAYlNPVldzAoX"
 
 type next_data struct {
    RuntimeConfig struct {
@@ -61,6 +65,56 @@ func (n *next_data) New() error {
 
 type Media struct {
    Url string // cf-media.sndcdn.com/QaV7QR1lxpc6.128.mp3
+}
+
+var artworks = []hero_artwork{
+   {size: "large"}, // 100x100
+   {size: "t120x120"},
+   {size: "t1240x260", crop: true},
+   {size: "t200x200"},
+   {size: "t20x20"},
+   {size: "t240x240"},
+   {size: "t2480x520", crop: true},
+   {size: "t250x250"},
+   {size: "t300x300"},
+   {size: "t40x40"},
+   {size: "t47x47"},
+   {size: "t500x"},
+   {size: "t500x500"},
+   {size: "t50x50"},
+   {size: "t60x60"},
+   {size: "t67x67"},
+   {size: "t80x80"},
+   {size: "tx250"},
+}
+
+// i1.sndcdn.com/artworks-000308141235-7ep8lo-large.jpg
+func (c *ClientTrack) Artwork() string {
+   if c.ArtworkUrl != "" {
+      return c.ArtworkUrl
+   }
+   return c.User.AvatarUrl
+}
+
+///
+
+type ClientTrack struct {
+   ArtworkUrl string `json:"artwork_url"`
+   DisplayDate time.Time `json:"display_date"` // time.RFC3339
+   Id int64
+   Media struct {
+      Transcodings []struct {
+         Format struct {
+            Protocol string
+         }
+         Url string
+      }
+   }
+   Title string
+   User struct {
+      AvatarUrl string `json:"avatar_url"`
+      Username string
+   }
 }
 
 // Also available is "hls", but all transcodings are quality "sq".
@@ -89,55 +143,6 @@ func (c ClientTrack) Progressive() (*Media, error) {
       return nil, err
    }
    return data, nil
-}
-
-// i1.sndcdn.com/artworks-000308141235-7ep8lo-large.jpg
-func (c ClientTrack) Artwork() string {
-   if c.ArtworkUrl == "" {
-      c.ArtworkUrl = c.User.AvatarUrl
-   }
-   return strings.Replace(c.ArtworkUrl, "large", "t500x500", 1)
-}
-
-func (c ClientTrack) Time() (time.Time, error) {
-   return time.Parse(time.RFC3339, c.DisplayDate)
-}
-
-type ClientTrack struct {
-   ArtworkUrl string `json:"artwork_url"`
-   DisplayDate string `json:"display_date"`
-   Id int64
-   Media struct {
-      Transcodings []struct {
-         Format struct {
-            Protocol string
-         }
-         Url string
-      }
-   }
-   Title string
-   User struct {
-      AvatarUrl string `json:"avatar_url"`
-      Username string
-   }
-}
-
-///
-
-func (c *ClientTrack) New(id int64) error {
-   address := func() string {
-      b := []byte("https://api-v2.soundcloud.com/tracks/")
-      b = strconv.AppendInt(b, id, 10)
-      b = append(b, "?client_id="...)
-      b = append(b, client_id...)
-      return string(b)
-   }()
-   resp, err := http.Get(address)
-   if err != nil {
-      return err
-   }
-   defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(c)
 }
 
 func Resolve(address string) (*ClientTrack, error) {
