@@ -1,34 +1,16 @@
 package soundcloud
 
 import (
-   "encoding/json"
    "fmt"
    "net/http"
-   "os"
    "strings"
    "testing"
    "time"
 )
 
-func TestTrack(t *testing.T) {
-   var track ClientTrack
-   err := track.New(test_track.id)
-   if err != nil {
-      t.Fatal(err)
-   }
-   fmt.Printf("%+v\n", track)
-}
-
-var test_track = struct{
-   id int64
-   url string
-}{
-   id: 936653761,
-   url: "https://soundcloud.com/kino-scmusic/mqymd53jtwag",
-}
-
 func TestResolve(t *testing.T) {
-   track, err := Resolve(test_track.url)
+   var track ClientTrack
+   err := track.Resolve(test_track.url)
    if err != nil {
       t.Fatal(err)
    }
@@ -37,6 +19,23 @@ func TestResolve(t *testing.T) {
       t.Fatal(err)
    }
    fmt.Println(media)
+}
+
+func TestNextData(t *testing.T) {
+   var next next_data
+   err := next.New()
+   if err != nil {
+      t.Fatal(err)
+   }
+   fmt.Printf("%+v\n", next)
+}
+
+var test_track = struct{
+   id int64
+   url string
+}{
+   id: 936653761,
+   url: "https://soundcloud.com/kino-scmusic/mqymd53jtwag",
 }
 
 func TestArtwork(t *testing.T) {
@@ -53,17 +52,15 @@ func TestArtwork(t *testing.T) {
          t.Fatal(err)
       }
       fmt.Println(resp.Status)
-      time.Sleep(time.Second)
+      time.Sleep(99 * time.Millisecond)
    }
 }
 
-func TestNextData(t *testing.T) {
-   var next next_data
-   err := next.New()
+func TestTrack(t *testing.T) {
+   var track ClientTrack
+   err := track.New(test_track.id)
    if err != nil {
       t.Fatal(err)
    }
-   enc := json.NewEncoder(os.Stdout)
-   enc.SetIndent("", " ")
-   enc.Encode(next)
+   fmt.Printf("%+v\n", track)
 }
