@@ -12,11 +12,11 @@ import (
 type flags struct {
    home string
    itag int
-   tube youtube.InnerTube
-   id youtube.VideoId
    write_code bool
    write_token bool
    read_token bool
+   id youtube.VideoId
+   tube youtube.InnerTube
 }
 
 func (f *flags) New() error {

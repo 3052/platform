@@ -11,6 +11,62 @@ import (
    "time"
 )
 
+// Also available is "hls", but all transcodings are quality "sq".
+// Same for "api-mobile.soundcloud.com".
+func (c *ClientTrack) Progressive() (*Transcoding, bool) {
+   for _, media := range c.Media.Transcodings {
+      if media.Format.Protocol == "progressive" {
+         return &media, true
+      }
+   }
+   return nil, false
+}
+
+func (t *Transcoding) Media() (*ClientMedia, error) {
+   req, err := http.NewRequest("", t.Url, nil)
+   if err != nil {
+      return nil, err
+   }
+   req.URL.RawQuery = url.Values{
+      "client_id": {client_id},
+   }.Encode()
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   media := &ClientMedia{}
+   err = json.NewDecoder(resp.Body).Decode(media)
+   if err != nil {
+      return nil, err
+   }
+   return media, nil
+}
+
+func (c *ClientTrack) New(id int64) error {
+   req, err := http.NewRequest("", "https://api-v2.soundcloud.com", nil)
+   if err != nil {
+      return err
+   }
+   req.URL.Path = func() string {
+      b := []byte("/tracks/")
+      b = strconv.AppendInt(b, id, 10)
+      return string(b)
+   }()
+   req.URL.RawQuery = url.Values{
+      "client_id": {client_id},
+   }.Encode()
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      return errors.New(resp.Status)
+   }
+   return json.NewDecoder(resp.Body).Decode(c)
+}
+
 const client_id = "KKzJxmw11tYpCs6T24P4uUYhqmjalG6M"
 
 type ClientMedia struct {
@@ -56,67 +112,11 @@ type ClientTrack struct {
    }
 }
 
-// Also available is "hls", but all transcodings are quality "sq".
-// Same for "api-mobile.soundcloud.com".
-func (c *ClientTrack) Progressive() (*Transcoding, bool) {
-   for _, media := range c.Media.Transcodings {
-      if media.Format.Protocol == "progressive" {
-         return &media, true
-      }
-   }
-   return nil, false
-}
-
-func (c *ClientTrack) New(id int64) error {
-   req, err := http.NewRequest("", "https://api-v2.soundcloud.com", nil)
-   if err != nil {
-      return err
-   }
-   req.URL.Path = func() string {
-      b := []byte("/tracks/")
-      b = strconv.AppendInt(b, id, 10)
-      return string(b)
-   }()
-   req.URL.RawQuery = url.Values{
-      "client_id": {client_id},
-   }.Encode()
-   resp, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      return errors.New(resp.Status)
-   }
-   return json.NewDecoder(resp.Body).Decode(c)
-}
-
 type Transcoding struct {
    Format struct {
       Protocol string
    }
    Url string
-}
-
-func (t *Transcoding) Media() (*ClientMedia, error) {
-   req, err := http.NewRequest("", t.Url, nil)
-   if err != nil {
-      return nil, err
-   }
-   req.URL.RawQuery = url.Values{
-      "client_id": {client_id},
-   }.Encode()
-   resp, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   media := &ClientMedia{}
-   err = json.NewDecoder(resp.Body).Decode(media)
-   if err != nil {
-      return nil, err
-   }
-   return media, nil
 }
 
 type hero_artwork struct {
