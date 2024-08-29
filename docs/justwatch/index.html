@@ -14,31 +14,34 @@
   <body>
     <nav>
         <a href="..">154.pages.dev/platform</a>/justwatch<span class="navbar-right">
-          v1.4.7 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
+          v1.4.8 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
       </nav>
     <main><h2 id="pkg-overview">package justwatch</h2>
 <pre class="chroma"><span class="kn">import</span> <span class="s">&#34;154.pages.dev/platform/justwatch&#34;</span></pre>
 <h3 id="pkg-index">Index</h3>
 <ul>
   <li><a href="#pkg-variables">Variables</a></li><li><a href="#Monetization">func Monetization(o OfferNode) bool</a></li>
-  <li><a href="#URL">func URL(o OfferNode) bool</a></li>
+  <li><a href="#Url">func Url(o OfferNode) bool</a></li>
   <li>
       <a href="#ContentUrls">type ContentUrls</a>
       </li>
   <li>
       <a href="#LangTag">type LangTag</a>
       <ul>
-          <li><a href="#LangTag.Offers">func (t LangTag) Offers(s *LocaleState) ([]OfferNode, error)</a></li>
+          <li><a href="#LangTag.Offers">func (t LangTag) Offers(state *LocaleState) ([]OfferNode, error)</a></li>
           </ul>
       </li>
   <li>
       <a href="#LocaleState">type LocaleState</a>
+      <ul>
+          <li><a href="#LocaleState.Error">func (LocaleState) Error() string</a></li>
+          </ul>
       </li>
   <li>
       <a href="#LocaleStates">type LocaleStates</a>
       <ul>
+          <li><a href="#NewLocaleStates">func NewLocaleStates(language string) (LocaleStates, error)</a></li>
           <li><a href="#LocaleStates.Locale">func (s LocaleStates) Locale(t LangTag) (*LocaleState, bool)</a></li>
-          <li><a href="#LocaleStates.Make">func (s *LocaleStates) Make(language string) error</a></li>
           </ul>
       </li>
   <li>
@@ -60,6 +63,12 @@
           <li><a href="#Path.Content">func (p Path) Content() (*ContentUrls, error)</a></li>
           <li><a href="#Path.Set">func (p *Path) Set(s string) error</a></li>
           <li><a href="#Path.String">func (p Path) String() string</a></li>
+          </ul>
+      </li>
+  <li>
+      <a href="#WebUrl">type WebUrl</a>
+      <ul>
+          <li><a href="#WebUrl.UnmarshalText">func (w *WebUrl) UnmarshalText(text []byte) error</a></li>
           </ul>
       </li>
   </ul><h3 id="pkg-variables">Variables</h3>
@@ -207,8 +216,8 @@
   <h3 id="pkg-functions">Functions</h3>
   <h3 id="Monetization">func Monetization</h3>
     <pre class="chroma"><span class="kd">func</span> <span class="nf">Monetization</span><span class="p">(</span><span class="nx">o</span> <a href="#OfferNode"><span class="nx">OfferNode</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a></pre>
-    <h3 id="URL">func URL</h3>
-    <pre class="chroma"><span class="kd">func</span> <span class="nf">URL</span><span class="p">(</span><span class="nx">o</span> <a href="#OfferNode"><span class="nx">OfferNode</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a></pre>
+    <h3 id="Url">func Url</h3>
+    <pre class="chroma"><span class="kd">func</span> <span class="nf">Url</span><span class="p">(</span><span class="nx">o</span> <a href="#OfferNode"><span class="nx">OfferNode</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a></pre>
     <h3 id="pkg-types">Types</h3>
   <h3 id="ContentUrls">type ContentUrls</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">ContentUrls</span> <span class="kd">struct</span> <span class="p">{</span>
@@ -220,24 +229,28 @@
 </span><span class="c1"></span>	<span id="LangTag.Href"><span class="nx">Href</span></span>   <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="c1">// /ar/pelicula/mulholland-drive
 </span><span class="c1"></span><span class="p">}</span></pre>
     <h4 id="LangTag.Offers">func (LangTag) Offers</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <a href="#LangTag"><span class="nx">LangTag</span></a><span class="p">)</span> <span class="nf">Offers</span><span class="p">(</span><span class="nx">s</span> <span class="o">*</span><a href="#LocaleState"><span class="nx">LocaleState</span></a><span class="p">)</span> <span class="p">([]</span><a href="#OfferNode"><span class="nx">OfferNode</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <a href="#LangTag"><span class="nx">LangTag</span></a><span class="p">)</span> <span class="nf">Offers</span><span class="p">(</span><span class="nx">state</span> <span class="o">*</span><a href="#LocaleState"><span class="nx">LocaleState</span></a><span class="p">)</span> <span class="p">([]</span><a href="#OfferNode"><span class="nx">OfferNode</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
   <h3 id="LocaleState">type LocaleState</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">LocaleState</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span id="LocaleState.FullLocale"><span class="nx">FullLocale</span></span>  <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
 	<span id="LocaleState.Country"><span class="nx">Country</span></span>     <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
 	<span id="LocaleState.CountryName"><span class="nx">CountryName</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
 <span class="p">}</span></pre>
-    <h3 id="LocaleStates">type LocaleStates</h3>
+    <p>keep order
+<h4 id="LocaleState.Error">func (LocaleState) Error</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><a href="#LocaleState"><span class="nx">LocaleState</span></a><span class="p">)</span> <span class="nf">Error</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  <h3 id="LocaleStates">type LocaleStates</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">LocaleStates</span> <span class="p">[]</span><a href="#LocaleState"><span class="nx">LocaleState</span></a></pre>
-    <h4 id="LocaleStates.Locale">func (LocaleStates) Locale</h4>
+    <h4 id="NewLocaleStates">func NewLocaleStates</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="nf">NewLocaleStates</span><span class="p">(</span><span class="nx">language</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <span class="p">(</span><a href="#LocaleStates"><span class="nx">LocaleStates</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="LocaleStates.Locale">func (LocaleStates) Locale</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <a href="#LocaleStates"><span class="nx">LocaleStates</span></a><span class="p">)</span> <span class="nf">Locale</span><span class="p">(</span><span class="nx">t</span> <a href="#LangTag"><span class="nx">LangTag</span></a><span class="p">)</span> <span class="p">(</span><span class="o">*</span><a href="#LocaleState"><span class="nx">LocaleState</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a><span class="p">)</span></pre>
-  <h4 id="LocaleStates.Make">func (*LocaleStates) Make</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><a href="#LocaleStates"><span class="nx">LocaleStates</span></a><span class="p">)</span> <span class="nf">Make</span><span class="p">(</span><span class="nx">language</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
   <h3 id="OfferGroup">type OfferGroup</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">OfferGroup</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="OfferGroup.URL"><span class="nx">URL</span></span>          <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="OfferGroup.Monetization"><span class="nx">Monetization</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="OfferGroup.Count"><span class="nx">Count</span></span>        <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>
 	<span id="OfferGroup.Country"><span class="nx">Country</span></span>      <span class="p">[]</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="OfferGroup.Monetization"><span class="nx">Monetization</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="OfferGroup.Url"><span class="nx">Url</span></span>          <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
 <span class="p">}</span></pre>
     <h3 id="OfferGroups">type OfferGroups</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">OfferGroups</span> <span class="p">[]</span><span class="o">*</span><a href="#OfferGroup"><span class="nx">OfferGroup</span></a></pre>
@@ -247,8 +260,9 @@
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">gs</span> <a href="#OfferGroups"><span class="nx">OfferGroups</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
   <h3 id="OfferNode">type OfferNode</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">OfferNode</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="OfferNode.ElementCount"><span class="nx">ElementCount</span></span>     <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a>
 	<span id="OfferNode.MonetizationType"><span class="nx">MonetizationType</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="OfferNode.StandardWebUrl"><span class="nx">StandardWebUrl</span></span>   <span class="nx">web_url</span>
+	<span id="OfferNode.StandardWebUrl"><span class="nx">StandardWebUrl</span></span>   <a href="#WebUrl"><span class="nx">WebUrl</span></a>
 <span class="p">}</span></pre>
     <p>`presentationType` data seems to be incorrect in some cases. For example,
 JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
@@ -262,6 +276,10 @@ when the site itself reports as HD
   <p><a href="https://www.justwatch.com/us/movie/the-social-network">https://www.justwatch.com/us/movie/the-social-network</a>
 <h4 id="Path.String">func (Path) String</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#Path"><span class="nx">Path</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  <h3 id="WebUrl">type WebUrl</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">WebUrl</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+    <h4 id="WebUrl.UnmarshalText">func (*WebUrl) UnmarshalText</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">w</span> <span class="o">*</span><a href="#WebUrl"><span class="nx">WebUrl</span></a><span class="p">)</span> <span class="nf">UnmarshalText</span><span class="p">(</span><span class="nx">text</span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#byte"><span class="kt">byte</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
   </main>
     <hr>
     <footer>

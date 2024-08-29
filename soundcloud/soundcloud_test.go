@@ -14,11 +14,15 @@ func TestResolve(t *testing.T) {
    if err != nil {
       t.Fatal(err)
    }
-   media, err := track.Progressive()
+   progressive, ok := track.Progressive()
+   if !ok {
+      t.Fatal("ClientTrack.Progressive")
+   }
+   media, err := progressive.Media()
    if err != nil {
       t.Fatal(err)
    }
-   fmt.Println(media)
+   fmt.Printf("%+v\n", media)
 }
 
 func TestNextData(t *testing.T) {

@@ -14,7 +14,7 @@
   <body>
     <nav>
         <a href="..">154.pages.dev/platform</a>/youtube<span class="navbar-right">
-          v1.4.7 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
+          v1.4.8 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
       </nav>
     <main><h2 id="pkg-overview">package youtube</h2>
 <pre class="chroma"><span class="kn">import</span> <span class="s">&#34;154.pages.dev/platform/youtube&#34;</span></pre>
@@ -24,54 +24,64 @@
       <a href="#AdaptiveFormat">type AdaptiveFormat</a>
       <ul>
           <li><a href="#AdaptiveFormat.CompareBitrate">func (a AdaptiveFormat) CompareBitrate(b AdaptiveFormat) int</a></li>
-          <li><a href="#AdaptiveFormat.Ext">func (a AdaptiveFormat) Ext() (string, error)</a></li>
-          <li><a href="#AdaptiveFormat.Ranges">func (a AdaptiveFormat) Ranges() []string</a></li>
-          <li><a href="#AdaptiveFormat.String">func (a AdaptiveFormat) String() string</a></li>
+          <li><a href="#AdaptiveFormat.Ext">func (a *AdaptiveFormat) Ext() (string, error)</a></li>
+          <li><a href="#AdaptiveFormat.Ranges">func (a *AdaptiveFormat) Ranges() []string</a></li>
+          <li><a href="#AdaptiveFormat.String">func (a *AdaptiveFormat) String() string</a></li>
           </ul>
       </li>
   <li>
       <a href="#AuthToken">type AuthToken</a>
       <ul>
+          <li><a href="#AuthToken.Marshal">func (a *AuthToken) Marshal() ([]byte, error)</a></li>
           <li><a href="#AuthToken.Refresh">func (a *AuthToken) Refresh() error</a></li>
-          <li><a href="#AuthToken.Unmarshal">func (a *AuthToken) Unmarshal() error</a></li>
+          <li><a href="#AuthToken.Unmarshal">func (a *AuthToken) Unmarshal(text []byte) error</a></li>
+          </ul>
+      </li>
+  <li>
+      <a href="#Date">type Date</a>
+      <ul>
+          <li><a href="#Date.UnmarshalText">func (d *Date) UnmarshalText(text []byte) error</a></li>
           </ul>
       </li>
   <li>
       <a href="#DeviceCode">type DeviceCode</a>
       <ul>
-          <li><a href="#DeviceCode.Auth">func (d DeviceCode) Auth() (*AuthToken, error)</a></li>
+          <li><a href="#DeviceCode.Marshal">func (d *DeviceCode) Marshal() ([]byte, error)</a></li>
           <li><a href="#DeviceCode.New">func (d *DeviceCode) New() error</a></li>
-          <li><a href="#DeviceCode.String">func (d DeviceCode) String() string</a></li>
+          <li><a href="#DeviceCode.String">func (d *DeviceCode) String() string</a></li>
+          <li><a href="#DeviceCode.Token">func (d *DeviceCode) Token() (*AuthToken, error)</a></li>
+          <li><a href="#DeviceCode.Unmarshal">func (d *DeviceCode) Unmarshal(text []byte) error</a></li>
           </ul>
       </li>
   <li>
-      <a href="#Image">type Image</a>
+      <a href="#InnerTube">type InnerTube</a>
       <ul>
-          <li><a href="#Image.String">func (i Image) String() string</a></li>
+          <li><a href="#InnerTube.Player">func (i *InnerTube) Player(token *AuthToken) (*Player, error)</a></li>
           </ul>
       </li>
   <li>
       <a href="#Player">type Player</a>
+      </li>
+  <li>
+      <a href="#VideoId">type VideoId</a>
       <ul>
-          <li><a href="#Player.Author">func (p Player) Author() string</a></li>
-          <li><a href="#Player.Post">func (p *Player) Post(r Request, auth *AuthToken) error</a></li>
-          <li><a href="#Player.Time">func (p Player) Time() (time.Time, error)</a></li>
-          <li><a href="#Player.Title">func (p Player) Title() string</a></li>
+          <li><a href="#VideoId.Set">func (v *VideoId) Set(text string) error</a></li>
+          <li><a href="#VideoId.String">func (v VideoId) String() string</a></li>
           </ul>
       </li>
   <li>
-      <a href="#Request">type Request</a>
+      <a href="#YtImg">type YtImg</a>
       <ul>
-          <li><a href="#Request.Android">func (r *Request) Android()</a></li>
-          <li><a href="#Request.AndroidCheck">func (r *Request) AndroidCheck()</a></li>
-          <li><a href="#Request.AndroidEmbed">func (r *Request) AndroidEmbed()</a></li>
-          <li><a href="#Request.Set">func (r *Request) Set(s string) error</a></li>
-          <li><a href="#Request.String">func (r Request) String() string</a></li>
-          <li><a href="#Request.Web">func (r *Request) Web()</a></li>
+          <li><a href="#YtImg.String">func (y *YtImg) String() string</a></li>
           </ul>
       </li>
   </ul><h3 id="pkg-variables">Variables</h3>
-  <pre class="chroma"><span class="kd">var</span> <span id="Images"><span class="nx">Images</span></span> <span class="p">=</span> <span class="p">[]</span><a href="#Image"><span class="nx">Image</span></a><span class="p">{</span>
+  <pre class="chroma"><span class="kd">var</span> <span id="ClientName"><span class="nx">ClientName</span></span> <span class="p">=</span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">{</span>
+	<span class="nx">android</span><span class="p">,</span>
+	<span class="nx">android_embedded_player</span><span class="p">,</span>
+	<span class="nx">web</span><span class="p">,</span>
+<span class="p">}</span></pre>
+  <pre class="chroma"><span class="kd">var</span> <span id="YtImgs"><span class="nx">YtImgs</span></span> <span class="p">=</span> <span class="p">[]</span><a href="#YtImg"><span class="nx">YtImg</span></a><span class="p">{</span>
 	<span class="p">{</span><span class="nx">Width</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span> <span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;default.jpg&#34;</span><span class="p">},</span>
 	<span class="p">{</span><span class="nx">Width</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span> <span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;1.jpg&#34;</span><span class="p">},</span>
 	<span class="p">{</span><span class="nx">Width</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span> <span class="nx">Height</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span> <span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;2.jpg&#34;</span><span class="p">},</span>
@@ -126,55 +136,76 @@
 	<span id="AdaptiveFormat.Itag"><span class="nx">Itag</span></span>          <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
 	<span id="AdaptiveFormat.MimeType"><span class="nx">MimeType</span></span>      <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
 	<span id="AdaptiveFormat.QualityLabel"><span class="nx">QualityLabel</span></span>  <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="AdaptiveFormat.URL"><span class="nx">URL</span></span>           <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="AdaptiveFormat.Url"><span class="nx">Url</span></span>           <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
 <span class="p">}</span></pre>
     <h4 id="AdaptiveFormat.CompareBitrate">func (AdaptiveFormat) CompareBitrate</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <span class="nf">CompareBitrate</span><span class="p">(</span><span class="nx">b</span> <a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a></pre>
-  <h4 id="AdaptiveFormat.Ext">func (AdaptiveFormat) Ext</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <span class="nf">Ext</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
-  <h4 id="AdaptiveFormat.Ranges">func (AdaptiveFormat) Ranges</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <span class="nf">Ranges</span><span class="p">()</span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  <h4 id="AdaptiveFormat.Ext">func (*AdaptiveFormat) Ext</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <span class="nf">Ext</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="AdaptiveFormat.Ranges">func (*AdaptiveFormat) Ranges</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <span class="nf">Ranges</span><span class="p">()</span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
   <p>we need the length for progress meter, so cannot use a channel
-<h4 id="AdaptiveFormat.String">func (AdaptiveFormat) String</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+<h4 id="AdaptiveFormat.String">func (*AdaptiveFormat) String</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><a href="#AdaptiveFormat"><span class="nx">AdaptiveFormat</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
   <h3 id="AuthToken">type AuthToken</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">AuthToken</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="AuthToken.Data"><span class="nx">Data</span></span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#byte"><span class="kt">byte</span></a>
-	<span id="AuthToken.V"><span class="nx">V</span></span>    <span class="kd">struct</span> <span class="p">{</span>
-		<span id="AuthToken.AccessToken"><span class="nx">AccessToken</span></span>  <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;access_token&#34;`</span>
-		<span id="AuthToken.RefreshToken"><span class="nx">RefreshToken</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;refresh_token&#34;`</span>
-	<span class="p">}</span>
+	<span id="AuthToken.AccessToken"><span class="nx">AccessToken</span></span>  <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;access_token&#34;`</span>
+	<span id="AuthToken.RefreshToken"><span class="nx">RefreshToken</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;refresh_token&#34;`</span>
 <span class="p">}</span></pre>
-    <h4 id="AuthToken.Refresh">func (*AuthToken) Refresh</h4>
+    <h4 id="AuthToken.Marshal">func (*AuthToken) Marshal</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><a href="#AuthToken"><span class="nx">AuthToken</span></a><span class="p">)</span> <span class="nf">Marshal</span><span class="p">()</span> <span class="p">([]</span><a href="https://pkg.go.dev/builtin#byte"><span class="kt">byte</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="AuthToken.Refresh">func (*AuthToken) Refresh</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><a href="#AuthToken"><span class="nx">AuthToken</span></a><span class="p">)</span> <span class="nf">Refresh</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
   <h4 id="AuthToken.Unmarshal">func (*AuthToken) Unmarshal</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><a href="#AuthToken"><span class="nx">AuthToken</span></a><span class="p">)</span> <span class="nf">Unmarshal</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><a href="#AuthToken"><span class="nx">AuthToken</span></a><span class="p">)</span> <span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">text</span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#byte"><span class="kt">byte</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  <h3 id="Date">type Date</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Date</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="Date.Time"><span class="nx">Time</span></span> <a href="https://pkg.go.dev/time"><span class="nx">time</span></a><span class="p">.</span><a href="https://pkg.go.dev/time#Time"><span class="nx">Time</span></a>
+<span class="p">}</span></pre>
+    <h4 id="Date.UnmarshalText">func (*Date) UnmarshalText</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><a href="#Date"><span class="nx">Date</span></a><span class="p">)</span> <span class="nf">UnmarshalText</span><span class="p">(</span><span class="nx">text</span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#byte"><span class="kt">byte</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
   <h3 id="DeviceCode">type DeviceCode</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">DeviceCode</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span id="DeviceCode.DeviceCode"><span class="nx">DeviceCode</span></span>      <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;device_code&#34;`</span>
 	<span id="DeviceCode.UserCode"><span class="nx">UserCode</span></span>        <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;user_code&#34;`</span>
 	<span id="DeviceCode.VerificationUrl"><span class="nx">VerificationUrl</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;verification_url&#34;`</span>
 <span class="p">}</span></pre>
-    <h4 id="DeviceCode.Auth">func (DeviceCode) Auth</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <a href="#DeviceCode"><span class="nx">DeviceCode</span></a><span class="p">)</span> <span class="nf">Auth</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#AuthToken"><span class="nx">AuthToken</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+    <h4 id="DeviceCode.Marshal">func (*DeviceCode) Marshal</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><a href="#DeviceCode"><span class="nx">DeviceCode</span></a><span class="p">)</span> <span class="nf">Marshal</span><span class="p">()</span> <span class="p">([]</span><a href="https://pkg.go.dev/builtin#byte"><span class="kt">byte</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
   <h4 id="DeviceCode.New">func (*DeviceCode) New</h4>
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><a href="#DeviceCode"><span class="nx">DeviceCode</span></a><span class="p">)</span> <span class="nf">New</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
-  <h4 id="DeviceCode.String">func (DeviceCode) String</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <a href="#DeviceCode"><span class="nx">DeviceCode</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
-  <h3 id="Image">type Image</h3>
-    <pre class="chroma"><span class="kd">type</span> <span class="nx">Image</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="Image.Height"><span class="nx">Height</span></span>  <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
-	<span id="Image.Name"><span class="nx">Name</span></span>    <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="Image.VideoId"><span class="nx">VideoId</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
-	<span id="Image.Width"><span class="nx">Width</span></span>   <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
+  <h4 id="DeviceCode.String">func (*DeviceCode) String</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><a href="#DeviceCode"><span class="nx">DeviceCode</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  <h4 id="DeviceCode.Token">func (*DeviceCode) Token</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><a href="#DeviceCode"><span class="nx">DeviceCode</span></a><span class="p">)</span> <span class="nf">Token</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><a href="#AuthToken"><span class="nx">AuthToken</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
+  <h4 id="DeviceCode.Unmarshal">func (*DeviceCode) Unmarshal</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><a href="#DeviceCode"><span class="nx">DeviceCode</span></a><span class="p">)</span> <span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">text</span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#byte"><span class="kt">byte</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  <h3 id="InnerTube">type InnerTube</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">InnerTube</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="InnerTube.ContentCheckOk"><span class="nx">ContentCheckOk</span></span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a> <span class="s">`json:&#34;contentCheckOk,omitempty&#34;`</span>
+	<span id="InnerTube.Context"><span class="nx">Context</span></span>        <span class="kd">struct</span> <span class="p">{</span>
+		<span id="InnerTube.Client"><span class="nx">Client</span></span> <span class="kd">struct</span> <span class="p">{</span>
+			<span id="InnerTube.AndroidSdkVersion"><span class="nx">AndroidSdkVersion</span></span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>    <span class="s">`json:&#34;androidSdkVersion&#34;`</span>
+			<span id="InnerTube.ClientName"><span class="nx">ClientName</span></span>        <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;clientName&#34;`</span>
+			<span id="InnerTube.ClientVersion"><span class="nx">ClientVersion</span></span>     <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;clientVersion&#34;`</span>
+			<span id="InnerTube.OsVersion"><span class="nx">OsVersion</span></span>         <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;osVersion&#34;`</span>
+		<span class="p">}</span> <span class="s">`json:&#34;client&#34;`</span>
+	<span class="p">}</span> <span class="s">`json:&#34;context&#34;`</span>
+	<span id="InnerTube.RacyCheckOk"><span class="nx">RacyCheckOk</span></span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a>   <span class="s">`json:&#34;racyCheckOk,omitempty&#34;`</span>
+	<span id="InnerTube.VideoId"><span class="nx">VideoId</span></span>     <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;videoId&#34;`</span>
 <span class="p">}</span></pre>
-    <h4 id="Image.String">func (Image) String</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">i</span> <a href="#Image"><span class="nx">Image</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+    <p>need `osVersion` this to get the correct:
+This video requires payment to watch
+instead of the invalid:
+This video can only be played on newer versions of Android or other
+supported devices.
+<h4 id="InnerTube.Player">func (*InnerTube) Player</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">i</span> <span class="o">*</span><a href="#InnerTube"><span class="nx">InnerTube</span></a><span class="p">)</span> <span class="nf">Player</span><span class="p">(</span><span class="nx">token</span> <span class="o">*</span><a href="#AuthToken"><span class="nx">AuthToken</span></a><span class="p">)</span> <span class="p">(</span><span class="o">*</span><a href="#Player"><span class="nx">Player</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
   <h3 id="Player">type Player</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">Player</span> <span class="kd">struct</span> <span class="p">{</span>
 	<span id="Player.Microformat"><span class="nx">Microformat</span></span> <span class="kd">struct</span> <span class="p">{</span>
 		<span id="Player.PlayerMicroformatRenderer"><span class="nx">PlayerMicroformatRenderer</span></span> <span class="kd">struct</span> <span class="p">{</span>
-			<span id="Player.PublishDate"><span class="nx">PublishDate</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+			<span id="Player.PublishDate"><span class="nx">PublishDate</span></span> <a href="#Date"><span class="nx">Date</span></a>
 		<span class="p">}</span>
 	<span class="p">}</span>
 	<span id="Player.PlayabilityStatus"><span class="nx">PlayabilityStatus</span></span> <span class="kd">struct</span> <span class="p">{</span>
@@ -193,45 +224,21 @@
 		<span id="Player.ViewCount"><span class="nx">ViewCount</span></span>        <a href="https://pkg.go.dev/builtin#int64"><span class="kt">int64</span></a> <span class="s">`json:&#34;,string&#34;`</span>
 	<span class="p">}</span>
 <span class="p">}</span></pre>
-    <h4 id="Player.Author">func (Player) Author</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#Player"><span class="nx">Player</span></a><span class="p">)</span> <span class="nf">Author</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
-  <h4 id="Player.Post">func (*Player) Post</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span><a href="#Player"><span class="nx">Player</span></a><span class="p">)</span> <span class="nf">Post</span><span class="p">(</span><span class="nx">r</span> <a href="#Request"><span class="nx">Request</span></a><span class="p">,</span> <span class="nx">auth</span> <span class="o">*</span><a href="#AuthToken"><span class="nx">AuthToken</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
-  <h4 id="Player.Time">func (Player) Time</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#Player"><span class="nx">Player</span></a><span class="p">)</span> <span class="nf">Time</span><span class="p">()</span> <span class="p">(</span><a href="https://pkg.go.dev/time"><span class="nx">time</span></a><span class="p">.</span><a href="https://pkg.go.dev/time#Time"><span class="nx">Time</span></a><span class="p">,</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a><span class="p">)</span></pre>
-  <h4 id="Player.Title">func (Player) Title</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <a href="#Player"><span class="nx">Player</span></a><span class="p">)</span> <span class="nf">Title</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
-  <h3 id="Request">type Request</h3>
-    <pre class="chroma"><span class="kd">type</span> <span class="nx">Request</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="Request.ContentCheckOk"><span class="nx">ContentCheckOk</span></span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a> <span class="s">`json:&#34;contentCheckOk,omitempty&#34;`</span>
-	<span id="Request.Context"><span class="nx">Context</span></span>        <span class="kd">struct</span> <span class="p">{</span>
-		<span id="Request.Client"><span class="nx">Client</span></span> <span class="kd">struct</span> <span class="p">{</span>
-			<span id="Request.AndroidSdkVersion"><span class="nx">AndroidSdkVersion</span></span> <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>    <span class="s">`json:&#34;androidSdkVersion&#34;`</span>
-			<span id="Request.ClientName"><span class="nx">ClientName</span></span>        <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;clientName&#34;`</span>
-			<span id="Request.ClientVersion"><span class="nx">ClientVersion</span></span>     <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;clientVersion&#34;`</span>
-			<span class="c1">// need this to get the correct:
-</span><span class="c1"></span>			<span class="c1">// This video requires payment to watch
-</span><span class="c1"></span>			<span class="c1">// instead of the invalid:
-</span><span class="c1"></span>			<span class="c1">// This video can only be played on newer versions of Android or other
-</span><span class="c1"></span>			<span class="c1">// supported devices.
-</span><span class="c1"></span>			<span id="Request.OsVersion"><span class="nx">OsVersion</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;osVersion&#34;`</span>
-		<span class="p">}</span> <span class="s">`json:&#34;client&#34;`</span>
-	<span class="p">}</span> <span class="s">`json:&#34;context&#34;`</span>
-	<span id="Request.RacyCheckOk"><span class="nx">RacyCheckOk</span></span> <a href="https://pkg.go.dev/builtin#bool"><span class="kt">bool</span></a>   <span class="s">`json:&#34;racyCheckOk,omitempty&#34;`</span>
-	<span id="Request.VideoId"><span class="nx">VideoId</span></span>     <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;videoId&#34;`</span>
+    <h3 id="VideoId">type VideoId</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">VideoId</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+    <h4 id="VideoId.Set">func (*VideoId) Set</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">v</span> <span class="o">*</span><a href="#VideoId"><span class="nx">VideoId</span></a><span class="p">)</span> <span class="nf">Set</span><span class="p">(</span><span class="nx">text</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
+  <h4 id="VideoId.String">func (VideoId) String</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">v</span> <a href="#VideoId"><span class="nx">VideoId</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  <h3 id="YtImg">type YtImg</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">YtImg</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="YtImg.Height"><span class="nx">Height</span></span>  <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
+	<span id="YtImg.Name"><span class="nx">Name</span></span>    <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="YtImg.VideoId"><span class="nx">VideoId</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a>
+	<span id="YtImg.Width"><span class="nx">Width</span></span>   <a href="https://pkg.go.dev/builtin#int"><span class="kt">int</span></a>
 <span class="p">}</span></pre>
-    <h4 id="Request.Android">func (*Request) Android</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><a href="#Request"><span class="nx">Request</span></a><span class="p">)</span> <span class="nf">Android</span><span class="p">()</span></pre>
-  <h4 id="Request.AndroidCheck">func (*Request) AndroidCheck</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><a href="#Request"><span class="nx">Request</span></a><span class="p">)</span> <span class="nf">AndroidCheck</span><span class="p">()</span></pre>
-  <h4 id="Request.AndroidEmbed">func (*Request) AndroidEmbed</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><a href="#Request"><span class="nx">Request</span></a><span class="p">)</span> <span class="nf">AndroidEmbed</span><span class="p">()</span></pre>
-  <h4 id="Request.Set">func (*Request) Set</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><a href="#Request"><span class="nx">Request</span></a><span class="p">)</span> <span class="nf">Set</span><span class="p">(</span><span class="nx">s</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
-  <h4 id="Request.String">func (Request) String</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <a href="#Request"><span class="nx">Request</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
-  <h4 id="Request.Web">func (*Request) Web</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><a href="#Request"><span class="nx">Request</span></a><span class="p">)</span> <span class="nf">Web</span><span class="p">()</span></pre>
+    <h4 id="YtImg.String">func (*YtImg) String</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">y</span> <span class="o">*</span><a href="#YtImg"><span class="nx">YtImg</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
   </main>
     <hr>
     <footer>
