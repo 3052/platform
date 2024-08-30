@@ -7,7 +7,7 @@ import (
    "time"
 )
 
-func (f flags) stream() error {
+func (f *flags) stream() error {
    content, err := f.path.Content()
    if err != nil {
       return err
