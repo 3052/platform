@@ -1,4 +1,4 @@
-package android
+package spotify
 
 import (
    "fmt"
@@ -7,12 +7,11 @@ import (
 )
 
 func TestOkRead(t *testing.T) {
-   home, err := os.UserHomeDir()
-   if err != nil {
-      t.Fatal(err)
-   }
-   var login LoginOk
-   login.Data, err = os.ReadFile(home + "/spotify.bin")
+   var (
+      login LoginOk
+      err error
+   )
+   login.Data, err = os.ReadFile("spotify.txt")
    if err != nil {
       t.Fatal(err)
    }
@@ -37,9 +36,5 @@ func TestOkWrite(t *testing.T) {
    if err != nil {
       t.Fatal(err)
    }
-   home, err := os.UserHomeDir()
-   if err != nil {
-      t.Fatal(err)
-   }
-   os.WriteFile(home+"/spotify.bin", ok.Data, 0666)
+   os.WriteFile("spotify.txt", ok.Data, 0666)
 }
