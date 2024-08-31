@@ -1,17 +1,16 @@
-module blog
+module 154.pages.dev/media
 
 go 1.22.0
 
 require (
-	github.com/refraction-networking/utls v1.6.7
-	golang.org/x/net v0.28.0
+	154.pages.dev/encoding v1.18.9
+	154.pages.dev/log v1.1.9
+	154.pages.dev/protobuf v1.2.0
+	154.pages.dev/sofia v1.2.0
+	154.pages.dev/widevine v1.3.4
 )
 
 require (
-	github.com/andybalholm/brotli v1.0.6 // indirect
-	github.com/cloudflare/circl v1.3.7 // indirect
-	github.com/klauspost/compress v1.17.4 // indirect
-	golang.org/x/crypto v0.26.0 // indirect
-	golang.org/x/sys v0.23.0 // indirect
-	golang.org/x/text v0.17.0 // indirect
+	github.com/chmike/cmac-go v1.1.0 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 )
