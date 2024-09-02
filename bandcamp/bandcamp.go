@@ -11,6 +11,20 @@ import (
    "time"
 )
 
+func (b *BandDetails) New(id int64) error {
+   address := func() string {
+      b := []byte("http://bandcamp.com/api/mobile/24/band_details?band_id=")
+      b = strconv.AppendInt(b, id, 10)
+      return string(b)
+   }()
+   resp, err := http.Get(address)
+   if err != nil {
+      return err
+   }
+   defer resp.Body.Close()
+   return json.NewDecoder(resp.Body).Decode(b)
+}
+
 func (r *ReportParams) New(address string) error {
    resp, err := http.Get(address)
    if err != nil {
@@ -111,20 +125,6 @@ func (i Item) Band() (*BandDetails, error) {
       return nil, err
    }
    return &band, nil
-}
-
-func (b *BandDetails) New(id int64) error {
-   address := func() string {
-      b := []byte("http://bandcamp.com/api/mobile/24/band_details?band_id=")
-      b = strconv.AppendInt(b, id, 10)
-      return string(b)
-   }()
-   resp, err := http.Get(address)
-   if err != nil {
-      return err
-   }
-   defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(b)
 }
 
 type Image struct {
