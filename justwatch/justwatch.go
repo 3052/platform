@@ -72,39 +72,6 @@ func (LocaleState) Error() string {
    return "LocaleState"
 }
 
-type Path string
-
-// https://www.justwatch.com/us/movie/the-social-network
-func (p *Path) Set(s string) error {
-   s = strings.TrimPrefix(s, "https://")
-   s = strings.TrimPrefix(s, "www.")
-   s = strings.TrimPrefix(s, "justwatch.com")
-   *p = Path(s)
-   return nil
-}
-
-func (p Path) String() string {
-   return string(p)
-}
-
-func (p Path) Content() (*ContentUrls, error) {
-   address := "https://apis.justwatch.com/content/urls?path=" + string(p)
-   resp, err := http.Get(address)
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      return nil, errors.New(resp.Status)
-   }
-   content := &ContentUrls{}
-   err = json.NewDecoder(resp.Body).Decode(content)
-   if err != nil {
-      return nil, err
-   }
-   return content, nil
-}
-
 // keep order
 type LocaleState struct {
    FullLocale string
@@ -277,4 +244,38 @@ type ContentUrls struct {
 type LangTag struct {
    Locale string // es_AR
    Href string // /ar/pelicula/mulholland-drive
+}
+
+func (a Address) String() string {
+   return a.Path
+}
+
+type Address struct {
+   Path string
+}
+
+func (a *Address) Set(s string) error {
+   s = strings.TrimPrefix(s, "https://")
+   s = strings.TrimPrefix(s, "www.")
+   a.Path = strings.TrimPrefix(s, "justwatch.com")
+   return nil
+}
+
+func (a Address) Content() (*ContentUrls, error) {
+   resp, err := http.Get(
+      "https://apis.justwatch.com/content/urls?path=" + a.Path,
+   )
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      return nil, errors.New(resp.Status)
+   }
+   content := &ContentUrls{}
+   err = json.NewDecoder(resp.Body).Decode(content)
+   if err != nil {
+      return nil, err
+   }
+   return content, nil
 }

@@ -127,15 +127,10 @@ func (r *login_response) New(username, password string) error {
       m.AddBytes(1, []byte(username))
       m.AddBytes(2, []byte(password))
    })
-   req, err := http.NewRequest(
-      "POST", "https://login5.spotify.com/v3/login",
-      bytes.NewReader(m.Marshal()),
+   resp, err := http.Post(
+      "https://login5.spotify.com/v3/login",
+      "application/x-protobuf", bytes.NewReader(m.Marshal()),
    )
-   if err != nil {
-      return err
-   }
-   req.Header.Set("content-type", "application/x-protobuf")
-   resp, err := http.DefaultClient.Do(req)
    if err != nil {
       return err
    }

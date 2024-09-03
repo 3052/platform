@@ -8,7 +8,7 @@ import (
 )
 
 func (f *flags) stream() error {
-   content, err := f.path.Content()
+   content, err := f.address.Content()
    if err != nil {
       return err
    }
