@@ -6,18 +6,6 @@ import (
    "testing"
 )
 
-func TestLocale(t *testing.T) {
-   locales, err := NewLocaleStates("en-US")
-   if err != nil {
-      t.Fatal(err)
-   }
-   for _, v := range locales {
-      fmt.Printf("{%q, %q, %q},\n", v.FullLocale, v.Country, v.CountryName)
-   }
-   tag := LangTag{Locale: "en_US"}
-   fmt.Println(locales.Locale(&tag))
-}
-
 func TestSize(t *testing.T) {
    size := reflect.TypeOf(&struct{}{}).Size()
    for _, test := range size_tests {
@@ -39,4 +27,19 @@ var size_tests = []any{
    OfferGroups{},
    OfferNode{},
    WebUrl{},
+}
+
+func TestLocale(t *testing.T) {
+   var states LocaleStates
+   err := states.New("en-US")
+   if err != nil {
+      t.Fatal(err)
+   }
+   for _, state := range states {
+      fmt.Printf(
+         "{%q, %q, %q},\n", state.FullLocale, state.Country, state.CountryName,
+      )
+   }
+   locale, ok := states.Locale(&LangTag{Locale: "en_US"})
+   fmt.Printf("%v %v\n", locale, ok)
 }
