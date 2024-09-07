@@ -20,13 +20,13 @@ func (i *InnerTube) Player(token *AuthToken) (*Player, error) {
    case web:
       i.Context.Client.ClientVersion = web_version
    }
-   body, err := json.MarshalIndent(i, "", " ")
+   data, err := json.Marshal(i)
    if err != nil {
       return nil, err
    }
    req, err := http.NewRequest(
       "POST", "https://www.youtube.com/youtubei/v1/player",
-      bytes.NewReader(body),
+      bytes.NewReader(data),
    )
    if err != nil {
       return nil, err
