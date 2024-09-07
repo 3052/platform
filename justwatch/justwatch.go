@@ -57,11 +57,6 @@ func (t *LangTag) Offers(state *LocaleState) ([]OfferNode, error) {
    return resp_body.Data.Url.Node.Offers, nil
 }
 
-var contains = []string{
-   // 2024-7-20
-   "/www.stan.com.au/",
-}
-
 func (gs OfferGroups) String() string {
    var b []byte
    slices.SortFunc(gs, func(c, d *OfferGroup) int {
@@ -100,15 +95,6 @@ type OfferGroup struct {
 
 type OfferGroups []*OfferGroup
 
-// `presentationType` data seems to be incorrect in some cases. For example,
-// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
-// when the site itself reports as HD
-type OfferNode struct {
-   ElementCount int64
-   MonetizationType string
-   StandardWebUrl WebUrl
-}
-
 const title_details = `
 query(
    $fullPath: String!
@@ -128,14 +114,6 @@ query(
    }
 }
 `
-
-type WebUrl string
-
-func (w *WebUrl) UnmarshalText(text []byte) error {
-   text = bytes.TrimSuffix(text, []byte{'\n'})
-   *w = WebUrl(text)
-   return nil
-}
 
 // keep order
 type LocaleState struct {
@@ -306,11 +284,6 @@ type ContentUrls struct {
    HrefLangTags []LangTag `json:"href_lang_tags"`
 }
 
-type LangTag struct {
-   Locale string // es_AR
-   Href string // /ar/pelicula/mulholland-drive
-}
-
 type Address struct {
    Path string
 }
@@ -322,31 +295,60 @@ func (a *Address) Set(s string) error {
    return nil
 }
 
-type LocaleStates []LocaleState
-
-///
-
-func (gs *OfferGroups) Add(s *LocaleState, n OfferNode) {
-   i := slices.IndexFunc(*gs, func(g *OfferGroup) bool {
-      return g.Url == string(n.StandardWebUrl)
-   })
-   if i >= 0 {
-      g := (*gs)[i]
-      if !slices.Contains(g.Country, s.CountryName) {
-         g.Country = append(g.Country, s.CountryName)
-      }
-   } else {
-      var g OfferGroup
-      g.Count = n.ElementCount
-      g.Country = []string{s.CountryName}
-      g.Monetization = n.MonetizationType
-      g.Url = string(n.StandardWebUrl)
-      *gs = append(*gs, &g)
-   }
+func (a *Address) String() string {
+   return a.Path
 }
 
-func Monetization(o OfferNode) bool {
-   switch o.MonetizationType {
+type LocaleStates []LocaleState
+
+type LangTag struct {
+   Locale string // es_AR
+   Href string // /ar/pelicula/mulholland-drive
+}
+
+func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
+   for _, locale := range s {
+      if locale.FullLocale == tag.Locale {
+         return &locale, true
+      }
+   }
+   return nil, false
+}
+
+var hosts = []string{
+   // 2024-7-20
+   "/www.stan.com.au/",
+}
+
+type WebUrl struct {
+   String string
+}
+
+func (w *WebUrl) UnmarshalText(text []byte) error {
+   w.String = strings.TrimSuffix(string(text), "\n")
+   return nil
+}
+
+// `presentationType` data seems to be incorrect in some cases. For example,
+// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
+// when the site itself reports as HD
+type OfferNode struct {
+   ElementCount int64
+   MonetizationType string
+   StandardWebUrl WebUrl
+}
+
+func Url(node *OfferNode) bool {
+   for _, host := range hosts {
+      if strings.Contains(node.StandardWebUrl.String, host) {
+         return true
+      }
+   }
+   return false
+}
+
+func Monetization(node *OfferNode) bool {
+   switch node.MonetizationType {
    case "BUY":
       return true
    case "CINEMA":
@@ -357,14 +359,45 @@ func Monetization(o OfferNode) bool {
    return false
 }
 
-func Url(o OfferNode) bool {
-   for _, value := range contains {
-      if strings.Contains(string(o.StandardWebUrl), value) {
-         return true
-      }
+func (a *Address) Content() (*ContentUrls, error) {
+   resp, err := http.Get(
+      "https://apis.justwatch.com/content/urls?path=" + a.Path,
+   )
+   if err != nil {
+      return nil, err
    }
-   return false
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      return nil, errors.New(resp.Status)
+   }
+   content := &ContentUrls{}
+   err = json.NewDecoder(resp.Body).Decode(content)
+   if err != nil {
+      return nil, err
+   }
+   return content, nil
 }
+
+func (o *OfferGroups) Add(node *OfferNode, state *LocaleState) {
+   i := slices.IndexFunc(*o, func(group *OfferGroup) bool {
+      return group.Url == node.StandardWebUrl.String
+   })
+   if i >= 0 {
+      group := (*o)[i]
+      if !slices.Contains(group.Country, state.CountryName) {
+         group.Country = append(group.Country, state.CountryName)
+      }
+   } else {
+      var group OfferGroup
+      group.Count = node.ElementCount
+      group.Country = []string{state.CountryName}
+      group.Monetization = node.MonetizationType
+      group.Url = node.StandardWebUrl.String
+      *o = append(*o, &group)
+   }
+}
+
+///
 
 func NewLocaleStates(language string) (LocaleStates, error) {
    body, err := func() ([]byte, error) {
@@ -412,40 +445,4 @@ func NewLocaleStates(language string) (LocaleStates, error) {
       return nil, err
    }
    return data.Data.Locales, nil
-}
-
-func (LocaleState) Error() string {
-   return "LocaleState"
-}
-
-func (a Address) String() string {
-   return a.Path
-}
-
-func (a Address) Content() (*ContentUrls, error) {
-   resp, err := http.Get(
-      "https://apis.justwatch.com/content/urls?path=" + a.Path,
-   )
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      return nil, errors.New(resp.Status)
-   }
-   content := &ContentUrls{}
-   err = json.NewDecoder(resp.Body).Decode(content)
-   if err != nil {
-      return nil, err
-   }
-   return content, nil
-}
-
-func (s LocaleStates) Locale(t LangTag) (*LocaleState, bool) {
-   for _, locale := range s {
-      if locale.FullLocale == t.Locale {
-         return &locale, true
-      }
-   }
-   return nil, false
 }
