@@ -13,8 +13,42 @@ import (
    "strings"
 )
 
+func Monetization(node OfferNode) bool {
+   switch node.MonetizationType {
+   case "BUY":
+      return true
+   case "CINEMA":
+      return true
+   case "RENT":
+      return true
+   }
+   return false
+}
+
+func Url(node OfferNode) bool {
+   for _, host := range hosts {
+      if strings.Contains(node.StandardWebUrl.String, host) {
+         return true
+      }
+   }
+   return false
+}
+
+func (*LocaleStates) LocaleError() error {
+   return errors.New("LocaleStates.Locale")
+}
+
+func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
+   for _, locale := range s {
+      if locale.FullLocale == tag.Locale {
+         return &locale, true
+      }
+   }
+   return nil, false
+}
+
 const fetcher_query = `
-query BackendConstantsFetcherQuery($language: Language!) {
+query($language: Language!) {
    locales {
       country
       countryName(language: $language)
@@ -52,27 +86,6 @@ var hosts = []string{
 func graphql_compact(s string) string {
    field := strings.Fields(s)
    return strings.Join(field, " ")
-}
-
-func Url(node *OfferNode) bool {
-   for _, host := range hosts {
-      if strings.Contains(node.StandardWebUrl.String, host) {
-         return true
-      }
-   }
-   return false
-}
-
-func Monetization(node *OfferNode) bool {
-   switch node.MonetizationType {
-   case "BUY":
-      return true
-   case "CINEMA":
-      return true
-   case "RENT":
-      return true
-   }
-   return false
 }
 
 type Address struct {
@@ -167,15 +180,6 @@ type LocaleState struct {
    FullLocale string
    Country string
    CountryName string
-}
-
-func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
-   for _, locale := range s {
-      if locale.FullLocale == tag.Locale {
-         return &locale, true
-      }
-   }
-   return nil, false
 }
 
 func (s *LocaleStates) New(language string) error {
