@@ -2,9 +2,31 @@ package bandcamp
 
 import (
    "fmt"
+   "reflect"
    "testing"
    "time"
 )
+
+func TestSize(t *testing.T) {
+   size := reflect.TypeOf(&struct{}{}).Size()
+   for _, test := range size_tests {
+      if reflect.TypeOf(test).Size() > size {
+         fmt.Printf("*%T\n", test)
+      } else {
+         fmt.Printf("%T\n", test)
+      }
+   }
+}
+
+var size_tests = []any{
+   AlbumTrack{},
+   BandDetails{},
+   Image{},
+   Item{},
+   ReportParams{},
+   Tralbum{},
+   invalid_type{},
+}
 
 var tests = []string{
    "https://schnaussandmunk.bandcamp.com",
@@ -24,6 +46,7 @@ func TestParam(t *testing.T) {
       time.Sleep(99 * time.Millisecond)
    }
 }
+
 const art_id = 3809045440
 
 func TestImage(t *testing.T) {

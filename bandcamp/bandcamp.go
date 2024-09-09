@@ -72,25 +72,26 @@ func (r *ReportParams) Tralbum() (*Tralbum, error) {
 }
 
 type invalid_type struct {
-   value string
+   String string
 }
 
 func (i invalid_type) Error() string {
    var b []byte
    b = append(b, "invalid type "...)
-   b = strconv.AppendQuote(b, i.value)
+   b = strconv.AppendQuote(b, i.String)
    return string(b)
 }
 
 const (
    Jpeg = iota
-   PNG
+   Png
 )
 
 type BandDetails struct {
    Name string
    Discography []Item
 }
+
 type AlbumTrack struct {
    TrackNum int64 `json:"track_num"`
    Title string
@@ -100,7 +101,7 @@ type AlbumTrack struct {
    } `json:"streaming_url"`
 }
 
-func (t Tralbum) Date() time.Time {
+func (t *Tralbum) Date() time.Time {
    return time.Unix(t.ReleaseDate, 0)
 }
 
@@ -118,7 +119,7 @@ type Item struct {
    ItemType string `json:"item_type"`
 }
 
-func (i Item) Band() (*BandDetails, error) {
+func (i *Item) Band() (*BandDetails, error) {
    var band BandDetails
    err := band.New(i.BandId)
    if err != nil {
@@ -137,7 +138,7 @@ type Image struct {
 
 var Images = []Image{
    {ID:0, Width:1500, Height:1500, Format:Jpeg},
-   {ID:1, Width:1500, Height:1500, Format:PNG},
+   {ID:1, Width:1500, Height:1500, Format:Png},
    {ID:2, Width:350, Height:350, Format:Jpeg},
    {ID:3, Width:100, Height:100, Format:Jpeg},
    {ID:4, Width:300, Height:300, Format:Jpeg},
@@ -163,7 +164,7 @@ var Images = []Image{
    {ID:27, Width:715, Height:402, Format:Jpeg, Crop:true},
    {ID:28, Width:768, Height:432, Format:Jpeg, Crop:true},
    {ID:29, Width:100, Height:75, Format:Jpeg, Crop:true},
-   {ID:31, Width:1024, Height:1024, Format:PNG},
+   {ID:31, Width:1024, Height:1024, Format:Png},
    {ID:32, Width:380, Height:285, Format:Jpeg, Crop:true},
    {ID:33, Width:368, Height:276, Format:Jpeg, Crop:true},
    {ID:36, Width:400, Height:300, Format:Jpeg, Crop:true},
@@ -182,7 +183,7 @@ var Images = []Image{
 }
 
 // Extension is optional.
-func (i Image) URL(art_id int64) string {
+func (i *Image) URL(art_id int64) string {
    var b []byte
    b = append(b, "http://f4.bcbits.com/img/a"...)
    b = strconv.AppendInt(b, art_id, 10)
@@ -191,7 +192,7 @@ func (i Image) URL(art_id int64) string {
    return string(b)
 }
 
-func (i Item) Tralbum() (*Tralbum, error) {
+func (i *Item) Tralbum() (*Tralbum, error) {
    switch i.ItemType {
    case "album":
       return new_tralbum('a', i.ItemId)
