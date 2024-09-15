@@ -7,22 +7,11 @@ import (
    "path"
 )
 
-func (a *address) Set(text string) error {
-   a.shortcode = path.Base(text)
-   return nil
+func (m *MediaData) String() string {
+   return m.Data.XdtShortcodeMedia.DisplayUrl
 }
 
-func (a *address) String() string {
-   return a.shortcode
-}
-
-type address struct {
-   shortcode string
-}
-
-const doc_id = 25531498899829322
-
-type media_data struct {
+type MediaData struct {
    Data struct {
       XdtShortcodeMedia struct {
          DisplayUrl string `json:"display_url"`
@@ -30,7 +19,22 @@ type media_data struct {
    }
 }
 
-func (m *media_data) New(shortcode string) error {
+func (a *Address) Set(text string) error {
+   a.Shortcode = path.Base(text)
+   return nil
+}
+
+func (a *Address) String() string {
+   return a.Shortcode
+}
+
+const doc_id = 25531498899829322
+
+type Address struct {
+   Shortcode string
+}
+
+func (a *Address) Media() (*MediaData, error) {
    var value struct {
       DocId int `json:"doc_id,string"`
       Variables struct {
@@ -38,18 +42,23 @@ func (m *media_data) New(shortcode string) error {
       } `json:"variables"`
    }
    value.DocId = doc_id
-   value.Variables.Shortcode = shortcode
+   value.Variables.Shortcode = a.Shortcode
    data, err := json.Marshal(value)
    if err != nil {
-      return err
+      return nil, err
    }
    resp, err := http.Post(
       "https://www.instagram.com/graphql/query",
       "application/json", bytes.NewReader(data),
    )
    if err != nil {
-      return err
+      return nil, err
    }
    defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(m)
+   media := &MediaData{}
+   err = json.NewDecoder(resp.Body).Decode(media)
+   if err != nil {
+      return nil, err
+   }
+   return media, nil
 }
