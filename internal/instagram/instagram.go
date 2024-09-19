@@ -15,7 +15,12 @@ func main() {
       if err != nil {
          panic(err)
       }
-      fmt.Println(media)
+      for i, display := range media.DisplayUrls() {
+         if i >= 1 {
+            fmt.Println()
+         }
+         fmt.Println(display)
+      }
    } else {
       flag.Usage()
    }

@@ -2,34 +2,29 @@ package instagram
 
 import (
    "fmt"
-   "reflect"
    "testing"
+   "time"
 )
 
-func TestSize(t *testing.T) {
-   size := reflect.TypeOf(&struct{}{}).Size()
-   for _, test := range size_tests {
-      if reflect.TypeOf(test).Size() > size {
-         fmt.Printf("*%T\n", test)
-      } else {
-         fmt.Printf("%T\n", test)
-      }
-   }
+var tests = []string{
+   "instagram.com/jadelynmusic/p/C_1CZn2y6Lt",
+   "instagram.com/jadelynmusic/p/DABx8RVSMuO",
 }
-
-var size_tests = []any{
-   Address{},
-   MediaData{},
-}
-
-const test_address = "https://instagram.com/apolloniallewellyn/p/C-A8xdkCu2m"
 
 func TestMedia(t *testing.T) {
-   var web Address
-   web.Set(test_address)
-   media, err := web.Media()
-   if err != nil {
-      t.Fatal(err)
+   for i, test := range tests {
+      if i >= 1 {
+         fmt.Println()
+      }
+      var web Address
+      web.Set(test)
+      media, err := web.Media()
+      if err != nil {
+         t.Fatal(err)
+      }
+      for _, display := range media.DisplayUrls() {
+         fmt.Println(display)
+      }
+      time.Sleep(time.Second)
    }
-   fmt.Printf("%+v\n", media)
 }
