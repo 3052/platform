@@ -4,8 +4,28 @@ import (
    "bytes"
    "encoding/json"
    "net/http"
+   "net/url"
    "path"
 )
+
+func (s *ShortcodeMedia) DisplayUrls() []Url {
+   if v := s.EdgeSidecarToChildren; v != nil {
+      var media []Url
+      for _, medium := range v.Edges {
+         media = append(media, medium.Node.DisplayUrl)
+      }
+      return media
+   }
+   return []Url{s.DisplayUrl}
+}
+
+type Url struct {
+   Url url.URL
+}
+
+func (b *Url) UnmarshalText(text []byte) error {
+   return b.Url.UnmarshalBinary(text)
+}
 
 const doc_id = 25531498899829322
 
@@ -56,23 +76,12 @@ func (a *Address) Media() (*ShortcodeMedia, error) {
 }
 
 type ShortcodeMedia struct {
-   DisplayUrl string `json:"display_url"`
+   DisplayUrl Url `json:"display_url"`
    EdgeSidecarToChildren *struct {
       Edges []struct {
          Node struct {
-            DisplayUrl string `json:"display_url"`
+            DisplayUrl Url `json:"display_url"`
          }
       }
    } `json:"edge_sidecar_to_children"`
-}
-
-func (s *ShortcodeMedia) DisplayUrls() []string {
-   if v := s.EdgeSidecarToChildren; v != nil {
-      var media []string
-      for _, medium := range v.Edges {
-         media = append(media, medium.Node.DisplayUrl)
-      }
-      return media
-   }
-   return []string{s.DisplayUrl}
 }
