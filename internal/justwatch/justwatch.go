@@ -1,8 +1,8 @@
 package main
 
 import (
-   "154.pages.dev/platform/justwatch"
-   "154.pages.dev/text"
+   "41.neocities.org/platform/justwatch"
+   "41.neocities.org/text"
    "flag"
    "fmt"
    "slices"

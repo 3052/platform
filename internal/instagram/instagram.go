@@ -1,8 +1,8 @@
 package main
 
 import (
-   "154.pages.dev/platform/instagram"
-   "154.pages.dev/text"
+   "41.neocities.org/platform/instagram"
+   "41.neocities.org/text"
    "flag"
    "net/http"
    "os"

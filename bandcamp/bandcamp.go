@@ -1,7 +1,7 @@
 package bandcamp
 
 import (
-   "154.pages.dev/text"
+   "41.neocities.org/text"
    "encoding/json"
    "encoding/xml"
    "io"

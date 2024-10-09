@@ -13,11 +13,11 @@
 </head>
   <body>
     <nav>
-        <a href="..">154.pages.dev/platform</a>/instagram<span class="navbar-right">
-          v1.5.1 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
+        <a href="..">41.neocities.org/platform</a>/instagram<span class="navbar-right">
+          v1.5.2 | <a href="..">Root</a> | <a href="#pkg-index">Index</a></span>
       </nav>
     <main><h2 id="pkg-overview">package instagram</h2>
-<pre class="chroma"><span class="kn">import</span> <span class="s">&#34;154.pages.dev/platform/instagram&#34;</span></pre>
+<pre class="chroma"><span class="kn">import</span> <span class="s">&#34;41.neocities.org/platform/instagram&#34;</span></pre>
 <h3 id="pkg-index">Index</h3>
 <ul>
   <li>
@@ -31,7 +31,13 @@
   <li>
       <a href="#ShortcodeMedia">type ShortcodeMedia</a>
       <ul>
-          <li><a href="#ShortcodeMedia.DisplayUrls">func (s *ShortcodeMedia) DisplayUrls() []string</a></li>
+          <li><a href="#ShortcodeMedia.DisplayUrls">func (s *ShortcodeMedia) DisplayUrls() []Url</a></li>
+          </ul>
+      </li>
+  <li>
+      <a href="#Url">type Url</a>
+      <ul>
+          <li><a href="#Url.UnmarshalText">func (b *Url) UnmarshalText(text []byte) error</a></li>
           </ul>
       </li>
   </ul><h3 id="pkg-types">Types</h3>
@@ -47,17 +53,23 @@
   <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><a href="#Address"><span class="nx">Address</span></a><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
   <h3 id="ShortcodeMedia">type ShortcodeMedia</h3>
     <pre class="chroma"><span class="kd">type</span> <span class="nx">ShortcodeMedia</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span id="ShortcodeMedia.DisplayUrl"><span class="nx">DisplayUrl</span></span>            <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;display_url&#34;`</span>
+	<span id="ShortcodeMedia.DisplayUrl"><span class="nx">DisplayUrl</span></span>            <a href="#Url"><span class="nx">Url</span></a> <span class="s">`json:&#34;display_url&#34;`</span>
 	<span id="ShortcodeMedia.EdgeSidecarToChildren"><span class="nx">EdgeSidecarToChildren</span></span> <span class="o">*</span><span class="kd">struct</span> <span class="p">{</span>
 		<span id="ShortcodeMedia.Edges"><span class="nx">Edges</span></span> <span class="p">[]</span><span class="kd">struct</span> <span class="p">{</span>
 			<span id="ShortcodeMedia.Node"><span class="nx">Node</span></span> <span class="kd">struct</span> <span class="p">{</span>
-				<span id="ShortcodeMedia.DisplayUrl"><span class="nx">DisplayUrl</span></span> <a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a> <span class="s">`json:&#34;display_url&#34;`</span>
+				<span id="ShortcodeMedia.DisplayUrl"><span class="nx">DisplayUrl</span></span> <a href="#Url"><span class="nx">Url</span></a> <span class="s">`json:&#34;display_url&#34;`</span>
 			<span class="p">}</span>
 		<span class="p">}</span>
 	<span class="p">}</span> <span class="s">`json:&#34;edge_sidecar_to_children&#34;`</span>
 <span class="p">}</span></pre>
     <h4 id="ShortcodeMedia.DisplayUrls">func (*ShortcodeMedia) DisplayUrls</h4>
-  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><a href="#ShortcodeMedia"><span class="nx">ShortcodeMedia</span></a><span class="p">)</span> <span class="nf">DisplayUrls</span><span class="p">()</span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#string"><span class="kt">string</span></a></pre>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><a href="#ShortcodeMedia"><span class="nx">ShortcodeMedia</span></a><span class="p">)</span> <span class="nf">DisplayUrls</span><span class="p">()</span> <span class="p">[]</span><a href="#Url"><span class="nx">Url</span></a></pre>
+  <h3 id="Url">type Url</h3>
+    <pre class="chroma"><span class="kd">type</span> <span class="nx">Url</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span id="Url.Url"><span class="nx">Url</span></span> <a href="https://pkg.go.dev/net/url"><span class="nx">url</span></a><span class="p">.</span><a href="https://pkg.go.dev/net/url#URL"><span class="nx">URL</span></a>
+<span class="p">}</span></pre>
+    <h4 id="Url.UnmarshalText">func (*Url) UnmarshalText</h4>
+  <pre class="chroma"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><a href="#Url"><span class="nx">Url</span></a><span class="p">)</span> <span class="nf">UnmarshalText</span><span class="p">(</span><span class="nx">text</span> <span class="p">[]</span><a href="https://pkg.go.dev/builtin#byte"><span class="kt">byte</span></a><span class="p">)</span> <a href="https://pkg.go.dev/builtin#error"><span class="kt">error</span></a></pre>
   </main>
     <hr>
     <footer>
