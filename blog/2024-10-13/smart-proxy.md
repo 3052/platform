@@ -1,7 +1,5 @@
 # Smart proxy
 
-https://smartproxy.com
-
 ~~~
 Residential Proxies
 $7 / 1 GB
@@ -23,3 +21,5 @@ your use case with this target:
 4)Please provide screenshots or video recordings of your workflow and how
 our service adds value to your project.
 ~~~
+
+https://smartproxy.com/faq/general/do-you-have-any-blocked-sites
