@@ -13,6 +13,37 @@ import (
    "strings"
 )
 
+// NO ANONYMOUS QUERY
+const title_details = `
+query GetUrlTitleDetails(
+   $fullPath: String!
+   $country: Country!
+   $platform: Platform! = WEB
+) {
+   url(fullPath: $fullPath) {
+      node {
+         ... on MovieOrShowOrSeason {
+            offers(country: $country, platform: $platform) {
+               elementCount
+               monetizationType
+               standardWebURL
+            }
+         }
+      }
+   }
+}
+`
+
+const fetcher_query = `
+query BackendConstantsFetcherQuery($language: Language!) {
+   locales {
+      country
+      countryName(language: $language)
+      fullLocale
+   }
+}
+`
+
 func Monetization(node OfferNode) bool {
    switch node.MonetizationType {
    case "BUY":
@@ -46,36 +77,6 @@ func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
    }
    return nil, false
 }
-
-const fetcher_query = `
-query($language: Language!) {
-   locales {
-      country
-      countryName(language: $language)
-      fullLocale
-   }
-}
-`
-
-const title_details = `
-query(
-   $fullPath: String!
-   $country: Country!
-   $platform: Platform! = WEB
-) {
-   url(fullPath: $fullPath) {
-      node {
-         ... on MovieOrShowOrSeason {
-            offers(country: $country, platform: $platform) {
-               elementCount
-               monetizationType
-               standardWebURL
-            }
-         }
-      }
-   }
-}
-`
 
 var hosts = []string{
    // 2024-7-20
