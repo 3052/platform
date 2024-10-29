@@ -3,6 +3,7 @@ package main
 import (
    "41.neocities.org/platform/justwatch"
    "41.neocities.org/text"
+   "errors"
    "flag"
    "fmt"
    "slices"
@@ -35,7 +36,7 @@ func (f *flags) stream() error {
    for _, tag := range content.HrefLangTags {
       locale, ok := justwatch.EnglishLocales.Locale(&tag)
       if !ok {
-         return justwatch.EnglishLocales.LocaleError()
+         return errors.New("EnglishLocales.Locale")
       }
       offers, err := tag.Offers(locale)
       if err != nil {

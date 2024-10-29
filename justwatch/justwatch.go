@@ -13,10 +13,6 @@ import (
    "strings"
 )
 
-func (*LocaleStates) LocaleError() error {
-   return errors.New("LocaleStates.Locale")
-}
-
 func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
    for _, locale := range s {
       if locale.FullLocale == tag.Locale {
