@@ -13,6 +13,19 @@ import (
    "strings"
 )
 
+func (*LocaleStates) LocaleError() error {
+   return errors.New("LocaleStates.Locale")
+}
+
+func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
+   for _, locale := range s {
+      if locale.FullLocale == tag.Locale {
+         return &locale, true
+      }
+   }
+   return nil, false
+}
+
 // NO ANONYMOUS QUERY
 const title_details = `
 query GetUrlTitleDetails(
@@ -63,19 +76,6 @@ func Url(node OfferNode) bool {
       }
    }
    return false
-}
-
-func (*LocaleStates) LocaleError() error {
-   return errors.New("LocaleStates.Locale")
-}
-
-func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
-   for _, locale := range s {
-      if locale.FullLocale == tag.Locale {
-         return &locale, true
-      }
-   }
-   return nil, false
 }
 
 var hosts = []string{
