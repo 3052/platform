@@ -13,6 +13,13 @@ import (
    "strings"
 )
 
+var hosts = []string{
+   // 2024-11-1
+   "/filmoteket.no/",
+   // 2024-7-20
+   "/www.stan.com.au/",
+}
+
 func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
    for _, locale := range s {
       if locale.FullLocale == tag.Locale {
@@ -72,11 +79,6 @@ func Url(node OfferNode) bool {
       }
    }
    return false
-}
-
-var hosts = []string{
-   // 2024-7-20
-   "/www.stan.com.au/",
 }
 
 // this is better than strings.Replace and strings.ReplaceAll
