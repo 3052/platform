@@ -16,6 +16,8 @@ import (
 var hosts = []string{
    // 2024-11-1
    "/filmoteket.no/",
+   "/www.3cat.cat/",
+   "/www.cineast.no/",
    // 2024-7-20
    "/www.stan.com.au/",
 }
