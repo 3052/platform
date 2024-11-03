@@ -14,6 +14,8 @@ import (
 )
 
 var hosts = []string{
+   // 2024-11-2
+   "/play.tv2.no/",
    // 2024-11-1
    "/filmoteket.no/",
    "/www.3cat.cat/",

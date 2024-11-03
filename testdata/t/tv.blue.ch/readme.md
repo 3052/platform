@@ -9,7 +9,7 @@ country = Switzerland
 1. login
 2. create swisscom login
 3. e-mail
-   - 2024-6-2@mailsac.com
+   - mailsac.com
 4. I accept the terms
 5. confirm e-mail address
 6. enter code

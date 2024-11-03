@@ -1,8 +1,13 @@
 # neon
 
-http://neontv.co.nz/movie/horrible-bosses
+~~~
+url = https://www.neontv.co.nz/series/joan
+monetization = FLATRATE
+count = 6
+country = New Zealand
+~~~
 
-1. https://www.neontv.co.nz
+1. VPN
 2. sign up
 3. first name
 4. last name
@@ -15,12 +20,5 @@ http://neontv.co.nz/movie/horrible-bosses
 11. create your account
 12. basic with ads
 13. select basic with ads plan
-14. name on card
-15. valid card number
-16. security code
-17. expiration date
-18. start your free trial
 
-! Payment Declined by Payment Gateway due to following reason : DECLINED
-
-fails with new virtual card and real card
+no trial

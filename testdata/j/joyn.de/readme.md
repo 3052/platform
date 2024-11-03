@@ -1,27 +1,25 @@
 # joyn
 
-https://joyn.de/filme/barry-seal-only-in-america
+~~~
+url = https://www.joyn.de/filme/side-effects-toedliche-nebenwirkungen-bpfifg67qmh4
+monetization = FLATRATE
+country = Germany
+~~~
 
 ## paid
 
-1. joyn.de
-2. PLUS kostenlos testen (test PLUS free of charge)
-3. Jetzt kostenlos testen (test now free of charge)
-4. Vorname (first name)
-5. last name
-6. credit card
-7. Karteninhaber (cardholder)
-8. card number
-9. CVC
-10. MM
-11. YY
-12. Ich stimme der Ausführung des Vertrages vor Ablauf der Widerrufsfrist
-   ausdrücklich zu (I expressly agree to the execution of the contract before the
-   expiry of the withdrawal period)
-13. Zahlungspflichtig bestellen (order with obligation to pay)
-14. Ihre Kreditkarte wurde abgelehnt (your credit card has been declined)
+1. VPN
+2. joyn.de
+3. email
+   - mailsac.com fail
+   - gmail.com pass
+4. vorname (first name)
 
 even with regular card its rejected, so it must be a country thing
+
+cannot link privacy.com to paypal because privacy is a piece of shit
+
+so just use paypal and cancel? fails also
 
 ## prior art
 
