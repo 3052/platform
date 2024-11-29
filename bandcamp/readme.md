@@ -2,8 +2,6 @@
 
 ## Android client
 
-2023-02-26
-
 ~~~
 com.bandcamp.android
 ~~~
@@ -32,14 +30,8 @@ IDs for everything. This is the case going back to 2016 at least.
 
 ## Why does this exist?
 
-2023-02-26
-
 https://solarfields.bandcamp.com/track/sol-remix-remastered
 
 Solar Fields hasn’t created any albums yet:
 
 https://soundcloud.com/solarfields/albums
-
-20 unavailable videos are hidden:
-
-https://youtube.com/playlist?list=PLem8ejSphCJI6MybaQTuqIUIiWq75vCHg
