@@ -1,26 +1,38 @@
 package main
 
 import (
+   "crypto/md5"
+   "encoding/hex"
    "io"
    "net/http"
    "net/url"
    "os"
+   "strconv"
    "strings"
+   "time"
 )
+
+const client_id = "QAabWxtnxV54I78dzAlviTxFhPcKsa7x"
+
+const client_secret = "m1VDbrdVCXAZmoDK"
 
 func main() {
    var req http.Request
    req.Header = http.Header{}
    req.Method = "POST"
-   req.ProtoMajor = 1
-   req.ProtoMinor = 1
    req.URL = &url.URL{}
    req.URL.Host = "openapi.starbucks.com"
    req.URL.Path = "/v1/oauth/token"
-   req.Header["Content-Type"] = []string{"application/x-www-form-urlencoded; charset=UTF-8"}
-   req.Header["X-Api-Key"] = []string{"QAabWxtnxV54I78dzAlviTxFhPcKsa7x"}
+   req.Header["Content-Type"] = []string{"application/x-www-form-urlencoded"}
+   req.Header["X-Api-Key"] = []string{client_id}
    value := url.Values{}
-   value["sig"] = []string{"9cb4c86fd937de259ef6958faab5cbab"}
+   value["sig"] = []string{func() string {
+      data := []byte(client_id)
+      data = append(data, client_secret...)
+      data = append(data, strconv.FormatInt(time.Now().Unix(), 10)...)
+      sum := md5.Sum(data)
+      return hex.EncodeToString(sum[:])
+   }()}
    req.URL.RawQuery = value.Encode()
    req.URL.Scheme = "https"
    req.Body = io.NopCloser(body)
@@ -33,7 +45,7 @@ func main() {
 }
 
 var body = strings.NewReader(url.Values{
-   "client_id":[]string{"QAabWxtnxV54I78dzAlviTxFhPcKsa7x"},
-   "client_secret":[]string{"m1VDbrdVCXAZmoDK"},
+   "client_id":[]string{client_id},
+   "client_secret":[]string{client_secret},
    "grant_type":[]string{"client_credentials"},
 }.Encode())
