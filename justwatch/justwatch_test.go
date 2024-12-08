@@ -19,7 +19,7 @@ func TestLocale(t *testing.T) {
    }
    locale, ok := states.Locale(&LangTag{Locale: "en_US"})
    if !ok {
-      t.Fatal(states.LocaleError())
+      t.Fatal("LocaleStates.Locale")
    }
    fmt.Println(locale)
 }
