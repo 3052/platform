@@ -13,6 +13,10 @@ import (
    "strings"
 )
 
+type WebUrl struct {
+   Data string
+}
+
 var hosts = []string{
    // 2024-11-2
    "/play.tv2.no/",
@@ -78,7 +82,7 @@ func Monetization(node OfferNode) bool {
 
 func Url(node OfferNode) bool {
    for _, host := range hosts {
-      if strings.Contains(node.StandardWebUrl.String, host) {
+      if strings.Contains(node.StandardWebUrl.Data, host) {
          return true
       }
    }
@@ -385,7 +389,7 @@ type OfferGroup struct {
 
 func (o *OfferGroups) Add(node *OfferNode, state *LocaleState) {
    i := slices.IndexFunc(*o, func(group *OfferGroup) bool {
-      return group.Url == node.StandardWebUrl.String
+      return group.Url == node.StandardWebUrl.Data
    })
    if i >= 0 {
       group := (*o)[i]
@@ -397,7 +401,7 @@ func (o *OfferGroups) Add(node *OfferNode, state *LocaleState) {
       group.Count = node.ElementCount
       group.Country = []string{state.CountryName}
       group.Monetization = node.MonetizationType
-      group.Url = node.StandardWebUrl.String
+      group.Url = node.StandardWebUrl.Data
       *o = append(*o, &group)
    }
 }
@@ -442,11 +446,7 @@ type OfferNode struct {
    StandardWebUrl WebUrl
 }
 
-type WebUrl struct {
-   String string
-}
-
 func (w *WebUrl) UnmarshalText(text []byte) error {
-   w.String = strings.TrimSuffix(string(text), "\n")
+   w.Data = strings.TrimSuffix(string(text), "\n")
    return nil
 }

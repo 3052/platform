@@ -72,13 +72,13 @@ func (r *ReportParams) Tralbum() (*Tralbum, error) {
 }
 
 type invalid_type struct {
-   String string
+   data string
 }
 
 func (i invalid_type) Error() string {
    var b []byte
    b = append(b, "invalid type "...)
-   b = strconv.AppendQuote(b, i.String)
+   b = strconv.AppendQuote(b, i.data)
    return string(b)
 }
 
