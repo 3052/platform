@@ -11,12 +11,12 @@ import (
 )
 
 func main() {
-   var address instagram.Address
-   flag.Var(&address, "a", "address")
+   var code instagram.ShortCode
+   flag.Var(&code, "a", "address")
    flag.Parse()
    text.Transport{}.Set(true)
-   if address.Shortcode != "" {
-      media, err := address.Media()
+   if code() != "" {
+      media, err := code.Media()
       if err != nil {
          panic(err)
       }

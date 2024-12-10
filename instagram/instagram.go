@@ -23,26 +23,37 @@ type Url struct {
    Url url.URL
 }
 
-func (b *Url) UnmarshalText(text []byte) error {
-   return b.Url.UnmarshalBinary(text)
+func (b *Url) UnmarshalText(data []byte) error {
+   return b.Url.UnmarshalBinary(data)
 }
 
 const doc_id = 25531498899829322
 
-func (a *Address) Set(text string) error {
-   a.Shortcode = path.Base(text)
+type ShortcodeMedia struct {
+   DisplayUrl Url `json:"display_url"`
+   EdgeSidecarToChildren *struct {
+      Edges []struct {
+         Node struct {
+            DisplayUrl Url `json:"display_url"`
+         }
+      }
+   } `json:"edge_sidecar_to_children"`
+}
+
+func (s ShortCode) String() string {
+   return s()
+}
+
+func (s *ShortCode) Set(data string) error {
+   *s = func() string {
+      return path.Base(data)
+   }
    return nil
 }
 
-func (a *Address) String() string {
-   return a.Shortcode
-}
+type ShortCode func() string
 
-type Address struct {
-   Shortcode string
-}
-
-func (a *Address) Media() (*ShortcodeMedia, error) {
+func (s ShortCode) Media() (*ShortcodeMedia, error) {
    var value struct {
       DocId int `json:"doc_id,string"`
       Variables struct {
@@ -50,7 +61,7 @@ func (a *Address) Media() (*ShortcodeMedia, error) {
       } `json:"variables"`
    }
    value.DocId = doc_id
-   value.Variables.Shortcode = a.Shortcode
+   value.Variables.Shortcode = s()
    data, err := json.Marshal(value)
    if err != nil {
       return nil, err
@@ -73,15 +84,4 @@ func (a *Address) Media() (*ShortcodeMedia, error) {
       return nil, err
    }
    return &resp_value.Data.XdtShortcodeMedia, nil
-}
-
-type ShortcodeMedia struct {
-   DisplayUrl Url `json:"display_url"`
-   EdgeSidecarToChildren *struct {
-      Edges []struct {
-         Node struct {
-            DisplayUrl Url `json:"display_url"`
-         }
-      }
-   } `json:"edge_sidecar_to_children"`
 }

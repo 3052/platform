@@ -16,9 +16,9 @@ func TestMedia(t *testing.T) {
       if i >= 1 {
          fmt.Println()
       }
-      var web Address
-      web.Set(test)
-      media, err := web.Media()
+      var code ShortCode
+      code.Set(test)
+      media, err := code.Media()
       if err != nil {
          t.Fatal(err)
       }

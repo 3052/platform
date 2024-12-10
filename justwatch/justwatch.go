@@ -13,10 +13,6 @@ import (
    "strings"
 )
 
-type WebUrl struct {
-   Data string
-}
-
 var hosts = []string{
    // 2024-11-2
    "/play.tv2.no/",
@@ -82,7 +78,7 @@ func Monetization(node OfferNode) bool {
 
 func Url(node OfferNode) bool {
    for _, host := range hosts {
-      if strings.Contains(node.StandardWebUrl.Data, host) {
+      if strings.Contains(node.StandardWebUrl(), host) {
          return true
       }
    }
@@ -93,40 +89,6 @@ func Url(node OfferNode) bool {
 func graphql_compact(s string) string {
    field := strings.Fields(s)
    return strings.Join(field, " ")
-}
-
-type Address struct {
-   Path string
-}
-
-func (a *Address) Set(s string) error {
-   s = strings.TrimPrefix(s, "https://")
-   s = strings.TrimPrefix(s, "www.")
-   a.Path = strings.TrimPrefix(s, "justwatch.com")
-   return nil
-}
-
-func (a *Address) String() string {
-   return a.Path
-}
-
-func (a *Address) Content() (*ContentUrls, error) {
-   resp, err := http.Get(
-      "https://apis.justwatch.com/content/urls?path=" + a.Path,
-   )
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      return nil, errors.New(resp.Status)
-   }
-   content := &ContentUrls{}
-   err = json.NewDecoder(resp.Body).Decode(content)
-   if err != nil {
-      return nil, err
-   }
-   return content, nil
 }
 
 type ContentUrls struct {
@@ -389,7 +351,7 @@ type OfferGroup struct {
 
 func (o *OfferGroups) Add(node *OfferNode, state *LocaleState) {
    i := slices.IndexFunc(*o, func(group *OfferGroup) bool {
-      return group.Url == node.StandardWebUrl.Data
+      return group.Url == node.StandardWebUrl()
    })
    if i >= 0 {
       group := (*o)[i]
@@ -401,7 +363,7 @@ func (o *OfferGroups) Add(node *OfferNode, state *LocaleState) {
       group.Count = node.ElementCount
       group.Country = []string{state.CountryName}
       group.Monetization = node.MonetizationType
-      group.Url = node.StandardWebUrl.Data
+      group.Url = node.StandardWebUrl()
       *o = append(*o, &group)
    }
 }
@@ -446,7 +408,45 @@ type OfferNode struct {
    StandardWebUrl WebUrl
 }
 
-func (w *WebUrl) UnmarshalText(text []byte) error {
-   w.Data = strings.TrimSuffix(string(text), "\n")
+type WebUrl func() string
+
+func (w *WebUrl) UnmarshalText(data []byte) error {
+   *w = func() string {
+      return strings.TrimSuffix(string(data), "\n")
+   }
    return nil
+}
+
+func (a Address) String() string {
+   return a()
+}
+
+func (a *Address) Set(data string) error {
+   data = strings.TrimPrefix(data, "https://")
+   data = strings.TrimPrefix(data, "www.")
+   *a = func() string {
+      return strings.TrimPrefix(data, "justwatch.com")
+   }
+   return nil
+}
+
+type Address func() string
+
+func (a Address) Content() (*ContentUrls, error) {
+   resp, err := http.Get(
+      "https://apis.justwatch.com/content/urls?path=" + a(),
+   )
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      return nil, errors.New(resp.Status)
+   }
+   content := &ContentUrls{}
+   err = json.NewDecoder(resp.Body).Decode(content)
+   if err != nil {
+      return nil, err
+   }
+   return content, nil
 }
