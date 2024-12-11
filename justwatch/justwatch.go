@@ -418,23 +418,12 @@ func (w *WebUrl) UnmarshalText(data []byte) error {
 }
 
 func (a Address) String() string {
-   return a()
+   return a.Path
 }
-
-func (a *Address) Set(data string) error {
-   data = strings.TrimPrefix(data, "https://")
-   data = strings.TrimPrefix(data, "www.")
-   *a = func() string {
-      return strings.TrimPrefix(data, "justwatch.com")
-   }
-   return nil
-}
-
-type Address func() string
 
 func (a Address) Content() (*ContentUrls, error) {
    resp, err := http.Get(
-      "https://apis.justwatch.com/content/urls?path=" + a(),
+      "https://apis.justwatch.com/content/urls?path=" + a.Path,
    )
    if err != nil {
       return nil, err
@@ -449,4 +438,15 @@ func (a Address) Content() (*ContentUrls, error) {
       return nil, err
    }
    return content, nil
+}
+
+type Address struct {
+   Path string
+}
+
+func (a *Address) Set(data string) error {
+   data = strings.TrimPrefix(data, "https://")
+   data = strings.TrimPrefix(data, "www.")
+   a.Path = strings.TrimPrefix(data, "justwatch.com")
+   return nil
 }

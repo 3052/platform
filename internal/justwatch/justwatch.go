@@ -10,12 +10,6 @@ import (
    "time"
 )
 
-type flags struct {
-   all bool
-   sleep time.Duration
-   address justwatch.Address
-}
-
 func main() {
    var f flags
    flag.Var(&f.address, "a", "address")
@@ -23,7 +17,7 @@ func main() {
    flag.BoolVar(&f.all, "all", false, "all results")
    flag.Parse()
    text.Transport{}.Set(true)
-   if f.address() != "" {
+   if f.address.Path != "" {
       err := f.stream()
       if err != nil {
          panic(err)
@@ -31,6 +25,12 @@ func main() {
    } else {
       flag.Usage()
    }
+}
+
+type flags struct {
+   all bool
+   sleep time.Duration
+   address justwatch.Address
 }
 
 func (f *flags) stream() error {

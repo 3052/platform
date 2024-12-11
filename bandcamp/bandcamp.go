@@ -61,27 +61,6 @@ type ReportParams struct {
    Itype string `json:"i_type"`
 }
 
-func (r *ReportParams) Tralbum() (*Tralbum, error) {
-   switch r.Itype {
-   case "a":
-      return new_tralbum('a', r.Iid)
-   case "t":
-      return new_tralbum('t', r.Iid)
-   }
-   return nil, invalid_type{r.Itype}
-}
-
-type invalid_type struct {
-   data string
-}
-
-func (i invalid_type) Error() string {
-   var b []byte
-   b = append(b, "invalid type "...)
-   b = strconv.AppendQuote(b, i.data)
-   return string(b)
-}
-
 const (
    Jpeg = iota
    Png
@@ -192,16 +171,6 @@ func (i *Image) URL(art_id int64) string {
    return string(b)
 }
 
-func (i *Item) Tralbum() (*Tralbum, error) {
-   switch i.ItemType {
-   case "album":
-      return new_tralbum('a', i.ItemId)
-   case "track":
-      return new_tralbum('t', i.ItemId)
-   }
-   return nil, invalid_type{i.ItemType}
-}
-
 func new_tralbum(typ byte, id int) (*Tralbum, error) {
    req, err := http.NewRequest(
       "", "http://bandcamp.com/api/mobile/24/tralbum_details", nil,
@@ -224,4 +193,35 @@ func new_tralbum(typ byte, id int) (*Tralbum, error) {
       return nil, err
    }
    return album, nil
+}
+
+type invalid_type struct {
+   data string
+}
+
+func (r *ReportParams) Tralbum() (*Tralbum, error) {
+   switch r.Itype {
+   case "a":
+      return new_tralbum('a', r.Iid)
+   case "t":
+      return new_tralbum('t', r.Iid)
+   }
+   return nil, invalid_type{r.Itype}
+}
+
+func (i *Item) Tralbum() (*Tralbum, error) {
+   switch i.ItemType {
+   case "album":
+      return new_tralbum('a', i.ItemId)
+   case "track":
+      return new_tralbum('t', i.ItemId)
+   }
+   return nil, invalid_type{i.ItemType}
+}
+
+func (i invalid_type) Error() string {
+   var data []byte
+   data = append(data, "invalid type "...)
+   data = strconv.AppendQuote(data, i.data)
+   return string(data)
 }
