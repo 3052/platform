@@ -8,37 +8,7 @@ import (
    "path"
 )
 
-func (s *ShortcodeMedia) DisplayUrls() []Url {
-   if v := s.EdgeSidecarToChildren; v != nil {
-      var media []Url
-      for _, medium := range v.Edges {
-         media = append(media, medium.Node.DisplayUrl)
-      }
-      return media
-   }
-   return []Url{s.DisplayUrl}
-}
-
-type Url struct {
-   Url url.URL
-}
-
-func (b *Url) UnmarshalText(data []byte) error {
-   return b.Url.UnmarshalBinary(data)
-}
-
 const doc_id = 25531498899829322
-
-type ShortcodeMedia struct {
-   DisplayUrl Url `json:"display_url"`
-   EdgeSidecarToChildren *struct {
-      Edges []struct {
-         Node struct {
-            DisplayUrl Url `json:"display_url"`
-         }
-      }
-   } `json:"edge_sidecar_to_children"`
-}
 
 func (s ShortCode) String() string {
    return s()
@@ -84,4 +54,40 @@ func (s ShortCode) Media() (*ShortcodeMedia, error) {
       return nil, err
    }
    return &resp_value.Data.XdtShortcodeMedia, nil
+}
+
+type ShortcodeMedia struct {
+   DisplayUrl Url `json:"display_url"`
+   EdgeSidecarToChildren *struct {
+      Edges []struct {
+         Node struct {
+            DisplayUrl Url `json:"display_url"`
+         }
+      }
+   } `json:"edge_sidecar_to_children"`
+}
+
+func (s *ShortcodeMedia) DisplayUrls() []Url {
+   if v := s.EdgeSidecarToChildren; v != nil {
+      var media []Url
+      for _, medium := range v.Edges {
+         media = append(media, medium.Node.DisplayUrl)
+      }
+      return media
+   }
+   return []Url{s.DisplayUrl}
+}
+
+type Url func() *url.URL
+
+func (u *Url) UnmarshalText(data []byte) error {
+   var value url.URL
+   err := value.UnmarshalBinary(data)
+   if err != nil {
+      return err
+   }
+   *u = func() *url.URL {
+      return &value
+   }
+   return nil
 }

@@ -22,14 +22,16 @@ func main() {
       }
       for _, display := range media.DisplayUrls() {
          var req http.Request
-         req.URL = &display.Url
+         req.URL = display()
          func() {
             resp, err := http.DefaultClient.Do(&req)
             if err != nil {
                panic(err)
             }
             defer resp.Body.Close()
-            file, err := os.Create(path.Base(display.Url.Path))
+            file, err := os.Create(
+               path.Base(display().Path),
+            )
             if err != nil {
                panic(err)
             }
