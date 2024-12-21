@@ -44,14 +44,12 @@ var test_track = struct{
 
 func TestArtwork(t *testing.T) {
    for _, artwork := range artworks {
-      address := func() string {
-         var b strings.Builder
-         b.WriteString("https://i1.sndcdn.com/artworks-000365245539-x9ixki-")
-         b.WriteString(artwork.size)
-         b.WriteString(".jpg")
-         return b.String()
-      }()
-      resp, err := http.Head(address)
+      req, err := http.NewRequest("HEAD", "https://i1.sndcdn.com" nil)
+      if err != nil {
+         t.Fatal(err)
+      }
+      req.URL.Path = "/artworks-000365245539-x9ixki-" + artwork.size + ".jpg"
+      resp, err := http.DefaultClient.Do(req)
       if err != nil {
          t.Fatal(err)
       }
