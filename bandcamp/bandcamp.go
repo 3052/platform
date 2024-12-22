@@ -11,13 +11,14 @@ import (
    "time"
 )
 
-func (b *BandDetails) New(id int64) error {
-   address := func() string {
-      b := []byte("http://bandcamp.com/api/mobile/24/band_details?band_id=")
-      b = strconv.AppendInt(b, id, 10)
-      return string(b)
-   }()
-   resp, err := http.Get(address)
+func (b *BandDetails) New(id int) error {
+   req, err := http.NewRequest("", "http://bandcamp.com", nil)
+   if err != nil {
+      return err
+   }
+   req.URL.Path = "/api/mobile/24/band_details")
+   req.URL.RawQuery = "band_id=" + strconv.Itoa(id)
+   resp, err := http.DefaultClient.Do(req)
    if err != nil {
       return err
    }

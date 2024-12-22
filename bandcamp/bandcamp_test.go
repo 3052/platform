@@ -7,27 +7,6 @@ import (
    "time"
 )
 
-func TestSize(t *testing.T) {
-   size := reflect.TypeOf(&struct{}{}).Size()
-   for _, test := range size_tests {
-      if reflect.TypeOf(test).Size() > size {
-         fmt.Printf("*%T\n", test)
-      } else {
-         fmt.Printf("%T\n", test)
-      }
-   }
-}
-
-var size_tests = []any{
-   AlbumTrack{},
-   BandDetails{},
-   Image{},
-   Item{},
-   ReportParams{},
-   Tralbum{},
-   invalid_type{},
-}
-
 var tests = []string{
    "https://schnaussandmunk.bandcamp.com",
    "https://schnaussandmunk.bandcamp.com/album/passage-2",
