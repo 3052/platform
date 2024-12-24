@@ -27,7 +27,7 @@ func disconnect() error {
 }
 
 func status(prefix string) error {
-   for range time.Tick(99 * time.Millisecond) {
+   for range time.NewTicker(99 * time.Millisecond).C {
       data, err := exec.Command("mullvad", "status").Output()
       if err != nil {
          return err
