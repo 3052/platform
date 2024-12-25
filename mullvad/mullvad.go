@@ -9,6 +9,22 @@ import (
    "time"
 )
 
+func status(prefix string) error {
+   for range time.NewTicker(time.Second).C {
+      data, err := exec.Command("mullvad", "status").Output()
+      if err != nil {
+         return err
+      }
+      text := string(data)
+      if strings.HasPrefix(text, prefix) {
+         if strings.Contains(text, " IPv4:") {
+            break
+         }
+      }
+   }
+   return nil
+}
+
 type ServerList struct {
    Countries []struct {
       Name string
@@ -56,22 +72,6 @@ func Connect(location string) error {
       return err
    }
    return status("Connected")
-}
-
-func status(prefix string) error {
-   for range time.NewTicker(99 * time.Millisecond).C {
-      data, err := exec.Command("mullvad", "status").Output()
-      if err != nil {
-         return err
-      }
-      text := string(data)
-      if strings.HasPrefix(text, prefix) {
-         if strings.Contains(text, " IPv4:") {
-            break
-         }
-      }
-   }
-   return nil
 }
 
 func (s *ServerList) OpenVpn() error {

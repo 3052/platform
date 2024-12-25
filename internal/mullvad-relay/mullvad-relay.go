@@ -7,33 +7,6 @@ import (
    "net/http"
 )
 
-func (f *flags) get() (*http.Response, error) {
-   resp, err := http.Get(f.address)
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   return resp, nil
-}
-
-func (f *flags) connect(servers mullvad.ServerList) error {
-   for server := range servers.Seq(f.location) {
-      err := mullvad.Connect(server)
-      if err != nil {
-         return err
-      }
-      resp, err := f.get()
-      if err != nil {
-         return err
-      }
-      fmt.Println(server, resp.Status)
-      if resp.StatusCode == http.StatusOK {
-         return nil
-      }
-   }
-   return io.EOF
-}
-
 func (f *flags) relay() error {
    defer mullvad.Disconnect()
    var servers mullvad.ServerList
@@ -55,4 +28,33 @@ func (f *flags) relay() error {
    default:
       return err
    }
+}
+
+func (f *flags) connect(servers mullvad.ServerList) error {
+   for server := range servers.Seq(f.location) {
+      fmt.Println("Connect")
+      err := mullvad.Connect(server)
+      if err != nil {
+         return err
+      }
+      fmt.Println("GET")
+      resp, err := f.get()
+      if err != nil {
+         return err
+      }
+      fmt.Println(server, resp.Status)
+      if resp.StatusCode == http.StatusOK {
+         return nil
+      }
+   }
+   return io.EOF
+}
+
+func (f *flags) get() (*http.Response, error) {
+   resp, err := http.Get(f.address)
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   return resp, nil
 }
