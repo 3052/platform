@@ -1,7 +1,6 @@
 package mullvad
 
 import (
-   "encoding/json"
    "fmt"
    "net/http"
    "testing"
@@ -10,14 +9,14 @@ import (
 const paramount_plus = "https://www.paramountplus.com/apps-api/v2.0/androidphone/video/cid/Y8sKvb2bIoeX4XZbsfjadF4GhNPwcjTQ.json?at=ABAAAAAAAAAAAAAAAAAAAAAAU%2FEmq2DGAxNGYi71fZdi2mb6UTU2%2BelcD3bGEhs6bo4%3D"
 
 func TestParamount(t *testing.T) {
-   var relays public_relays
+   var relays PublicRelays
    err := relays.New()
    if err != nil {
       t.Fatal(err)
    }
-   defer disconnect()
-   for relay := range relays.relays("Canada") {
-      err = connect(relay)
+   defer Disconnect()
+   for relay := range relays.Seq("Canada") {
+      err = Connect(relay)
       if err != nil {
          t.Fatal(err)
       }

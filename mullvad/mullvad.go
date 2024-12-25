@@ -9,16 +9,7 @@ import (
    "time"
 )
 
-func (p *PublicRelays) New() error {
-   resp, err := http.Get("https://api.mullvad.net/public/relays/v1")
-   if err != nil {
-      return err
-   }
-   defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(p)
-}
-
-type PublicRelays struct {
+type ServerList struct {
    Countries []struct {
       Name string
       Cities []struct {
@@ -38,9 +29,9 @@ func Disconnect() error {
    return status("Disconnected")
 }
 
-func (p PublicRelays) Seq(country string) iter.Seq[string] {
+func (s ServerList) Seq(country string) iter.Seq[string] {
    return func(yield func(string) bool) {
-      for _, country_struct := range p.Countries {
+      for _, country_struct := range s.Countries {
          if country_struct.Name != country {
             continue
          }
@@ -81,4 +72,22 @@ func status(prefix string) error {
       }
    }
    return nil
+}
+
+func (s *ServerList) OpenVpn() error {
+   resp, err := http.Get("https://api.mullvad.net/public/relays/v1")
+   if err != nil {
+      return err
+   }
+   defer resp.Body.Close()
+   return json.NewDecoder(resp.Body).Decode(s)
+}
+
+func (s *ServerList) WireGuard() error {
+   resp, err := http.Get("https://api.mullvad.net/public/relays/wireguard/v1")
+   if err != nil {
+      return err
+   }
+   defer resp.Body.Close()
+   return json.NewDecoder(resp.Body).Decode(s)
 }
