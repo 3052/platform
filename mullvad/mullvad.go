@@ -9,7 +9,7 @@ import (
    "time"
 )
 
-func (p *public_relays) New() error {
+func (p *PublicRelays) New() error {
    resp, err := http.Get("https://api.mullvad.net/public/relays/v1")
    if err != nil {
       return err
@@ -18,7 +18,27 @@ func (p *public_relays) New() error {
    return json.NewDecoder(resp.Body).Decode(p)
 }
 
-func (p public_relays) relays(country string) iter.Seq[string] {
+type PublicRelays struct {
+   Countries []struct {
+      Name string
+      Cities []struct {
+         Name string
+         Relays []struct {
+            Hostname string
+         }
+      }
+   }
+}
+
+func Disconnect() error {
+   err := exec.Command("mullvad", "disconnect").Run()
+   if err != nil {
+      return err
+   }
+   return status("Disconnected")
+}
+
+func (p PublicRelays) Seq(country string) iter.Seq[string] {
    return func(yield func(string) bool) {
       for _, country_struct := range p.Countries {
          if country_struct.Name != country {
@@ -35,32 +55,17 @@ func (p public_relays) relays(country string) iter.Seq[string] {
    }
 }
 
-type public_relays struct {
-   Countries []struct {
-      Name string
-      Cities []struct {
-         Name string
-         Relays []struct {
-            Hostname string
-         }
-      }
-   }
-}
-
-type am_i_mullvad struct {
-   MullvadExitIp bool `json:"mullvad_exit_ip"`
-}
-
-func (a *am_i_mullvad) New() error {
-   resp, err := http.Get("https://ipv4.am.i.mullvad.net/json")
+func Connect(location string) error {
+   err := exec.Command("mullvad", "relay", "set", "location", location).Run()
    if err != nil {
       return err
    }
-   defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(a)
+   err = exec.Command("mullvad", "connect").Run()
+   if err != nil {
+      return err
+   }
+   return status("Connected")
 }
-
-///
 
 func status(prefix string) error {
    for range time.NewTicker(99 * time.Millisecond).C {
@@ -76,24 +81,4 @@ func status(prefix string) error {
       }
    }
    return nil
-}
-
-func connect(location string) error {
-   err := exec.Command("mullvad", "relay", "set", "location", location).Run()
-   if err != nil {
-      return err
-   }
-   err = exec.Command("mullvad", "connect").Run()
-   if err != nil {
-      return err
-   }
-   return status("Connected")
-}
-
-func disconnect() error {
-   err := exec.Command("mullvad", "disconnect").Run()
-   if err != nil {
-      return err
-   }
-   return status("Disconnected")
 }
