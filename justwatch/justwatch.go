@@ -78,7 +78,7 @@ func Monetization(node OfferNode) bool {
 
 func Url(node OfferNode) bool {
    for _, host := range hosts {
-      if strings.Contains(node.StandardWebUrl(), host) {
+      if strings.Contains(node.StandardWebUrl.String, host) {
          return true
       }
    }
@@ -351,7 +351,7 @@ type OfferGroup struct {
 
 func (o *OfferGroups) Add(node *OfferNode, state *LocaleState) {
    i := slices.IndexFunc(*o, func(group *OfferGroup) bool {
-      return group.Url == node.StandardWebUrl()
+      return group.Url == node.StandardWebUrl.String
    })
    if i >= 0 {
       group := (*o)[i]
@@ -363,7 +363,7 @@ func (o *OfferGroups) Add(node *OfferNode, state *LocaleState) {
       group.Count = node.ElementCount
       group.Country = []string{state.CountryName}
       group.Monetization = node.MonetizationType
-      group.Url = node.StandardWebUrl()
+      group.Url = node.StandardWebUrl.String
       *o = append(*o, &group)
    }
 }
@@ -408,22 +408,18 @@ type OfferNode struct {
    StandardWebUrl WebUrl
 }
 
-type WebUrl func() string
-
 func (w *WebUrl) UnmarshalText(data []byte) error {
-   *w = func() string {
-      return strings.TrimSuffix(string(data), "\n")
-   }
+   w.String = strings.TrimSuffix(string(data), "\n")
    return nil
 }
 
-func (a Address) String() string {
-   return a.Path
+type WebUrl struct {
+   String string
 }
 
 func (a Address) Content() (*ContentUrls, error) {
    resp, err := http.Get(
-      "https://apis.justwatch.com/content/urls?path=" + a.Path,
+      "https://apis.justwatch.com/content/urls?path=" + a.s,
    )
    if err != nil {
       return nil, err
@@ -440,13 +436,17 @@ func (a Address) Content() (*ContentUrls, error) {
    return content, nil
 }
 
-type Address struct {
-   Path string
-}
-
 func (a *Address) Set(data string) error {
    data = strings.TrimPrefix(data, "https://")
    data = strings.TrimPrefix(data, "www.")
-   a.Path = strings.TrimPrefix(data, "justwatch.com")
+   a.s = strings.TrimPrefix(data, "justwatch.com")
    return nil
+}
+
+func (a Address) String() string {
+   return a.s
+}
+
+type Address struct {
+   s string
 }

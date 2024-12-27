@@ -1,7 +1,9 @@
 # sbs.com.au
 
+~~~
+url = https://www.sbs.com.au/ondemand/movie/blade-runner/2386967619954
+monetization = ADS
 country = Australia
+~~~
 
-https://www.sbs.com.au/ondemand/movie/closer/2229616195516
-
-HLS with no encryption
+HLS with no encryption?

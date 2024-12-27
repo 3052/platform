@@ -17,7 +17,7 @@ func main() {
    flag.BoolVar(&f.all, "all", false, "all results")
    flag.Parse()
    text.Transport{}.Set(true)
-   if f.address.Path != "" {
+   if f.address.String() != "" {
       err := f.stream()
       if err != nil {
          panic(err)
