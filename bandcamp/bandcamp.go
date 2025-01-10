@@ -1,7 +1,6 @@
 package bandcamp
 
 import (
-   "41.neocities.org/text"
    "encoding/json"
    "encoding/xml"
    "io"
@@ -10,6 +9,13 @@ import (
    "strconv"
    "time"
 )
+
+func cut_before(s, sep []byte) ([]byte, []byte, bool) {
+   if i := bytes.Index(s, sep); i >= 0 {
+      return s[:i], s[i:], true
+   }
+   return s, nil, false
+}
 
 func (b *BandDetails) New(id int64) error {
    req, err := http.NewRequest("", "http://bandcamp.com", nil)
@@ -36,7 +42,7 @@ func (r *ReportParams) New(address string) error {
    if err != nil {
       return err
    }
-   _, data, _ = text.CutBefore(data, []byte(`<p id="report-account-vm"`))
+   _, data, _ = cut_before(data, []byte(`<p id="report-account-vm"`))
    var p struct {
       DataTouReportParams []byte `xml:"data-tou-report-params,attr"`
    }
