@@ -11,17 +11,33 @@ import (
    "slices"
    "strconv"
    "strings"
+   "time"
 )
 
-var hosts = []string{
-   // 2024-11-2
-   "/play.tv2.no/",
-   // 2024-11-1
-   "/filmoteket.no/",
-   "/www.3cat.cat/",
-   "/www.cineast.no/",
-   // 2024-7-20
-   "/www.stan.com.au/",
+var web_urls = []struct{
+   year int
+   month time.Month
+   day int
+   contains string
+}{
+   {2024,  7, 20, "/www.stan.com.au/"},
+   {2024, 11,  1, "/filmoteket.no/"},
+   {2024, 11,  1, "/www.3cat.cat/"},
+   {2024, 11,  1, "/www.cineast.no/"},
+   {2024, 11,  2, "/play.tv2.no/"},
+}
+
+func Url(node OfferNode) bool {
+   for _, w := range web_urls {
+      date := time.Date(w.year, w.month, w.day, 0, 0, 0, 0, time.UTC)
+      if time.Since(date) >= time.Hour*24*365 {
+         panic(w)
+      }
+      if strings.Contains(node.StandardWebUrl.S, w.contains) {
+         return true
+      }
+   }
+   return false
 }
 
 func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
@@ -72,15 +88,6 @@ func Monetization(node OfferNode) bool {
       return true
    case "RENT":
       return true
-   }
-   return false
-}
-
-func Url(node OfferNode) bool {
-   for _, host := range hosts {
-      if strings.Contains(node.StandardWebUrl.String, host) {
-         return true
-      }
    }
    return false
 }
@@ -149,6 +156,40 @@ type LocaleState struct {
    FullLocale string
    Country string
    CountryName string
+}
+
+func (a Address) Content() (*ContentUrls, error) {
+   resp, err := http.Get(
+      "https://apis.justwatch.com/content/urls?path=" + a.s,
+   )
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      return nil, errors.New(resp.Status)
+   }
+   content := &ContentUrls{}
+   err = json.NewDecoder(resp.Body).Decode(content)
+   if err != nil {
+      return nil, err
+   }
+   return content, nil
+}
+
+func (a *Address) Set(data string) error {
+   data = strings.TrimPrefix(data, "https://")
+   data = strings.TrimPrefix(data, "www.")
+   a.s = strings.TrimPrefix(data, "justwatch.com")
+   return nil
+}
+
+func (a Address) String() string {
+   return a.s
+}
+
+type Address struct {
+   s string
 }
 
 func (s *LocaleStates) New(language string) error {
@@ -349,25 +390,6 @@ type OfferGroup struct {
    Url string
 }
 
-func (o *OfferGroups) Add(node *OfferNode, state *LocaleState) {
-   i := slices.IndexFunc(*o, func(group *OfferGroup) bool {
-      return group.Url == node.StandardWebUrl.String
-   })
-   if i >= 0 {
-      group := (*o)[i]
-      if !slices.Contains(group.Country, state.CountryName) {
-         group.Country = append(group.Country, state.CountryName)
-      }
-   } else {
-      var group OfferGroup
-      group.Count = node.ElementCount
-      group.Country = []string{state.CountryName}
-      group.Monetization = node.MonetizationType
-      group.Url = node.StandardWebUrl.String
-      *o = append(*o, &group)
-   }
-}
-
 func (o OfferGroups) String() string {
    var b []byte
    slices.SortFunc(o, func(c, d *OfferGroup) int {
@@ -408,45 +430,30 @@ type OfferNode struct {
    StandardWebUrl WebUrl
 }
 
-func (w *WebUrl) UnmarshalText(data []byte) error {
-   w.String = strings.TrimSuffix(string(data), "\n")
-   return nil
-}
-
 type WebUrl struct {
-   String string
+   S string
 }
 
-func (a Address) Content() (*ContentUrls, error) {
-   resp, err := http.Get(
-      "https://apis.justwatch.com/content/urls?path=" + a.s,
-   )
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      return nil, errors.New(resp.Status)
-   }
-   content := &ContentUrls{}
-   err = json.NewDecoder(resp.Body).Decode(content)
-   if err != nil {
-      return nil, err
-   }
-   return content, nil
-}
-
-func (a *Address) Set(data string) error {
-   data = strings.TrimPrefix(data, "https://")
-   data = strings.TrimPrefix(data, "www.")
-   a.s = strings.TrimPrefix(data, "justwatch.com")
+func (w *WebUrl) UnmarshalText(data []byte) error {
+   w.S = strings.TrimSuffix(string(data), "\n")
    return nil
 }
 
-func (a Address) String() string {
-   return a.s
-}
-
-type Address struct {
-   s string
+func (o *OfferGroups) Add(node *OfferNode, state *LocaleState) {
+   i := slices.IndexFunc(*o, func(group *OfferGroup) bool {
+      return group.Url == node.StandardWebUrl.S
+   })
+   if i >= 0 {
+      group := (*o)[i]
+      if !slices.Contains(group.Country, state.CountryName) {
+         group.Country = append(group.Country, state.CountryName)
+      }
+   } else {
+      var group OfferGroup
+      group.Count = node.ElementCount
+      group.Country = []string{state.CountryName}
+      group.Monetization = node.MonetizationType
+      group.Url = node.StandardWebUrl.S
+      *o = append(*o, &group)
+   }
 }
