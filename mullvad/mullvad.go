@@ -9,6 +9,26 @@ import (
    "time"
 )
 
+func Connect(location string) error {
+   err := exec.Command("mullvad", "relay", "set", "location", location).Run()
+   if err != nil {
+      return err
+   }
+   err = exec.Command("mullvad", "connect").Run()
+   if err != nil {
+      return err
+   }
+   return status("Connected")
+}
+
+func Disconnect() error {
+   err := exec.Command("mullvad", "disconnect").Run()
+   if err != nil {
+      return err
+   }
+   return status("Disconnected")
+}
+
 func status(prefix string) error {
    for range time.NewTicker(time.Second).C {
       data, err := exec.Command("mullvad", "status").Output()
@@ -37,14 +57,6 @@ type ServerList struct {
    }
 }
 
-func Disconnect() error {
-   err := exec.Command("mullvad", "disconnect").Run()
-   if err != nil {
-      return err
-   }
-   return status("Disconnected")
-}
-
 func (s ServerList) Seq(country string) iter.Seq[string] {
    return func(yield func(string) bool) {
       for _, country_struct := range s.Countries {
@@ -60,18 +72,6 @@ func (s ServerList) Seq(country string) iter.Seq[string] {
          }
       }
    }
-}
-
-func Connect(location string) error {
-   err := exec.Command("mullvad", "relay", "set", "location", location).Run()
-   if err != nil {
-      return err
-   }
-   err = exec.Command("mullvad", "connect").Run()
-   if err != nil {
-      return err
-   }
-   return status("Connected")
 }
 
 func (s *ServerList) OpenVpn() error {
