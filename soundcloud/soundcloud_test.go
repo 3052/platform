@@ -3,7 +3,6 @@ package soundcloud
 import (
    "fmt"
    "net/http"
-   "strings"
    "testing"
    "time"
 )
@@ -44,7 +43,7 @@ var test_track = struct{
 
 func TestArtwork(t *testing.T) {
    for _, artwork := range artworks {
-      req, err := http.NewRequest("HEAD", "https://i1.sndcdn.com" nil)
+      req, err := http.NewRequest("HEAD", "https://i1.sndcdn.com", nil)
       if err != nil {
          t.Fatal(err)
       }

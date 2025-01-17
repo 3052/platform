@@ -2,7 +2,6 @@ package bandcamp
 
 import (
    "fmt"
-   "reflect"
    "testing"
    "time"
 )

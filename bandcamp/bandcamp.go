@@ -1,6 +1,7 @@
 package bandcamp
 
 import (
+   "bytes"
    "encoding/json"
    "encoding/xml"
    "io"
