@@ -9,24 +9,34 @@ import (
    "time"
 )
 
-func Connect(location string) error {
-   err := exec.Command("mullvad", "relay", "set", "location", location).Run()
+func (s *ServerList) OpenVpn() error {
+   resp, err := http.Get("https://api.mullvad.net/public/relays/v1")
    if err != nil {
       return err
    }
-   err = exec.Command("mullvad", "connect").Run()
-   if err != nil {
-      return err
-   }
-   return status("Connected")
+   defer resp.Body.Close()
+   return json.NewDecoder(resp.Body).Decode(s)
 }
 
-func Disconnect() error {
-   err := exec.Command("mullvad", "disconnect").Run()
+func (s *ServerList) WireGuard() error {
+   resp, err := http.Get("https://api.mullvad.net/public/relays/wireguard/v1")
    if err != nil {
       return err
    }
-   return status("Disconnected")
+   defer resp.Body.Close()
+   return json.NewDecoder(resp.Body).Decode(s)
+}
+
+type ServerList struct {
+   Countries []struct {
+      Name string
+      Cities []struct {
+         Name string
+         Relays []struct {
+            Hostname string
+         }
+      }
+   }
 }
 
 func status(prefix string) error {
@@ -45,16 +55,12 @@ func status(prefix string) error {
    return nil
 }
 
-type ServerList struct {
-   Countries []struct {
-      Name string
-      Cities []struct {
-         Name string
-         Relays []struct {
-            Hostname string
-         }
-      }
+func Disconnect() error {
+   err := exec.Command("mullvad", "disconnect").Run()
+   if err != nil {
+      return err
    }
+   return status("Disconnected")
 }
 
 func (s ServerList) Seq(country string) iter.Seq[string] {
@@ -74,20 +80,14 @@ func (s ServerList) Seq(country string) iter.Seq[string] {
    }
 }
 
-func (s *ServerList) OpenVpn() error {
-   resp, err := http.Get("https://api.mullvad.net/public/relays/v1")
+func Connect(location string) error {
+   err := exec.Command("mullvad", "relay", "set", "location", location).Run()
    if err != nil {
       return err
    }
-   defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(s)
-}
-
-func (s *ServerList) WireGuard() error {
-   resp, err := http.Get("https://api.mullvad.net/public/relays/wireguard/v1")
+   err = exec.Command("mullvad", "connect").Run()
    if err != nil {
       return err
    }
-   defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(s)
+   return status("Connected")
 }
