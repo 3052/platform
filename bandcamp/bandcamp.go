@@ -119,54 +119,54 @@ type Image struct {
    Crop bool
    Format int
    Height int
-   ID int64
+   Id int64
    Width int
 }
 
 var Images = []Image{
-   {ID:0, Width:1500, Height:1500, Format:Jpeg},
-   {ID:1, Width:1500, Height:1500, Format:Png},
-   {ID:2, Width:350, Height:350, Format:Jpeg},
-   {ID:3, Width:100, Height:100, Format:Jpeg},
-   {ID:4, Width:300, Height:300, Format:Jpeg},
-   {ID:5, Width:700, Height:700, Format:Jpeg},
-   {ID:6, Width:100, Height:100, Format:Jpeg},
-   {ID:7, Width:150, Height:150, Format:Jpeg},
-   {ID:8, Width:124, Height:124, Format:Jpeg},
-   {ID:9, Width:210, Height:210, Format:Jpeg},
-   {ID:10, Width:1200, Height:1200, Format:Jpeg},
-   {ID:11, Width:172, Height:172, Format:Jpeg},
-   {ID:12, Width:138, Height:138, Format:Jpeg},
-   {ID:13, Width:380, Height:380, Format:Jpeg},
-   {ID:14, Width:368, Height:368, Format:Jpeg},
-   {ID:15, Width:135, Height:135, Format:Jpeg},
-   {ID:16, Width:700, Height:700, Format:Jpeg},
-   {ID:20, Width:1024, Height:1024, Format:Jpeg},
-   {ID:21, Width:120, Height:120, Format:Jpeg},
-   {ID:22, Width:25, Height:25, Format:Jpeg},
-   {ID:23, Width:300, Height:300, Format:Jpeg},
-   {ID:24, Width:300, Height:300, Format:Jpeg},
-   {ID:25, Width:700, Height:700, Format:Jpeg},
-   {ID:26, Width:800, Height:600, Format:Jpeg, Crop:true},
-   {ID:27, Width:715, Height:402, Format:Jpeg, Crop:true},
-   {ID:28, Width:768, Height:432, Format:Jpeg, Crop:true},
-   {ID:29, Width:100, Height:75, Format:Jpeg, Crop:true},
-   {ID:31, Width:1024, Height:1024, Format:Png},
-   {ID:32, Width:380, Height:285, Format:Jpeg, Crop:true},
-   {ID:33, Width:368, Height:276, Format:Jpeg, Crop:true},
-   {ID:36, Width:400, Height:300, Format:Jpeg, Crop:true},
-   {ID:37, Width:168, Height:126, Format:Jpeg, Crop:true},
-   {ID:38, Width:144, Height:108, Format:Jpeg, Crop:true},
-   {ID:41, Width:210, Height:210, Format:Jpeg},
-   {ID:42, Width:50, Height:50, Format:Jpeg},
-   {ID:43, Width:100, Height:100, Format:Jpeg},
-   {ID:44, Width:200, Height:200, Format:Jpeg},
-   {ID:50, Width:140, Height:140, Format:Jpeg},
-   {ID:65, Width:700, Height:700, Format:Jpeg},
-   {ID:66, Width:1200, Height:1200, Format:Jpeg},
-   {ID:67, Width:350, Height:350, Format:Jpeg},
-   {ID:68, Width:210, Height:210, Format:Jpeg},
-   {ID:69, Width:700, Height:700, Format:Jpeg},
+   {Id:0, Width:1500, Height:1500, Format:Jpeg},
+   {Id:1, Width:1500, Height:1500, Format:Png},
+   {Id:2, Width:350, Height:350, Format:Jpeg},
+   {Id:3, Width:100, Height:100, Format:Jpeg},
+   {Id:4, Width:300, Height:300, Format:Jpeg},
+   {Id:5, Width:700, Height:700, Format:Jpeg},
+   {Id:6, Width:100, Height:100, Format:Jpeg},
+   {Id:7, Width:150, Height:150, Format:Jpeg},
+   {Id:8, Width:124, Height:124, Format:Jpeg},
+   {Id:9, Width:210, Height:210, Format:Jpeg},
+   {Id:10, Width:1200, Height:1200, Format:Jpeg},
+   {Id:11, Width:172, Height:172, Format:Jpeg},
+   {Id:12, Width:138, Height:138, Format:Jpeg},
+   {Id:13, Width:380, Height:380, Format:Jpeg},
+   {Id:14, Width:368, Height:368, Format:Jpeg},
+   {Id:15, Width:135, Height:135, Format:Jpeg},
+   {Id:16, Width:700, Height:700, Format:Jpeg},
+   {Id:20, Width:1024, Height:1024, Format:Jpeg},
+   {Id:21, Width:120, Height:120, Format:Jpeg},
+   {Id:22, Width:25, Height:25, Format:Jpeg},
+   {Id:23, Width:300, Height:300, Format:Jpeg},
+   {Id:24, Width:300, Height:300, Format:Jpeg},
+   {Id:25, Width:700, Height:700, Format:Jpeg},
+   {Id:26, Width:800, Height:600, Format:Jpeg, Crop:true},
+   {Id:27, Width:715, Height:402, Format:Jpeg, Crop:true},
+   {Id:28, Width:768, Height:432, Format:Jpeg, Crop:true},
+   {Id:29, Width:100, Height:75, Format:Jpeg, Crop:true},
+   {Id:31, Width:1024, Height:1024, Format:Png},
+   {Id:32, Width:380, Height:285, Format:Jpeg, Crop:true},
+   {Id:33, Width:368, Height:276, Format:Jpeg, Crop:true},
+   {Id:36, Width:400, Height:300, Format:Jpeg, Crop:true},
+   {Id:37, Width:168, Height:126, Format:Jpeg, Crop:true},
+   {Id:38, Width:144, Height:108, Format:Jpeg, Crop:true},
+   {Id:41, Width:210, Height:210, Format:Jpeg},
+   {Id:42, Width:50, Height:50, Format:Jpeg},
+   {Id:43, Width:100, Height:100, Format:Jpeg},
+   {Id:44, Width:200, Height:200, Format:Jpeg},
+   {Id:50, Width:140, Height:140, Format:Jpeg},
+   {Id:65, Width:700, Height:700, Format:Jpeg},
+   {Id:66, Width:1200, Height:1200, Format:Jpeg},
+   {Id:67, Width:350, Height:350, Format:Jpeg},
+   {Id:68, Width:210, Height:210, Format:Jpeg},
+   {Id:69, Width:700, Height:700, Format:Jpeg},
 }
 
 // Extension is optional.
@@ -175,7 +175,7 @@ func (i *Image) URL(art_id int64) string {
    b = append(b, "http://f4.bcbits.com/img/a"...)
    b = strconv.AppendInt(b, art_id, 10)
    b = append(b, '_')
-   b = strconv.AppendInt(b, i.ID, 10)
+   b = strconv.AppendInt(b, i.Id, 10)
    return string(b)
 }
 
