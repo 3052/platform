@@ -2,38 +2,35 @@ package main
 
 import (
    "41.neocities.org/platform/justwatch"
-   "41.neocities.org/text"
+   "bytes"
    "errors"
    "flag"
    "fmt"
+   "io"
+   "log"
+   "net/http"
    "slices"
+   "strings"
    "time"
 )
 
-func main() {
-   var f flags
-   flag.Var(&f.address, "a", "address")
-   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
-   flag.BoolVar(&f.all, "all", false, "all results")
-   flag.Parse()
-   text.Transport{}.Set(true)
-   if f.address.String() != "" {
-      err := f.stream()
+func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
+   if req.Body != nil {
+      data, err := io.ReadAll(req.Body)
       if err != nil {
-         panic(err)
+         return nil, err
       }
+      req.Body.Close()
+      req.Body = io.NopCloser(bytes.NewReader(data))
+      log.Print(strings.ReplaceAll(string(data), " ", ""))
    } else {
-      flag.Usage()
+      log.Print(req.URL)
    }
-}
-
-type flags struct {
-   all bool
-   sleep time.Duration
-   address justwatch.Address
+   return http.DefaultTransport.RoundTrip(req)
 }
 
 func (f *flags) stream() error {
+   http.DefaultClient.Transport = transport{}
    content, err := f.address.Content()
    if err != nil {
       return err
@@ -58,4 +55,28 @@ func (f *flags) stream() error {
    }
    fmt.Println(groups)
    return nil
+}
+
+type transport struct{}
+
+func main() {
+   var f flags
+   flag.Var(&f.address, "a", "address")
+   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
+   flag.BoolVar(&f.all, "all", false, "all results")
+   flag.Parse()
+   if f.address.String() != "" {
+      err := f.stream()
+      if err != nil {
+         panic(err)
+      }
+   } else {
+      flag.Usage()
+   }
+}
+
+type flags struct {
+   all bool
+   sleep time.Duration
+   address justwatch.Address
 }
