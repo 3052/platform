@@ -10,7 +10,6 @@ import (
    "log"
    "net/http"
    "slices"
-   "strings"
    "time"
 )
 
@@ -22,7 +21,7 @@ func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
       }
       req.Body.Close()
       req.Body = io.NopCloser(bytes.NewReader(data))
-      log.Print(strings.ReplaceAll(string(data), " ", ""))
+      log.Print(string(data))
    } else {
       log.Print(req.URL)
    }
