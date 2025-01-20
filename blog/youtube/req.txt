@@ -1,0 +1,39 @@
+POST /youtubei/v1/player?prettyPrint=false HTTP/1.1
+Host: www.youtube.com
+Cookie: PREF=hl=en&tz=UTC; SOCS=CAI; GPS=1; YSC=daX12rPbl7w; __Secure-ROLLOUT_TOKEN=CND4x9mfxsC2dxDP4bGewoKLAxjP4bGewoKLAw%3D%3D; VISITOR_INFO1_LIVE=M0YbZ1vv8dU; VISITOR_PRIVACY_METADATA=CgJVUxIEGgAgLQ%3D%3D
+User-Agent: com.google.ios.youtube/19.45.4 (iPhone16,2; U; CPU iOS 18_1_0 like Mac OS X;)
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-us,en;q=0.5
+Sec-Fetch-Mode: navigate
+Content-Type: application/json
+X-Youtube-Client-Name: 5
+X-Youtube-Client-Version: 19.45.4
+Origin: https://www.youtube.com
+X-Goog-Visitor-Id: CgtNMFliWjF2djhkVSi3pLW8BjIKCgJVUxIEGgAgLQ%3D%3D
+Connection: close
+
+{
+  "context": {
+    "client": {
+      "clientName": "IOS",
+      "clientVersion": "19.45.4",
+      "deviceMake": "Apple",
+      "deviceModel": "iPhone16,2",
+      "userAgent": "com.google.ios.youtube/19.45.4 (iPhone16,2; U; CPU iOS 18_1_0 like Mac OS X;)",
+      "osName": "iPhone",
+      "osVersion": "18.1.0.22B83",
+      "hl": "en",
+      "timeZone": "UTC",
+      "utcOffsetMinutes": 0
+    }
+  },
+  "videoId": "Biii4l597G8",
+  "playbackContext": {
+    "contentPlaybackContext": {
+      "html5Preference": "HTML5_PREF_WANTS",
+      "signatureTimestamp": 20102
+    }
+  },
+  "contentCheckOk": true,
+  "racyCheckOk": true
+}
