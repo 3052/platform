@@ -1,11 +1,5 @@
 # watcha.com
 
-~~~
-url = https://watcha.com/contents/md6YvMa
-monetization = FLATRATE
-country = South Korea
-~~~
-
 https://docs.mitmproxy.org/stable/overview-features#modify-headers
 
 this works:

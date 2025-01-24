@@ -1,7 +1,5 @@
 # kpn
 
-https://tv.kpn.com/details/VOD/5175596
-
 1. inloggen (log in)
 2. Nieuwe inloggegevens aanvragen (Request new login details)
 3. E-mail

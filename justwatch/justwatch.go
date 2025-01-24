@@ -2,7 +2,6 @@ package justwatch
 
 import (
    "bytes"
-   "cmp"
    "encoding/base64"
    "encoding/json"
    "errors"
@@ -25,6 +24,36 @@ var web_urls = []struct{
    {2024, 11,  1, "/www.3cat.cat/"},
    {2024, 11,  1, "/www.cineast.no/"},
    {2024, 11,  2, "/play.tv2.no/"},
+   {2025,  1, 24, "/tv.apple.com"},
+   {2025,  1, 24, "/tv.kpn.com/"},
+   {2025,  1, 24, "/watcha.com/"},
+   {2025,  1, 24, "/www.netflix.com/"},
+}
+
+func (o OfferGroups) String() string {
+   var b []byte
+   slices.SortFunc(o, func(c, d *OfferGroup) int {
+      return len(c.Url) - len(d.Url)
+   })
+   for i, group := range o {
+      if i >= 1 {
+         b = append(b, "\n\n"...)
+      }
+      b = append(b, "url = "...)
+      b = append(b, html.UnescapeString(group.Url)...)
+      b = append(b, "\nmonetization = "...)
+      b = append(b, group.Monetization...)
+      if v := group.Count; v >= 1 {
+         b = append(b, "\ncount = "...)
+         b = strconv.AppendInt(b, v, 10)
+      }
+      slices.Sort(group.Country)
+      for _, country := range group.Country {
+         b = append(b, "\ncountry = "...)
+         b = append(b, country...)
+      }
+   }
+   return string(b)
 }
 
 func Url(node OfferNode) bool {
@@ -388,35 +417,6 @@ type OfferGroup struct {
    Country []string
    Monetization string
    Url string
-}
-
-func (o OfferGroups) String() string {
-   var b []byte
-   slices.SortFunc(o, func(c, d *OfferGroup) int {
-      if v := len(d.Country) - len(c.Country); v != 0 {
-         return v
-      }
-      return cmp.Compare(c.Url, d.Url)
-   })
-   for i, group := range o {
-      if i >= 1 {
-         b = append(b, "\n\n"...)
-      }
-      b = append(b, "url = "...)
-      b = append(b, html.UnescapeString(group.Url)...)
-      b = append(b, "\nmonetization = "...)
-      b = append(b, group.Monetization...)
-      if v := group.Count; v >= 1 {
-         b = append(b, "\ncount = "...)
-         b = strconv.AppendInt(b, v, 10)
-      }
-      slices.Sort(group.Country)
-      for _, country := range group.Country {
-         b = append(b, "\ncountry = "...)
-         b = append(b, country...)
-      }
-   }
-   return string(b)
 }
 
 type OfferGroups []*OfferGroup
