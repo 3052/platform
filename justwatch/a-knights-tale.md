@@ -1,6 +1,56 @@
 # a-knights-tale
 
+watch on Apple TV:
+
 ~~~
+url = https://tv.apple.com/us/movie/a-knights-tale/umc.cmc.416seftz79hrbv5eq3de2gka5
+monetization = FLATRATE
+country = United States
+~~~
+
+Этот фильм пока недоступен для покупки (This film is not yet available for
+purchase):
+
+~~~
+url = https://more.tv/istoriya_rytsarya
+monetization = ADS
+country = Russia
+~~~
+
+authentication failed:
+
+~~~
+url = https://watcha.com/contents/mOb4a15
+monetization = FLATRATE
+country = South Korea
+~~~
+
+then:
+
+~~~
+url = https://www.netflix.com/title/60020626
+monetization = FLATRATE
+country = France
+country = Indonesia
+country = Malaysia
+country = Netherlands
+country = Philippines
+country = Singapore
+country = Taiwan
+country = Thailand
+
+url = https://tv.kpn.com/details/VOD/5167370
+monetization = FLATRATE
+country = Netherlands
+
+url = https://www.sky.at/produkte/sky-go-158150
+monetization = FLATRATE
+country = Austria
+
+url = https://www.sky.de/produkte/sky-go-177018
+monetization = FLATRATE
+country = Germany
+
 url = https://tv.blue.ch/details/vod/single/CT182414D
 monetization = FLATRATE
 country = Switzerland
@@ -74,8 +124,4 @@ country = Slovakia
 url = https://www.sunrisetv.ch/de/vod/1/details/vod/crid:~~2F~~2Fog.libertyglobal.com~~2FGN~~2FMV006108280000/empty
 monetization = FLATRATE
 country = Switzerland
-PS D:\Desktop>
-PS D:\Desktop>
-
-
 ~~~

@@ -19,15 +19,6 @@ var web_urls = []struct{
    day int
    contains string
 }{
-   {2024,  7, 20, "/www.stan.com.au/"},
-   {2024, 11,  1, "/filmoteket.no/"},
-   {2024, 11,  1, "/www.3cat.cat/"},
-   {2024, 11,  1, "/www.cineast.no/"},
-   {2024, 11,  2, "/play.tv2.no/"},
-   {2025,  1, 24, "/tv.apple.com"},
-   {2025,  1, 24, "/tv.kpn.com/"},
-   {2025,  1, 24, "/watcha.com/"},
-   {2025,  1, 24, "/www.netflix.com/"},
 }
 
 func (o OfferGroups) String() string {
