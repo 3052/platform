@@ -1,32 +1,17 @@
 # tv.blue.ch
 
 ~~~
-url = https://tv.blue.ch/details/vod/single/CT285558D
+url = https://tv.blue.ch/details/vod/single/CT182414D
 monetization = FLATRATE
 country = Switzerland
 ~~~
 
-1. login
-2. create swisscom login
-3. e-mail
-   - mailsac.com
-4. I accept the terms
-5. confirm e-mail address
-6. enter code
-7. check code
-8. password
-   - Flew-Sweet
-9. repeat password
-10. continue
-11. title
-12. first name
-13. last name
-14. date of birth
-   - DD.MM.YYYY
-15. address
-   - bestrandoms.com/random-address-in-ch
-16. continue
-17. mobile phone number
-18. continue
+## films but no trial
 
-confirmation code
+- https://blueplus.ch/en/movies-and-series/premium-fr
+- https://blueplus.ch/en/movies-and-series/supermax
+
+## trial but no films
+
+- https://blueplus.ch/en/movies-and-series/premium-de
+- https://blueplus.ch/en/movies-and-series/premium-it

@@ -7,6 +7,30 @@ import (
    "net/http"
 )
 
+func (f *flags) connect(servers mullvad.ServerList) error {
+   for server := range servers.Seq(f.location) {
+      fmt.Print(server)
+      err := mullvad.Connect(server)
+      switch err {
+      case nil:
+         fmt.Print(" GET")
+         resp, err := f.get()
+         if err != nil {
+            return err
+         }
+         fmt.Printf(" %v\n", resp.Status)
+         if resp.StatusCode == http.StatusOK {
+            return nil
+         }
+      case mullvad.ErrTimeout:
+         fmt.Printf(" %v\n", err)
+      default:
+         return err
+      }
+   }
+   return io.EOF
+}
+
 func (f *flags) relay() error {
    defer mullvad.Disconnect()
    var servers mullvad.ServerList
@@ -28,26 +52,6 @@ func (f *flags) relay() error {
    default:
       return err
    }
-}
-
-func (f *flags) connect(servers mullvad.ServerList) error {
-   for server := range servers.Seq(f.location) {
-      fmt.Println("Connect")
-      err := mullvad.Connect(server)
-      if err != nil {
-         return err
-      }
-      fmt.Println("GET")
-      resp, err := f.get()
-      if err != nil {
-         return err
-      }
-      fmt.Println(server, resp.Status)
-      if resp.StatusCode == http.StatusOK {
-         return nil
-      }
-   }
-   return io.EOF
 }
 
 func (f *flags) get() (*http.Response, error) {

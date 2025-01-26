@@ -1,7 +1,15 @@
 # sky.at
 
-sky.at/produkte/sky-q
+~~~
+url = https://www.sky.at/produkte/sky-go-158150
+monetization = FLATRATE
+country = Austria
+~~~
 
-bestrandoms.com/random-address-in-at
+no trial here:
 
-Your address was not recognized
+https://sky.at/produkte/sky-go
+
+no trial here:
+
+https://sky.at/angebote

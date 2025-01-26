@@ -1,8 +1,19 @@
 # Netflix
 
-No free trial:
+1. netflix.com
+2. email address
+   - mailsac.com
+3. get started
+4. next
+5. password
+6. next
+7. skip
+8. next
+9. standard with ads
+10. next
+11. debit card
 
-https://help.netflix.com/node/16282
+no trial
 
 ## android
 

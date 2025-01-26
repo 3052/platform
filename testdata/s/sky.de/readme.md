@@ -6,10 +6,10 @@ monetization = FLATRATE
 country = Germany
 ~~~
 
-sky.de/produkte/sky-q
+no trial here:
 
-Maintenance work
+https://sky.de/produkte/sky-go
 
-Maintenance work is currently being carried out.
+or here:
 
-We ask for your patience.
+https://sky.de/angebote

@@ -1,9 +1,19 @@
 # show.sky.ch
 
 ~~~
-url = https://show.sky.ch/de/filme/76978/mollys-game
+url = https://show.sky.ch/de/filme/2035/a-knights-tale
 monetization = FLATRATE
 country = Switzerland
+~~~
+
+## mullvad
+
+~~~
+> curl -v https://show.sky.ch/de/filme/2035/a-knights-tale
+* connect to 3.165.190.109 port 443 failed: Timed out
+* connect to 3.165.190.5 port 443 failed: Timed out
+* connect to 3.165.190.118 port 443 failed: Timed out
+* connect to 3.165.190.41 port 443 failed: Timed out
 ~~~
 
 ## smart proxy
@@ -35,10 +45,9 @@ then:
 2. enable javascript
 3. sky show light, Abonnieren (subscribe)
 4. e-mail
-   - 2024-6-3@mailsac.com
+   - mailsac.com
 5. E-Mail bestätigen (confirm e-mail)
 6. password
-   - Train-Over6
 7. Ich habe gelesen und akzeptiere hiermit Sky Switzerland
    Datenschutzrichtlinie (I have read and hereby accept Sky Switzerland Privacy
    Policy)

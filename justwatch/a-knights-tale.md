@@ -17,7 +17,7 @@ monetization = ADS
 country = Russia
 ~~~
 
-authentication failed:
+geo SMS:
 
 ~~~
 url = https://watcha.com/contents/mOb4a15
@@ -25,7 +25,7 @@ monetization = FLATRATE
 country = South Korea
 ~~~
 
-then:
+no trial:
 
 ~~~
 url = https://www.netflix.com/title/60020626
@@ -38,30 +38,46 @@ country = Philippines
 country = Singapore
 country = Taiwan
 country = Thailand
+~~~
 
+must have account number:
+
+~~~
 url = https://tv.kpn.com/details/VOD/5167370
 monetization = FLATRATE
 country = Netherlands
+~~~
 
+no trial:
+
+~~~
 url = https://www.sky.at/produkte/sky-go-158150
 monetization = FLATRATE
 country = Austria
+~~~
 
+no trial:
+
+~~~
 url = https://www.sky.de/produkte/sky-go-177018
 monetization = FLATRATE
 country = Germany
+~~~
 
+no trial:
+
+~~~
 url = https://tv.blue.ch/details/vod/single/CT182414D
 monetization = FLATRATE
 country = Switzerland
+~~~
 
+next:
+
+~~~
 url = https://show.sky.ch/de/filme/2035/a-knights-tale
 monetization = FLATRATE
 country = Switzerland
-
-url = https://www.rakuten.tv/nl/movies/a-knight-s-tale
-monetization = ADS
-country = Netherlands
 
 url = https://voyo.markiza.sk/filmy/7881-pribeh-o-rytierovi
 monetization = FLATRATE

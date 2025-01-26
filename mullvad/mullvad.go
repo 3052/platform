@@ -10,6 +10,29 @@ import (
    "time"
 )
 
+var ErrTimeout = errors.New("timeout")
+
+func status(prefix string) error {
+   after := time.After(30 * time.Second)
+   for {
+      select {
+      case <-time.After(time.Second):
+         data, err := exec.Command("mullvad", "status").Output()
+         if err != nil {
+            return err
+         }
+         text := string(data)
+         if strings.HasPrefix(text, prefix) {
+            if strings.Contains(text, " IPv4:") {
+               return nil
+            }
+         }
+      case <-after:
+         return ErrTimeout
+      }
+   }
+}
+
 func Connect(location string) error {
    data, err := exec.Command(
       "mullvad", "relay", "set", "location", location,
@@ -52,22 +75,6 @@ type ServerList struct {
          }
       }
    }
-}
-
-func status(prefix string) error {
-   for range time.NewTicker(time.Second).C {
-      data, err := exec.Command("mullvad", "status").Output()
-      if err != nil {
-         return err
-      }
-      text := string(data)
-      if strings.HasPrefix(text, prefix) {
-         if strings.Contains(text, " IPv4:") {
-            break
-         }
-      }
-   }
-   return nil
 }
 
 func Disconnect() error {
