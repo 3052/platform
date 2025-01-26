@@ -28,8 +28,25 @@ func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
    return http.DefaultTransport.RoundTrip(req)
 }
 
-func (f *flags) stream() error {
+func main() {
    http.DefaultClient.Transport = transport{}
+   log.SetFlags(log.Ltime)
+   var f flags
+   flag.Var(&f.address, "a", "address")
+   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
+   flag.BoolVar(&f.all, "all", false, "all results")
+   flag.Parse()
+   if f.address.String() != "" {
+      err := f.stream()
+      if err != nil {
+         panic(err)
+      }
+   } else {
+      flag.Usage()
+   }
+}
+
+func (f *flags) stream() error {
    content, err := f.address.Content()
    if err != nil {
       return err
@@ -57,22 +74,6 @@ func (f *flags) stream() error {
 }
 
 type transport struct{}
-
-func main() {
-   var f flags
-   flag.Var(&f.address, "a", "address")
-   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
-   flag.BoolVar(&f.all, "all", false, "all results")
-   flag.Parse()
-   if f.address.String() != "" {
-      err := f.stream()
-      if err != nil {
-         panic(err)
-      }
-   } else {
-      flag.Usage()
-   }
-}
 
 type flags struct {
    all bool
