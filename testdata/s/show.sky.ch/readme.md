@@ -1,5 +1,7 @@
 # show.sky.ch
 
+https://justwatch.com/ch/Anbieter/sky
+
 ~~~
 url = https://show.sky.ch/de/filme/2035/a-knights-tale
 monetization = FLATRATE
@@ -9,53 +11,71 @@ country = Switzerland
 ## mullvad
 
 ~~~
-> curl -v https://show.sky.ch/de/filme/2035/a-knights-tale
-* connect to 3.165.190.109 port 443 failed: Timed out
-* connect to 3.165.190.5 port 443 failed: Timed out
-* connect to 3.165.190.118 port 443 failed: Timed out
-* connect to 3.165.190.41 port 443 failed: Timed out
+ch-zrh-ovpn-001 GET 403 Forbidden
+ch-zrh-ovpn-002 GET 403 Forbidden
+ch-zrh-ovpn-003 GET 403 Forbidden
+ch-zrh-ovpn-201 GET 403 Forbidden
+ch-zrh-ovpn-202 GET 403 Forbidden
+ch-zrh-ovpn-501 GET 403 Forbidden
+ch-zrh-ovpn-502 GET 403 Forbidden
+ch-zrh-wg-001 GET 403 Forbidden
+ch-zrh-wg-002 GET 403 Forbidden
+ch-zrh-wg-003 GET 403 Forbidden
+ch-zrh-wg-004 timeout
+ch-zrh-wg-005 GET 403 Forbidden
+ch-zrh-wg-006 GET 403 Forbidden
+ch-zrh-wg-201 GET 403 Forbidden
+ch-zrh-wg-202 GET 403 Forbidden
+ch-zrh-wg-401 GET 403 Forbidden
+ch-zrh-wg-402 GET 403 Forbidden
+ch-zrh-wg-403 GET 403 Forbidden
+ch-zrh-wg-404 GET 403 Forbidden
+ch-zrh-wg-501 GET 403 Forbidden
+ch-zrh-wg-502 GET 403 Forbidden
+ch-zrh-wg-503 GET 403 Forbidden
+ch-zrh-wg-504 GET 403 Forbidden
+ch-zrh-wg-505 GET 403 Forbidden
+ch-zrh-wg-506 GET 403 Forbidden
+ch-zrh-wg-507 GET 403 Forbidden
 ~~~
 
 ## smart proxy
 
 ~~~
-> curl -x username:password@ch.smartproxy.com:29001
-> https://show.sky.ch/de/filme/76978/mollys-game
+curl -x username:password@ch.smartproxy.com:29001 `
+https://show.sky.ch/de/filme/2035/a-knights-tale
+
 curl: (56) Received HTTP code 403 from proxy after CONNECT
 ~~~
 
 ## proxy seller
 
-~~~
-curl -x socks5://username:password@res.proxy-seller.com:10000 `
-https://js.stripe.com/v3
-~~~
-
-but MITM Proxy does not support:
-
-https://github.com/mitmproxy/mitmproxy/issues/211
-
-workaround:
-
-https://mitmproxy.org/posts/har-support
-
-then:
-
-1. Einen Pass hinzufügen (add a passport)
-2. enable javascript
-3. sky show light, Abonnieren (subscribe)
-4. e-mail
+1. TURN ON PROXY
+2. show.sky.ch/de/filme/2035/a-knights-tale
+3. Einen Pass hinzufügen (add a passport)
+4. enable javascript
+5. Dieser Film ist nur im Premium-Pass verfügbar (this movie is only available in
+   the premium pass)
+6. sky show premium, 7 Tage kostenlose Probezeit (7 days free trial period)
+7. TURN OFF PROXY
+8. e-mail
    - mailsac.com
-5. E-Mail bestätigen (confirm e-mail)
-6. password
-7. Ich habe gelesen und akzeptiere hiermit Sky Switzerland
+9. E-Mail bestätigen (confirm e-mail)
+10. password (capital and number)
+11. Ich habe gelesen und akzeptiere hiermit Sky Switzerland
    Datenschutzrichtlinie (I have read and hereby accept Sky Switzerland Privacy
    Policy)
-8. Mein Konto erstellen (create my account)
-9. credit card
-10. Ich akzeptiere hiermit die allgemeinen Geschäftsbedingungen Sky Switzerland
-   und ich bin volljährig (I hereby accept the Sky Switzerland General Terms and
-   Conditions and I am of legal age)
-11. Bezahlen (pay)
-
-Es ist nicht genug Geld auf Ihrer Karte (there is not enough money on your card)
+12. Mein Konto erstellen (create my account)
+13. credit card
+14. card number
+15. expiration date
+16. security code
+17. zip code
+18. Bestätigen (confirm)
+19. Ich akzeptiere hiermit die allgemeinen Geschäftsbedingungen Sky Switzerland
+   (I hereby accept the sky switzerland general terms and conditions)
+20. Bezahlen CHF 0 (pay CHF 0)
+21. first name
+22. last name
+23. TURN ON PROXY
+24. Bestätigen (confirm)
