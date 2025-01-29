@@ -16,55 +16,6 @@ no support with geckoDriver:
 
 <https://bugzilla.mozilla.org/show_bug.cgi?id=1395886>
 
-## new session
-
-request:
-
-~~~
-curl -d '
-{
-   "capabilities": {
-      "alwaysMatch": {
-         "proxy": {
-            "proxyType": "manual",
-            "sslProxy": "res.proxy-seller.com:10000"
-         }
-      }
-   }
-}
-' -H content-type:application/json 127.0.0.1:4444/session
-
-curl -d '
-{
-   "capabilities": {
-      "alwaysMatch": {
-         "proxy": {"proxyType": "system"}
-      }
-   }
-}
-' -H content-type:application/json 127.0.0.1:4444/session
-
-curl -d '
-{
-   "capabilities": {}
-}
-' -H content-type:application/json 127.0.0.1:4444/session
-~~~
-
-response:
-
-
-~~~json
-{
-  "value": {
-    "sessionId": "222423a0-4da3-413c-a3fe-be1725c4c142"
-  }
-}
-~~~
-
-- https://w3c.github.io/webdriver#dfn-new-sessions
-- https://w3c.github.io/webdriver#proxy
-
 ## navigate to
 
 ~~~
