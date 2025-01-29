@@ -16,16 +16,6 @@ no support with geckoDriver:
 
 <https://bugzilla.mozilla.org/show_bug.cgi?id=1395886>
 
-## navigate to
-
-~~~
-curl -H content-type:application/json `
--d '{"url": "https://www.sky.ch"}' `
-127.0.0.1:4444/session/222423a0-4da3-413c-a3fe-be1725c4c142/url
-~~~
-
-https://w3c.github.io/webdriver#navigate-to
-
 ## get all cookies
 
 ~~~

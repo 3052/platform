@@ -9,13 +9,13 @@ import (
 const address = "http://127.0.0.1:4444/session"
 
 // w3c.github.io/webdriver#sessions
-type session_state struct {
+type SessionState struct {
    Value struct {
       SessionId string
    }
 }
 
-func (s *session_state) New() error {
+func (s *SessionState) New() error {
    data, err := json.Marshal(map[string]any{
       "capabilities": map[string]any{},
    })

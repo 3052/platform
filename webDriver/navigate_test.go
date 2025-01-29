@@ -1,9 +1,6 @@
 package webDriver
 
-import (
-   "os"
-   "testing"
-)
+import "testing"
 
 func TestNavigate(t *testing.T) {
    var session session_state
@@ -11,9 +8,8 @@ func TestNavigate(t *testing.T) {
    if err != nil {
       t.Fatal(err)
    }
-   resp, err := session.navigate("https://www.sky.ch")
+   err = session.navigate("https://www.sky.ch")
    if err != nil {
       t.Fatal(err)
    }
-   resp.Write(os.Stdout)
 }
