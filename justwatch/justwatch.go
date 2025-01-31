@@ -128,17 +128,13 @@ type LangTag struct {
 }
 
 func (t *LangTag) Offers(state *LocaleState) ([]OfferNode, error) {
-   var body struct {
-      Variables struct {
-         Country string `json:"country"`
-         FullPath string `json:"fullPath"`
-      }
-      Query string
-   }
-   body.Query = graphql_compact(title_details)
-   body.Variables.FullPath = t.Href
-   body.Variables.Country = state.Country
-   data, err := json.Marshal(body)
+   data, err := json.Marshal(map[string]any{
+      "query": graphql_compact(title_details),
+      "variables": map[string]string{
+         "country": state.Country,
+         "fullPath": t.Href,
+      },
+   })
    if err != nil {
       return nil, err
    }
