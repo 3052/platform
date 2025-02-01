@@ -13,120 +13,6 @@ import (
    "time"
 )
 
-var web_urls = []struct{
-   year int
-   month time.Month
-   day int
-   contains string
-}{
-}
-
-func (o OfferGroups) String() string {
-   var b []byte
-   slices.SortFunc(o, func(c, d *OfferGroup) int {
-      return len(c.Url) - len(d.Url)
-   })
-   for i, group := range o {
-      if i >= 1 {
-         b = append(b, "\n\n"...)
-      }
-      b = append(b, "url = "...)
-      b = append(b, html.UnescapeString(group.Url)...)
-      b = append(b, "\nmonetization = "...)
-      b = append(b, group.Monetization...)
-      if v := group.Count; v >= 1 {
-         b = append(b, "\ncount = "...)
-         b = strconv.AppendInt(b, v, 10)
-      }
-      slices.Sort(group.Country)
-      for _, country := range group.Country {
-         b = append(b, "\ncountry = "...)
-         b = append(b, country...)
-      }
-   }
-   return string(b)
-}
-
-func Url(node OfferNode) bool {
-   for _, w := range web_urls {
-      date := time.Date(w.year, w.month, w.day, 0, 0, 0, 0, time.UTC)
-      if time.Since(date) >= time.Hour*24*365 {
-         panic(w)
-      }
-      if strings.Contains(node.StandardWebUrl.S, w.contains) {
-         return true
-      }
-   }
-   return false
-}
-
-func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
-   for _, locale := range s {
-      if locale.FullLocale == tag.Locale {
-         return &locale, true
-      }
-   }
-   return nil, false
-}
-
-// NO ANONYMOUS QUERY
-const title_details = `
-query GetUrlTitleDetails(
-   $fullPath: String!
-   $country: Country!
-   $platform: Platform! = WEB
-) {
-   url(fullPath: $fullPath) {
-      node {
-         ... on MovieOrShowOrSeason {
-            offers(country: $country, platform: $platform) {
-               elementCount
-               monetizationType
-               standardWebURL
-            }
-         }
-      }
-   }
-}
-`
-
-const fetcher_query = `
-query BackendConstantsFetcherQuery($language: Language!) {
-   locales {
-      country
-      countryName(language: $language)
-      fullLocale
-   }
-}
-`
-
-func Monetization(node OfferNode) bool {
-   switch node.MonetizationType {
-   case "BUY":
-      return true
-   case "CINEMA":
-      return true
-   case "RENT":
-      return true
-   }
-   return false
-}
-
-// this is better than strings.Replace and strings.ReplaceAll
-func graphql_compact(s string) string {
-   field := strings.Fields(s)
-   return strings.Join(field, " ")
-}
-
-type ContentUrls struct {
-   HrefLangTags []LangTag `json:"href_lang_tags"`
-}
-
-type LangTag struct {
-   Locale string // es_AR
-   Href string // /ar/pelicula/mulholland-drive
-}
-
 func (t *LangTag) Offers(state *LocaleState) ([]OfferNode, error) {
    data, err := json.Marshal(map[string]any{
       "query": graphql_compact(title_details),
@@ -151,7 +37,7 @@ func (t *LangTag) Offers(state *LocaleState) ([]OfferNode, error) {
       resp.Write(&b)
       return nil, errors.New(b.String())
    }
-   var resp_body struct {
+   var value struct {
       Data struct {
          Url struct {
             Node struct {
@@ -160,11 +46,11 @@ func (t *LangTag) Offers(state *LocaleState) ([]OfferNode, error) {
          }
       }
    }
-   err = json.NewDecoder(resp.Body).Decode(&resp_body)
+   err = json.NewDecoder(resp.Body).Decode(&value)
    if err != nil {
       return nil, err
    }
-   return resp_body.Data.Url.Node.Offers, nil
+   return value.Data.Url.Node.Offers, nil
 }
 
 // keep order
@@ -443,4 +329,116 @@ func (o *OfferGroups) Add(node *OfferNode, state *LocaleState) {
       group.Url = node.StandardWebUrl.S
       *o = append(*o, &group)
    }
+}
+var web_urls []struct{
+   year int
+   month time.Month
+   day int
+   contains string
+}
+
+func (o OfferGroups) String() string {
+   var b []byte
+   slices.SortFunc(o, func(c, d *OfferGroup) int {
+      return len(c.Url) - len(d.Url)
+   })
+   for i, group := range o {
+      if i >= 1 {
+         b = append(b, "\n\n"...)
+      }
+      b = append(b, "url = "...)
+      b = append(b, html.UnescapeString(group.Url)...)
+      b = append(b, "\nmonetization = "...)
+      b = append(b, group.Monetization...)
+      if v := group.Count; v >= 1 {
+         b = append(b, "\ncount = "...)
+         b = strconv.AppendInt(b, v, 10)
+      }
+      slices.Sort(group.Country)
+      for _, country := range group.Country {
+         b = append(b, "\ncountry = "...)
+         b = append(b, country...)
+      }
+   }
+   return string(b)
+}
+
+func Url(node OfferNode) bool {
+   for _, w := range web_urls {
+      date := time.Date(w.year, w.month, w.day, 0, 0, 0, 0, time.UTC)
+      if time.Since(date) >= time.Hour*24*365 {
+         panic(w)
+      }
+      if strings.Contains(node.StandardWebUrl.S, w.contains) {
+         return true
+      }
+   }
+   return false
+}
+
+func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
+   for _, locale := range s {
+      if locale.FullLocale == tag.Locale {
+         return &locale, true
+      }
+   }
+   return nil, false
+}
+
+// NO ANONYMOUS QUERY
+const title_details = `
+query GetUrlTitleDetails(
+   $fullPath: String!
+   $country: Country!
+   $platform: Platform! = WEB
+) {
+   url(fullPath: $fullPath) {
+      node {
+         ... on MovieOrShowOrSeason {
+            offers(country: $country, platform: $platform) {
+               elementCount
+               monetizationType
+               standardWebURL
+            }
+         }
+      }
+   }
+}
+`
+
+const fetcher_query = `
+query BackendConstantsFetcherQuery($language: Language!) {
+   locales {
+      country
+      countryName(language: $language)
+      fullLocale
+   }
+}
+`
+
+func Monetization(node OfferNode) bool {
+   switch node.MonetizationType {
+   case "BUY":
+      return true
+   case "CINEMA":
+      return true
+   case "RENT":
+      return true
+   }
+   return false
+}
+
+// this is better than strings.Replace and strings.ReplaceAll
+func graphql_compact(s string) string {
+   field := strings.Fields(s)
+   return strings.Join(field, " ")
+}
+
+type ContentUrls struct {
+   HrefLangTags []LangTag `json:"href_lang_tags"`
+}
+
+type LangTag struct {
+   Locale string // es_AR
+   Href string // /ar/pelicula/mulholland-drive
 }
