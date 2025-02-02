@@ -12,6 +12,18 @@ import (
    "strings"
 )
 
+func (o Offer) Monetization() bool {
+   switch o.MonetizationType {
+   case "BUY":
+      return true
+   case "CINEMA":
+      return true
+   case "RENT":
+      return true
+   }
+   return false
+}
+
 type Content struct {
    HrefLangTags []LangTag `json:"href_lang_tags"`
 }
@@ -33,8 +45,6 @@ query BackendConstantsFetcherQuery($language: Language!) {
    }
 }
 `
-
-///
 
 func (t *LangTag) Offers(locale0 *Locale) ([]Offer, error) {
    var value struct {
@@ -60,9 +70,9 @@ func (t *LangTag) Offers(locale0 *Locale) ([]Offer, error) {
    }
    defer resp.Body.Close()
    if resp.StatusCode != http.StatusOK {
-      var b strings.Builder
-      resp.Write(&b)
-      return nil, errors.New(b.String())
+      var data strings.Builder
+      resp.Write(&data)
+      return nil, errors.New(data.String())
    }
    var value1 struct {
       Data struct {
@@ -295,9 +305,9 @@ func graphql_compact(data string) string {
 }
 
 func (a *Address) Set(data string) error {
-   data = strings.TrimPrefix(data, "https://")
-   data = strings.TrimPrefix(data, "www.")
-   a.s = strings.TrimPrefix(data, "justwatch.com")
+   a.s = strings.TrimPrefix(data, "https://")
+   a.s = strings.TrimPrefix(a.s, "www.")
+   a.s = strings.TrimPrefix(a.s, "justwatch.com")
    return nil
 }
 
@@ -327,15 +337,6 @@ func (a Address) Content() (*Content, error) {
    return content0, nil
 }
 
-func (s Locales) Locale(tag *LangTag) (*Locale, bool) {
-   for _, locale0 := range s {
-      if locale0.FullLocale == tag.Locale {
-         return &locale0, true
-      }
-   }
-   return nil, false
-}
-
 type Locales []Locale
 
 // keep order
@@ -359,68 +360,65 @@ type Offer struct {
    StandardWebUrl   WebUrl
 }
 
-func (o *Offer) Monetization() bool {
-   switch o.MonetizationType {
-   case "BUY":
-      return true
-   case "CINEMA":
-      return true
-   case "RENT":
-      return true
+func (s Locales) Locale(tag *LangTag) (*Locale, bool) {
+   for _, locale0 := range s {
+      if locale0.FullLocale == tag.Locale {
+         return &locale0, true
+      }
    }
-   return false
+   return nil, false
 }
 
-type OfferSlice struct {
+type OfferRow struct {
    Count        int64
    Country      []string
    Monetization string
    Url          string
 }
 
-func (o OfferSlices) String() string {
-   var b []byte
-   slices.SortFunc(o, func(c, d *OfferSlice) int {
-      return len(c.Url) - len(d.Url)
-   })
-   for i, group := range o {
-      if i >= 1 {
-         b = append(b, "\n\n"...)
-      }
-      b = append(b, "url = "...)
-      b = append(b, html.UnescapeString(group.Url)...)
-      b = append(b, "\nmonetization = "...)
-      b = append(b, group.Monetization...)
-      if v := group.Count; v >= 1 {
-         b = append(b, "\ncount = "...)
-         b = strconv.AppendInt(b, v, 10)
-      }
-      slices.Sort(group.Country)
-      for _, country := range group.Country {
-         b = append(b, "\ncountry = "...)
-         b = append(b, country...)
-      }
-   }
-   return string(b)
-}
+type OfferRows []*OfferRow
 
-type OfferSlices []*OfferSlice
-
-func (o *OfferSlices) Add(offer0 *Offer, locale0 *Locale) {
-   i := slices.IndexFunc(*o, func(group *OfferSlice) bool {
-      return group.Url == offer0.StandardWebUrl.S
+func (o *OfferRows) Add(locale0 *Locale, offer0 *Offer) {
+   i := slices.IndexFunc(*o, func(row *OfferRow) bool {
+      return row.Url == offer0.StandardWebUrl.S
    })
    if i >= 0 {
-      group := (*o)[i]
-      if !slices.Contains(group.Country, locale0.CountryName) {
-         group.Country = append(group.Country, locale0.CountryName)
+      row := (*o)[i]
+      if !slices.Contains(row.Country, locale0.CountryName) {
+         row.Country = append(row.Country, locale0.CountryName)
       }
    } else {
-      var group OfferSlice
-      group.Count = offer0.ElementCount
-      group.Country = []string{locale0.CountryName}
-      group.Monetization = offer0.MonetizationType
-      group.Url = offer0.StandardWebUrl.S
-      *o = append(*o, &group)
+      var row OfferRow
+      row.Count = offer0.ElementCount
+      row.Country = []string{locale0.CountryName}
+      row.Monetization = offer0.MonetizationType
+      row.Url = offer0.StandardWebUrl.S
+      *o = append(*o, &row)
    }
+}
+
+func (o OfferRows) String() string {
+   var data []byte
+   slices.SortFunc(o, func(a, b *OfferRow) int {
+      return len(a.Url) - len(b.Url)
+   })
+   for i, row := range o {
+      if i >= 1 {
+         data = append(data, "\n\n"...)
+      }
+      data = append(data, "url = "...)
+      data = append(data, html.UnescapeString(row.Url)...)
+      data = append(data, "\nmonetization = "...)
+      data = append(data, row.Monetization...)
+      if row.Count >= 1 {
+         data = append(data, "\ncount = "...)
+         data = strconv.AppendInt(data, row.Count, 10)
+      }
+      slices.Sort(row.Country)
+      for _, country := range row.Country {
+         data = append(data, "\ncountry = "...)
+         data = append(data, country...)
+      }
+   }
+   return string(data)
 }

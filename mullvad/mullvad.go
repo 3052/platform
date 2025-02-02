@@ -65,18 +65,6 @@ func (s *ServerList) WireGuard() error {
    return json.NewDecoder(resp.Body).Decode(s)
 }
 
-type ServerList struct {
-   Countries []struct {
-      Name string
-      Cities []struct {
-         Name string
-         Relays []struct {
-            Hostname string
-         }
-      }
-   }
-}
-
 func Disconnect() error {
    err := exec.Command("mullvad", "disconnect").Run()
    if err != nil {
@@ -97,6 +85,20 @@ func (s ServerList) Seq(country string) iter.Seq[string] {
                   return
                }
             }
+         }
+      }
+   }
+}
+
+///
+
+type ServerList struct {
+   Countries []struct {
+      Name string
+      Cities []struct {
+         Name string
+         Relays []struct {
+            Hostname string
          }
       }
    }
