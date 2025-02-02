@@ -11,17 +11,52 @@ import (
    "time"
 )
 
+type ReportParams struct {
+   Aid   int64  `json:"a_id"`
+   Iid   int    `json:"i_id"`
+   Itype string `json:"i_type"`
+}
+
+type Band struct {
+   Discography []Recording
+   Name        string
+}
+
+type Recording struct {
+   BandId   int64  `json:"band_id"`
+   ItemId   int    `json:"item_id"`
+   ItemType string `json:"item_type"`
+}
+
+type Tralbum struct {
+   ArtId         int64 `json:"art_id"`
+   ReleaseDate   int64  `json:"release_date"`
+   Title         string
+   Tracks        []Track
+   TralbumArtist string `json:"tralbum_artist"`
+}
+
+type Track struct {
+   BandName     string `json:"band_name"`
+   StreamingUrl *struct {
+      Mp3_128 string `json:"mp3-128"`
+   } `json:"streaming_url"`
+   Title        string
+   TrackNum     int64 `json:"track_num"`
+}
+
 func cut_before(s, sep []byte) ([]byte, []byte, bool) {
-   if i := bytes.Index(s, sep); i >= 0 {
+   i := bytes.Index(s, sep)
+   if i >= 0 {
       return s[:i], s[i:], true
    }
    return s, nil, false
 }
 
-func (b *BandDetails) New(id int64) error {
+func (b *Band) New(band_id int64) error {
    req, _ := http.NewRequest("", "http://bandcamp.com", nil)
    req.URL.Path = "/api/mobile/24/band_details"
-   req.URL.RawQuery = "band_id=" + strconv.FormatInt(id, 10)
+   req.URL.RawQuery = "band_id=" + strconv.FormatInt(band_id, 10)
    resp, err := http.DefaultClient.Do(req)
    if err != nil {
       return err
@@ -30,57 +65,17 @@ func (b *BandDetails) New(id int64) error {
    return json.NewDecoder(resp.Body).Decode(b)
 }
 
-func (r *ReportParams) New(url0 string) error {
-   resp, err := http.Get(url0)
-   if err != nil {
-      return err
-   }
-   defer resp.Body.Close()
-   data, err := io.ReadAll(resp.Body)
-   if err != nil {
-      return err
-   }
-   _, data, _ = cut_before(data, []byte(`<p id="report-account-vm"`))
-   var p struct {
-      DataTouReportParams []byte `xml:"data-tou-report-params,attr"`
-   }
-   err = xml.Unmarshal(data, &p)
-   if err != nil {
-      return err
-   }
-   return json.Unmarshal(p.DataTouReportParams, r)
-}
-
-func (r *ReportParams) Band() (*BandDetails, error) {
-   var band BandDetails
-   err := band.New(r.Aid)
-   if err != nil {
-      return nil, err
-   }
-   return &band, nil
-}
-
 const (
    Jpeg = iota
    Png
 )
 
-type BandDetails struct {
-   Name        string
-   Discography []Item
-}
-
-func (t *Tralbum) Date() time.Time {
-   return time.Unix(t.ReleaseDate, 0)
-}
-
-func (i *Item) Band() (*BandDetails, error) {
-   var band BandDetails
-   err := band.New(i.BandId)
-   if err != nil {
-      return nil, err
-   }
-   return &band, nil
+type Image struct {
+   Crop   bool
+   Format int
+   Height int
+   Id     int64
+   Width  int
 }
 
 var Images = []Image{
@@ -129,6 +124,61 @@ var Images = []Image{
    {Id: 69, Width: 700, Height: 700, Format: Jpeg},
 }
 
+func (t *Tralbum) Time() time.Time {
+   return time.Unix(t.ReleaseDate, 0)
+}
+
+// Extension is optional.
+func (i *Image) Url(art_id int64) string {
+   var b []byte
+   b = append(b, "http://f4.bcbits.com/img/a"...)
+   b = strconv.AppendInt(b, art_id, 10)
+   b = append(b, '_')
+   b = strconv.AppendInt(b, i.Id, 10)
+   return string(b)
+}
+
+func (r *ReportParams) New(url0 string) error {
+   resp, err := http.Get(url0)
+   if err != nil {
+      return err
+   }
+   defer resp.Body.Close()
+   data, err := io.ReadAll(resp.Body)
+   if err != nil {
+      return err
+   }
+   _, data, _ = cut_before(data, []byte(`<p id="report-account-vm"`))
+   var p struct {
+      DataTouReportParams []byte `xml:"data-tou-report-params,attr"`
+   }
+   err = xml.Unmarshal(data, &p)
+   if err != nil {
+      return err
+   }
+   return json.Unmarshal(p.DataTouReportParams, r)
+}
+
+func (r *ReportParams) Band() (*Band, error) {
+   var band0 Band
+   err := band0.New(r.Aid)
+   if err != nil {
+      return nil, err
+   }
+   return &band0, nil
+}
+
+func (r *Recording) Band() (*Band, error) {
+   var band0 Band
+   err := band0.New(r.BandId)
+   if err != nil {
+      return nil, err
+   }
+   return &band0, nil
+}
+
+///
+
 func new_tralbum(tralbum_type string, id int) (*Tralbum, error) {
    req, _ := http.NewRequest("", "http://bandcamp.com", nil)
    req.URL.Path = "/api/mobile/24/tralbum_details"
@@ -149,57 +199,10 @@ func new_tralbum(tralbum_type string, id int) (*Tralbum, error) {
    return album, nil
 }
 
-type Image struct {
-   Crop   bool
-   Format int
-   Height int
-   Id     int64
-   Width  int
-}
-
-type Tralbum struct {
-   ArtId         int64 `json:"art_id"`
-   Title         string
-   Tracks        []AlbumTrack
-   ReleaseDate   int64  `json:"release_date"`
-   TralbumArtist string `json:"tralbum_artist"`
-}
-
-type Item struct {
-   BandId   int64  `json:"band_id"`
-   ItemId   int    `json:"item_id"`
-   ItemType string `json:"item_type"`
-}
-
-type AlbumTrack struct {
-   TrackNum     int64 `json:"track_num"`
-   Title        string
-   BandName     string `json:"band_name"`
-   StreamingUrl *struct {
-      Mp3_128 string `json:"mp3-128"`
-   } `json:"streaming_url"`
-}
-
-// Extension is optional.
-func (i *Image) Url(art_id int64) string {
-   var b []byte
-   b = append(b, "http://f4.bcbits.com/img/a"...)
-   b = strconv.AppendInt(b, art_id, 10)
-   b = append(b, '_')
-   b = strconv.AppendInt(b, i.Id, 10)
-   return string(b)
-}
-
-type ReportParams struct {
-   Aid   int64  `json:"a_id"`
-   Iid   int    `json:"i_id"`
-   Itype string `json:"i_type"`
-}
-
 func (r *ReportParams) Tralbum() (*Tralbum, error) {
    return new_tralbum(r.Itype, r.Iid)
 }
 
-func (i *Item) Tralbum() (*Tralbum, error) {
-   return new_tralbum(i.ItemType[:1], i.ItemId)
+func (r *Recording) Tralbum() (*Tralbum, error) {
+   return new_tralbum(r.ItemType[:1], r.ItemId)
 }
