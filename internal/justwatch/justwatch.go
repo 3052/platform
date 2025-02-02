@@ -13,6 +13,24 @@ import (
    "time"
 )
 
+func main() {
+   http.DefaultClient.Transport = transport{}
+   log.SetFlags(log.Ltime)
+   var f flags
+   flag.Var(&f.address, "a", "address")
+   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
+   flag.BoolVar(&f.filter, "f", false, "filter")
+   flag.Parse()
+   if f.address.String() != "" {
+      err := f.stream()
+      if err != nil {
+         panic(err)
+      }
+   } else {
+      flag.Usage()
+   }
+}
+
 func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
    if req.Body != nil {
       data, err := io.ReadAll(req.Body)
@@ -28,22 +46,12 @@ func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
    return http.DefaultTransport.RoundTrip(req)
 }
 
-func main() {
-   http.DefaultClient.Transport = transport{}
-   log.SetFlags(log.Ltime)
-   var f flags
-   flag.Var(&f.address, "a", "address")
-   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
-   flag.BoolVar(&f.all, "all", false, "all results")
-   flag.Parse()
-   if f.address.String() != "" {
-      err := f.stream()
-      if err != nil {
-         panic(err)
-      }
-   } else {
-      flag.Usage()
-   }
+type transport struct{}
+
+type flags struct {
+   address justwatch.Address
+   filter  bool
+   sleep   time.Duration
 }
 
 func (f *flags) stream() error {
@@ -61,7 +69,7 @@ func (f *flags) stream() error {
       if err != nil {
          return err
       }
-      if !f.all {
+      if f.filter {
          offers = slices.DeleteFunc(offers, justwatch.Url)
       }
       for _, offer := range slices.DeleteFunc(offers, justwatch.Monetization) {
@@ -71,12 +79,4 @@ func (f *flags) stream() error {
    }
    fmt.Println(groups)
    return nil
-}
-
-type transport struct{}
-
-type flags struct {
-   all bool
-   sleep time.Duration
-   address justwatch.Address
 }

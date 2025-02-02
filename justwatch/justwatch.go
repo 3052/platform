@@ -14,13 +14,17 @@ import (
 )
 
 func (t *LangTag) Offers(state *LocaleState) ([]OfferNode, error) {
-   data, err := json.Marshal(map[string]any{
-      "query": graphql_compact(title_details),
-      "variables": map[string]string{
-         "country": state.Country,
-         "fullPath": t.Href,
-      },
-   })
+   var value struct {
+      Query string `json:"query"`
+      Variables struct {
+         Country string `json:"country"`
+         FullPath string `json:"fullPath"`
+      } `json:"variables"`
+   }
+   value.Query = graphql_compact(title_details)
+   value.Variables.Country = state.Country
+   value.Variables.FullPath = t.Href
+   data, err := json.Marshal(value)
    if err != nil {
       return nil, err
    }
@@ -37,7 +41,7 @@ func (t *LangTag) Offers(state *LocaleState) ([]OfferNode, error) {
       resp.Write(&b)
       return nil, errors.New(b.String())
    }
-   var value struct {
+   var value1 struct {
       Data struct {
          Url struct {
             Node struct {
@@ -46,17 +50,17 @@ func (t *LangTag) Offers(state *LocaleState) ([]OfferNode, error) {
          }
       }
    }
-   err = json.NewDecoder(resp.Body).Decode(&value)
+   err = json.NewDecoder(resp.Body).Decode(&value1)
    if err != nil {
       return nil, err
    }
-   return value.Data.Url.Node.Offers, nil
+   return value1.Data.Url.Node.Offers, nil
 }
 
 // keep order
 type LocaleState struct {
-   FullLocale string
-   Country string
+   FullLocale  string
+   Country     string
    CountryName string
 }
 
@@ -92,53 +96,6 @@ func (a Address) String() string {
 
 type Address struct {
    s string
-}
-
-func (s *LocaleStates) New(language string) error {
-   var body struct {
-      Query string
-      Variables struct {
-         Language string `json:"language"`
-      }
-   }
-   body.Query = graphql_compact(fetcher_query)
-   body.Variables.Language = language
-   data, err := json.Marshal(body)
-   if err != nil {
-      return err
-   }
-   req, err := http.NewRequest(
-      "POST", "https://apis.justwatch.com/graphql", bytes.NewReader(data),
-   )
-   if err != nil {
-      return err
-   }
-   device := base64.RawStdEncoding.EncodeToString(make([]byte, 16))
-   req.Header = http.Header{
-      "content-type": {"application/json"},
-      "device-id": {device},
-   }
-   resp, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      var b bytes.Buffer
-      resp.Write(&b)
-      return errors.New(b.String())
-   }
-   var resp_body struct {
-      Data struct {
-         Locales LocaleStates
-      }
-   }
-   err = json.NewDecoder(resp.Body).Decode(&resp_body)
-   if err != nil {
-      return err
-   }
-   *s = resp_body.Data.Locales
-   return nil
 }
 
 type LocaleStates []LocaleState
@@ -286,10 +243,10 @@ var EnglishLocales = LocaleStates{
 }
 
 type OfferGroup struct {
-   Count int64
-   Country []string
+   Count        int64
+   Country      []string
    Monetization string
-   Url string
+   Url          string
 }
 
 type OfferGroups []*OfferGroup
@@ -298,9 +255,9 @@ type OfferGroups []*OfferGroup
 // JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
 // when the site itself reports as HD
 type OfferNode struct {
-   ElementCount int64
+   ElementCount     int64
    MonetizationType string
-   StandardWebUrl WebUrl
+   StandardWebUrl   WebUrl
 }
 
 type WebUrl struct {
@@ -330,10 +287,11 @@ func (o *OfferGroups) Add(node *OfferNode, state *LocaleState) {
       *o = append(*o, &group)
    }
 }
-var web_urls []struct{
-   year int
-   month time.Month
-   day int
+
+var web_urls []struct {
+   year     int
+   month    time.Month
+   day      int
    contains string
 }
 
@@ -429,9 +387,8 @@ func Monetization(node OfferNode) bool {
 }
 
 // this is better than strings.Replace and strings.ReplaceAll
-func graphql_compact(s string) string {
-   field := strings.Fields(s)
-   return strings.Join(field, " ")
+func graphql_compact(data string) string {
+   return strings.Join(strings.Fields(data), " ")
 }
 
 type ContentUrls struct {
@@ -440,5 +397,51 @@ type ContentUrls struct {
 
 type LangTag struct {
    Locale string // es_AR
-   Href string // /ar/pelicula/mulholland-drive
+   Href   string // /ar/pelicula/mulholland-drive
+}
+
+func (s *LocaleStates) New(language string) error {
+   var value struct {
+      Query     string `json:"query"`
+      Variables struct {
+         Language string `json:"language"`
+      } `json:"variables"`
+   }
+   value.Query = graphql_compact(fetcher_query)
+   value.Variables.Language = language
+   data, err := json.Marshal(value)
+   if err != nil {
+      return err
+   }
+   req, err := http.NewRequest(
+      "POST", "https://apis.justwatch.com/graphql", bytes.NewReader(data),
+   )
+   if err != nil {
+      return err
+   }
+   req.Header.Set("content-type", "application/json")
+   req.Header.Set(
+      "device-id", base64.RawStdEncoding.EncodeToString(make([]byte, 16)),
+   )
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      var b bytes.Buffer
+      resp.Write(&b)
+      return errors.New(b.String())
+   }
+   var value1 struct {
+      Data struct {
+         Locales LocaleStates
+      }
+   }
+   err = json.NewDecoder(resp.Body).Decode(&value1)
+   if err != nil {
+      return err
+   }
+   *s = value1.Data.Locales
+   return nil
 }
