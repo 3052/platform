@@ -18,11 +18,10 @@ func cut_before(s, sep []byte) ([]byte, []byte, bool) {
    return s, nil, false
 }
 
+///
+
 func (b *BandDetails) New(id int64) error {
-   req, err := http.NewRequest("", "http://bandcamp.com", nil)
-   if err != nil {
-      return err
-   }
+   req, _ := http.NewRequest("", "http://bandcamp.com", nil)
    req.URL.Path = "/api/mobile/24/band_details"
    req.URL.RawQuery = "band_id=" + strconv.FormatInt(id, 10)
    resp, err := http.DefaultClient.Do(req)
