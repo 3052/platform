@@ -13,6 +13,148 @@ import (
    "time"
 )
 
+func (o OfferGroups) String() string {
+   var b []byte
+   slices.SortFunc(o, func(c, d *OfferGroup) int {
+      return len(c.Url) - len(d.Url)
+   })
+   for i, group := range o {
+      if i >= 1 {
+         b = append(b, "\n\n"...)
+      }
+      b = append(b, "url = "...)
+      b = append(b, html.UnescapeString(group.Url)...)
+      b = append(b, "\nmonetization = "...)
+      b = append(b, group.Monetization...)
+      if v := group.Count; v >= 1 {
+         b = append(b, "\ncount = "...)
+         b = strconv.AppendInt(b, v, 10)
+      }
+      slices.Sort(group.Country)
+      for _, country := range group.Country {
+         b = append(b, "\ncountry = "...)
+         b = append(b, country...)
+      }
+   }
+   return string(b)
+}
+
+func Url(node OfferNode) bool {
+   for _, w := range web_urls {
+      date := time.Date(w.year, w.month, w.day, 0, 0, 0, 0, time.UTC)
+      if time.Since(date) >= time.Hour*24*365 {
+         panic(w)
+      }
+      if strings.Contains(node.StandardWebUrl.S, w.contains) {
+         return true
+      }
+   }
+   return false
+}
+
+func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
+   for _, locale := range s {
+      if locale.FullLocale == tag.Locale {
+         return &locale, true
+      }
+   }
+   return nil, false
+}
+
+// NO ANONYMOUS QUERY
+const title_details = `
+query GetUrlTitleDetails(
+   $fullPath: String!
+   $country: Country!
+   $platform: Platform! = WEB
+) {
+   url(fullPath: $fullPath) {
+      node {
+         ... on MovieOrShowOrSeason {
+            offers(country: $country, platform: $platform) {
+               elementCount
+               monetizationType
+               standardWebURL
+            }
+         }
+      }
+   }
+}
+`
+
+const fetcher_query = `
+query BackendConstantsFetcherQuery($language: Language!) {
+   locales {
+      country
+      countryName(language: $language)
+      fullLocale
+   }
+}
+`
+
+func Monetization(node OfferNode) bool {
+   switch node.MonetizationType {
+   case "BUY":
+      return true
+   case "CINEMA":
+      return true
+   case "RENT":
+      return true
+   }
+   return false
+}
+
+// this is better than strings.Replace and strings.ReplaceAll
+func graphql_compact(data string) string {
+   return strings.Join(strings.Fields(data), " ")
+}
+
+func (s *LocaleStates) New(language string) error {
+   var value struct {
+      Query     string `json:"query"`
+      Variables struct {
+         Language string `json:"language"`
+      } `json:"variables"`
+   }
+   value.Query = graphql_compact(fetcher_query)
+   value.Variables.Language = language
+   data, err := json.Marshal(value)
+   if err != nil {
+      return err
+   }
+   req, err := http.NewRequest(
+      "POST", "https://apis.justwatch.com/graphql", bytes.NewReader(data),
+   )
+   if err != nil {
+      return err
+   }
+   req.Header.Set("content-type", "application/json")
+   req.Header.Set(
+      "device-id", base64.RawStdEncoding.EncodeToString(make([]byte, 16)),
+   )
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      var b bytes.Buffer
+      resp.Write(&b)
+      return errors.New(b.String())
+   }
+   var value1 struct {
+      Data struct {
+         Locales LocaleStates
+      }
+   }
+   err = json.NewDecoder(resp.Body).Decode(&value1)
+   if err != nil {
+      return err
+   }
+   *s = value1.Data.Locales
+   return nil
+}
+
 func (t *LangTag) Offers(state *LocaleState) ([]OfferNode, error) {
    var value struct {
       Query string `json:"query"`
@@ -57,13 +199,6 @@ func (t *LangTag) Offers(state *LocaleState) ([]OfferNode, error) {
    return value1.Data.Url.Node.Offers, nil
 }
 
-// keep order
-type LocaleState struct {
-   FullLocale  string
-   Country     string
-   CountryName string
-}
-
 func (a Address) Content() (*ContentUrls, error) {
    resp, err := http.Get(
       "https://apis.justwatch.com/content/urls?path=" + a.s,
@@ -93,12 +228,6 @@ func (a *Address) Set(data string) error {
 func (a Address) String() string {
    return a.s
 }
-
-type Address struct {
-   s string
-}
-
-type LocaleStates []LocaleState
 
 var EnglishLocales = LocaleStates{
    {"ar_AE", "AE", "United Arab Emirates"},
@@ -242,28 +371,6 @@ var EnglishLocales = LocaleStates{
    {"zh_TW", "TW", "Taiwan"},
 }
 
-type OfferGroup struct {
-   Count        int64
-   Country      []string
-   Monetization string
-   Url          string
-}
-
-type OfferGroups []*OfferGroup
-
-// `presentationType` data seems to be incorrect in some cases. For example,
-// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
-// when the site itself reports as HD
-type OfferNode struct {
-   ElementCount     int64
-   MonetizationType string
-   StandardWebUrl   WebUrl
-}
-
-type WebUrl struct {
-   S string
-}
-
 func (w *WebUrl) UnmarshalText(data []byte) error {
    w.S = strings.TrimSuffix(string(data), "\n")
    return nil
@@ -288,6 +395,47 @@ func (o *OfferGroups) Add(node *OfferNode, state *LocaleState) {
    }
 }
 
+///
+
+type ContentUrls struct {
+   HrefLangTags []LangTag `json:"href_lang_tags"`
+}
+
+// keep order
+type LocaleState struct {
+   FullLocale  string
+   Country     string
+   CountryName string
+}
+
+type Address struct {
+   s string
+}
+
+type LocaleStates []LocaleState
+
+type OfferGroup struct {
+   Count        int64
+   Country      []string
+   Monetization string
+   Url          string
+}
+
+type OfferGroups []*OfferGroup
+
+// `presentationType` data seems to be incorrect in some cases. For example,
+// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
+// when the site itself reports as HD
+type OfferNode struct {
+   ElementCount     int64
+   MonetizationType string
+   StandardWebUrl   WebUrl
+}
+
+type WebUrl struct {
+   S string
+}
+
 var web_urls []struct {
    year     int
    month    time.Month
@@ -295,153 +443,7 @@ var web_urls []struct {
    contains string
 }
 
-func (o OfferGroups) String() string {
-   var b []byte
-   slices.SortFunc(o, func(c, d *OfferGroup) int {
-      return len(c.Url) - len(d.Url)
-   })
-   for i, group := range o {
-      if i >= 1 {
-         b = append(b, "\n\n"...)
-      }
-      b = append(b, "url = "...)
-      b = append(b, html.UnescapeString(group.Url)...)
-      b = append(b, "\nmonetization = "...)
-      b = append(b, group.Monetization...)
-      if v := group.Count; v >= 1 {
-         b = append(b, "\ncount = "...)
-         b = strconv.AppendInt(b, v, 10)
-      }
-      slices.Sort(group.Country)
-      for _, country := range group.Country {
-         b = append(b, "\ncountry = "...)
-         b = append(b, country...)
-      }
-   }
-   return string(b)
-}
-
-func Url(node OfferNode) bool {
-   for _, w := range web_urls {
-      date := time.Date(w.year, w.month, w.day, 0, 0, 0, 0, time.UTC)
-      if time.Since(date) >= time.Hour*24*365 {
-         panic(w)
-      }
-      if strings.Contains(node.StandardWebUrl.S, w.contains) {
-         return true
-      }
-   }
-   return false
-}
-
-func (s LocaleStates) Locale(tag *LangTag) (*LocaleState, bool) {
-   for _, locale := range s {
-      if locale.FullLocale == tag.Locale {
-         return &locale, true
-      }
-   }
-   return nil, false
-}
-
-// NO ANONYMOUS QUERY
-const title_details = `
-query GetUrlTitleDetails(
-   $fullPath: String!
-   $country: Country!
-   $platform: Platform! = WEB
-) {
-   url(fullPath: $fullPath) {
-      node {
-         ... on MovieOrShowOrSeason {
-            offers(country: $country, platform: $platform) {
-               elementCount
-               monetizationType
-               standardWebURL
-            }
-         }
-      }
-   }
-}
-`
-
-const fetcher_query = `
-query BackendConstantsFetcherQuery($language: Language!) {
-   locales {
-      country
-      countryName(language: $language)
-      fullLocale
-   }
-}
-`
-
-func Monetization(node OfferNode) bool {
-   switch node.MonetizationType {
-   case "BUY":
-      return true
-   case "CINEMA":
-      return true
-   case "RENT":
-      return true
-   }
-   return false
-}
-
-// this is better than strings.Replace and strings.ReplaceAll
-func graphql_compact(data string) string {
-   return strings.Join(strings.Fields(data), " ")
-}
-
-type ContentUrls struct {
-   HrefLangTags []LangTag `json:"href_lang_tags"`
-}
-
 type LangTag struct {
    Locale string // es_AR
    Href   string // /ar/pelicula/mulholland-drive
-}
-
-func (s *LocaleStates) New(language string) error {
-   var value struct {
-      Query     string `json:"query"`
-      Variables struct {
-         Language string `json:"language"`
-      } `json:"variables"`
-   }
-   value.Query = graphql_compact(fetcher_query)
-   value.Variables.Language = language
-   data, err := json.Marshal(value)
-   if err != nil {
-      return err
-   }
-   req, err := http.NewRequest(
-      "POST", "https://apis.justwatch.com/graphql", bytes.NewReader(data),
-   )
-   if err != nil {
-      return err
-   }
-   req.Header.Set("content-type", "application/json")
-   req.Header.Set(
-      "device-id", base64.RawStdEncoding.EncodeToString(make([]byte, 16)),
-   )
-   resp, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      var b bytes.Buffer
-      resp.Write(&b)
-      return errors.New(b.String())
-   }
-   var value1 struct {
-      Data struct {
-         Locales LocaleStates
-      }
-   }
-   err = json.NewDecoder(resp.Body).Decode(&value1)
-   if err != nil {
-      return err
-   }
-   *s = value1.Data.Locales
-   return nil
 }
