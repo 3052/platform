@@ -11,25 +11,12 @@ import (
    "time"
 )
 
-// Also available is "hls", but all transcodings are quality "sq".
-// Same for "api-mobile.soundcloud.com".
-func (c *ClientTrack) Progressive() (*Transcoding, bool) {
-   for _, media := range c.Media.Transcodings {
-      if media.Format.Protocol == "progressive" {
-         return &media, true
-      }
-   }
-   return nil, false
-}
-
 func (t *Transcoding) Media() (*ClientMedia, error) {
    req, err := http.NewRequest("", t.Url, nil)
    if err != nil {
       return nil, err
    }
-   req.URL.RawQuery = url.Values{
-      "client_id": {client_id},
-   }.Encode()
+   req.URL.RawQuery = "client_id=" + url.QueryEscape(client_id)
    resp, err := http.DefaultClient.Do(req)
    if err != nil {
       return nil, err

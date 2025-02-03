@@ -21,9 +21,9 @@ func status(prefix string) error {
          if err != nil {
             return err
          }
-         text := string(data)
-         if strings.HasPrefix(text, prefix) {
-            if strings.Contains(text, " IPv4:") {
+         data1 := string(data)
+         if strings.HasPrefix(data1, prefix) {
+            if strings.Contains(data1, " IPv4:") {
                return nil
             }
          }
@@ -47,22 +47,13 @@ func Connect(location string) error {
    return status("Connected")
 }
 
-func (s *ServerList) OpenVpn() error {
+func (p *PublicRelays) OpenVpn() error {
    resp, err := http.Get("https://api.mullvad.net/public/relays/v1")
    if err != nil {
       return err
    }
    defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(s)
-}
-
-func (s *ServerList) WireGuard() error {
-   resp, err := http.Get("https://api.mullvad.net/public/relays/wireguard/v1")
-   if err != nil {
-      return err
-   }
-   defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(s)
+   return json.NewDecoder(resp.Body).Decode(p)
 }
 
 func Disconnect() error {
@@ -73,26 +64,7 @@ func Disconnect() error {
    return status("Disconnected")
 }
 
-func (s ServerList) Seq(country string) iter.Seq[string] {
-   return func(yield func(string) bool) {
-      for _, country_struct := range s.Countries {
-         if country_struct.Name != country {
-            continue
-         }
-         for _, city := range country_struct.Cities {
-            for _, relay := range city.Relays {
-               if !yield(relay.Hostname) {
-                  return
-               }
-            }
-         }
-      }
-   }
-}
-
-///
-
-type ServerList struct {
+type PublicRelays struct {
    Countries []struct {
       Name string
       Cities []struct {
@@ -102,4 +74,29 @@ type ServerList struct {
          }
       }
    }
+}
+
+func (p PublicRelays) Hostname(country string) iter.Seq[string] {
+   return func(yield func(string) bool) {
+      for _, country1 := range p.Countries {
+         if country1.Name == country {
+            for _, city := range country1.Cities {
+               for _, relay := range city.Relays {
+                  if !yield(relay.Hostname) {
+                     return
+                  }
+               }
+            }
+         }
+      }
+   }
+}
+
+func (p *PublicRelays) WireGuard() error {
+   resp, err := http.Get("https://api.mullvad.net/public/relays/wireguard/v1")
+   if err != nil {
+      return err
+   }
+   defer resp.Body.Close()
+   return json.NewDecoder(resp.Body).Decode(p)
 }
