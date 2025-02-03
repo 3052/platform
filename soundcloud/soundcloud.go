@@ -3,11 +3,9 @@ package soundcloud
 import (
    "bytes"
    "encoding/json"
-   "errors"
    "io"
    "net/http"
    "net/url"
-   "strconv"
    "time"
 )
 
