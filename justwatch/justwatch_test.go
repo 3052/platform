@@ -6,19 +6,17 @@ import (
 )
 
 func TestLocale(t *testing.T) {
-   var states LocaleStates
-   err := states.New("en-US")
+   var locales0 Locales
+   err := locales0.New("en-US")
    if err != nil {
       t.Fatal(err)
    }
-   for _, state := range states {
-      fmt.Printf(
-         "{%q, %q, %q},\n", state.FullLocale, state.Country, state.CountryName,
-      )
+   for _, v := range locales0 {
+      fmt.Printf("{%q, %q, %q},\n", v.FullLocale, v.Country, v.CountryName)
    }
-   locale, ok := states.Locale(&LangTag{Locale: "en_US"})
+   locale0, ok := locales0.Locale(&LangTag{Locale: "en_US"})
    if !ok {
-      t.Fatal("LocaleStates.Locale")
+      t.Fatal("Locales.Locale")
    }
-   fmt.Println(locale)
+   fmt.Println(locale0)
 }

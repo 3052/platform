@@ -56,8 +56,6 @@ type Cookie struct {
    }
 }
 
-///
-
 func (s *Session) New() error {
    data, err := json.Marshal(map[string]any{
       "capabilities": map[string]any{
@@ -84,21 +82,21 @@ func (s *Session) New() error {
 func (s Session) Cookie() (*Cookie, error) {
    req, _ := http.NewRequest("", address, nil)
    req.URL.Path += func() string {
-      var b strings.Builder
-      b.WriteByte('/')
-      b.WriteString(s.Value.SessionId)
-      b.WriteString("/cookie")
-      return b.String()
+      var data strings.Builder
+      data.WriteByte('/')
+      data.WriteString(s.Value.SessionId)
+      data.WriteString("/cookie")
+      return data.String()
    }()
    resp, err := http.DefaultClient.Do(req)
    if err != nil {
       return nil, err
    }
    defer resp.Body.Close()
-   cookie := &Cookie{}
-   err = json.NewDecoder(resp.Body).Decode(cookie)
+   cookie0 := &Cookie{}
+   err = json.NewDecoder(resp.Body).Decode(cookie0)
    if err != nil {
       return nil, err
    }
-   return cookie, nil
+   return cookie0, nil
 }

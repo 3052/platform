@@ -20,49 +20,49 @@ func TestPath(t *testing.T) {
 }
 
 func TestServerList(t *testing.T) {
-   var list ServerList
+   var relays PublicRelays
    t.Run("OpenVpn", func(t *testing.T) {
       t.Run("0", func(t *testing.T) {
          http.DefaultClient.Transport = transport{}
-         if list.OpenVpn() == nil {
-            t.Fatal(list)
+         if relays.OpenVpn() == nil {
+            t.Fatal(relays)
          }
          http.DefaultClient.Transport = nil
       })
       t.Run("1", func(t *testing.T) {
-         err := list.OpenVpn()
+         err := relays.OpenVpn()
          if err != nil {
             t.Fatal(err)
          }
-         err = list.head("ca-tor-ovpn-101")
+         err = relays.head("ca-tor-ovpn-101")
          if err != nil {
             t.Fatal(err)
          }
       })
    })
    t.Run("Seq", func(t *testing.T) {
-      err := list.OpenVpn()
+      err := relays.OpenVpn()
       if err != nil {
          t.Fatal(err)
       }
-      for range list.Seq("Canada") {
+      for range relays.Hostname("Canada") {
          break
       }
    })
    t.Run("WireGuard", func(t *testing.T) {
       t.Run("true", func(t *testing.T) {
          http.DefaultClient.Transport = transport{}
-         if list.WireGuard() == nil {
-            t.Fatal(list)
+         if relays.WireGuard() == nil {
+            t.Fatal(relays)
          }
          http.DefaultClient.Transport = nil
       })
       t.Run("false", func(t *testing.T) {
-         err := list.WireGuard()
+         err := relays.WireGuard()
          if err != nil {
             t.Fatal(err)
          }
-         err = list.head("ca-yyc-wg-201")
+         err = relays.head("ca-yyc-wg-201")
          if err != nil {
             t.Fatal(err)
          }
@@ -70,7 +70,7 @@ func TestServerList(t *testing.T) {
    })
 }
 
-func (s ServerList) head(server string) error {
+func (s PublicRelays) head(server string) error {
    defer Disconnect()
    fmt.Printf("%v Connect", server)
    err := Connect(server)
