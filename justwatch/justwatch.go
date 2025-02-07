@@ -28,14 +28,6 @@ type Content struct {
    HrefLangTags []LangTag `json:"href_lang_tags"`
 }
 
-type Address struct {
-   s string
-}
-
-type WebUrl struct {
-   S string
-}
-
 const fetcher_query = `
 query BackendConstantsFetcherQuery($language: Language!) {
    locales {
@@ -304,39 +296,6 @@ func graphql_compact(data string) string {
    return strings.Join(strings.Fields(data), " ")
 }
 
-func (a *Address) Set(data string) error {
-   a.s = strings.TrimPrefix(data, "https://")
-   a.s = strings.TrimPrefix(a.s, "www.")
-   a.s = strings.TrimPrefix(a.s, "justwatch.com")
-   return nil
-}
-
-func (a Address) String() string {
-   return a.s
-}
-
-func (w *WebUrl) UnmarshalText(data []byte) error {
-   w.S = strings.TrimSuffix(string(data), "\n")
-   return nil
-}
-
-func (a Address) Content() (*Content, error) {
-   resp, err := http.Get("https://apis.justwatch.com/content/urls?path=" + a.s)
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      return nil, errors.New(resp.Status)
-   }
-   content0 := &Content{}
-   err = json.NewDecoder(resp.Body).Decode(content0)
-   if err != nil {
-      return nil, err
-   }
-   return content0, nil
-}
-
 type Locales []Locale
 
 // keep order
@@ -349,15 +308,6 @@ type Locale struct {
 type LangTag struct {
    Locale string // es_AR
    Href   string // /ar/pelicula/mulholland-drive
-}
-
-// `presentationType` data seems to be incorrect in some cases. For example,
-// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
-// when the site itself reports as HD
-type Offer struct {
-   ElementCount     int64
-   MonetizationType string
-   StandardWebUrl   WebUrl
 }
 
 func (s Locales) Locale(tag *LangTag) (*Locale, bool) {
@@ -377,25 +327,6 @@ type OfferRow struct {
 }
 
 type OfferRows []*OfferRow
-
-func (o *OfferRows) Add(locale0 *Locale, offer0 *Offer) {
-   i := slices.IndexFunc(*o, func(row *OfferRow) bool {
-      return row.Url == offer0.StandardWebUrl.S
-   })
-   if i >= 0 {
-      row := (*o)[i]
-      if !slices.Contains(row.Country, locale0.CountryName) {
-         row.Country = append(row.Country, locale0.CountryName)
-      }
-   } else {
-      var row OfferRow
-      row.Count = offer0.ElementCount
-      row.Country = []string{locale0.CountryName}
-      row.Monetization = offer0.MonetizationType
-      row.Url = offer0.StandardWebUrl.S
-      *o = append(*o, &row)
-   }
-}
 
 func (o OfferRows) String() string {
    var data []byte
@@ -421,4 +352,69 @@ func (o OfferRows) String() string {
       }
    }
    return string(data)
+}
+
+// `presentationType` data seems to be incorrect in some cases. For example,
+// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
+// when the site itself reports as HD
+type Offer struct {
+   ElementCount     int64
+   MonetizationType string
+   StandardWebUrl   WebUrl
+}
+
+func (a Address) String() string {
+   return a[0]
+}
+
+func (a *Address) Set(data string) error {
+   data = strings.TrimPrefix(data, "https://")
+   data = strings.TrimPrefix(data, "www.")
+   (*a)[0] = strings.TrimPrefix(data, "justwatch.com")
+   return nil
+}
+
+func (w *WebUrl) UnmarshalText(data []byte) error {
+   (*w)[0] = strings.TrimSuffix(string(data), "\n")
+   return nil
+}
+
+type Address [1]string
+
+type WebUrl [1]string
+
+func (a Address) Content() (*Content, error) {
+   resp, err := http.Get("https://apis.justwatch.com/content/urls?path=" + a[0])
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      return nil, errors.New(resp.Status)
+   }
+   content0 := &Content{}
+   err = json.NewDecoder(resp.Body).Decode(content0)
+   if err != nil {
+      return nil, err
+   }
+   return content0, nil
+}
+
+func (o *OfferRows) Add(locale0 *Locale, offer0 *Offer) {
+   i := slices.IndexFunc(*o, func(row *OfferRow) bool {
+      return row.Url == offer0.StandardWebUrl[0]
+   })
+   if i >= 0 {
+      row := (*o)[i]
+      if !slices.Contains(row.Country, locale0.CountryName) {
+         row.Country = append(row.Country, locale0.CountryName)
+      }
+   } else {
+      var row OfferRow
+      row.Count = offer0.ElementCount
+      row.Country = []string{locale0.CountryName}
+      row.Monetization = offer0.MonetizationType
+      row.Url = offer0.StandardWebUrl[0]
+      *o = append(*o, &row)
+   }
 }
