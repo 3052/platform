@@ -22,11 +22,11 @@ type Resolve struct {
    }
 }
 
-func (r *Resolve) New(url0 string) error {
+func (r *Resolve) New(url1 string) error {
    req, _ := http.NewRequest("", "https://api-v2.soundcloud.com/resolve", nil)
    req.URL.RawQuery = url.Values{
       "client_id": {client_id},
-      "url": {url0},
+      "url": {url1},
    }.Encode()
    resp, err := http.DefaultClient.Do(req)
    if err != nil {

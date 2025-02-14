@@ -93,10 +93,10 @@ func (s Session) Cookie() (*Cookie, error) {
       return nil, err
    }
    defer resp.Body.Close()
-   cookie0 := &Cookie{}
-   err = json.NewDecoder(resp.Body).Decode(cookie0)
+   cookie1 := &Cookie{}
+   err = json.NewDecoder(resp.Body).Decode(cookie1)
    if err != nil {
       return nil, err
    }
-   return cookie0, nil
+   return cookie1, nil
 }

@@ -38,7 +38,7 @@ query BackendConstantsFetcherQuery($language: Language!) {
 }
 `
 
-func (t *LangTag) Offers(locale0 *Locale) ([]Offer, error) {
+func (t *LangTag) Offers(locale1 *Locale) ([]Offer, error) {
    var value struct {
       Query string `json:"query"`
       Variables struct {
@@ -47,7 +47,7 @@ func (t *LangTag) Offers(locale0 *Locale) ([]Offer, error) {
       } `json:"variables"`
    }
    value.Query = graphql_compact(title_details)
-   value.Variables.Country = locale0.Country
+   value.Variables.Country = locale1.Country
    value.Variables.FullPath = t.Href
    data, err := json.Marshal(value)
    if err != nil {
@@ -311,9 +311,9 @@ type LangTag struct {
 }
 
 func (s Locales) Locale(tag *LangTag) (*Locale, bool) {
-   for _, locale0 := range s {
-      if locale0.FullLocale == tag.Locale {
-         return &locale0, true
+   for _, locale1 := range s {
+      if locale1.FullLocale == tag.Locale {
+         return &locale1, true
       }
    }
    return nil, false
@@ -392,29 +392,29 @@ func (a Address) Content() (*Content, error) {
    if resp.StatusCode != http.StatusOK {
       return nil, errors.New(resp.Status)
    }
-   content0 := &Content{}
-   err = json.NewDecoder(resp.Body).Decode(content0)
+   content1 := &Content{}
+   err = json.NewDecoder(resp.Body).Decode(content1)
    if err != nil {
       return nil, err
    }
-   return content0, nil
+   return content1, nil
 }
 
-func (o *OfferRows) Add(locale0 *Locale, offer0 *Offer) {
+func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
    i := slices.IndexFunc(*o, func(row *OfferRow) bool {
-      return row.Url == offer0.StandardWebUrl[0]
+      return row.Url == offer1.StandardWebUrl[0]
    })
    if i >= 0 {
       row := (*o)[i]
-      if !slices.Contains(row.Country, locale0.CountryName) {
-         row.Country = append(row.Country, locale0.CountryName)
+      if !slices.Contains(row.Country, locale1.CountryName) {
+         row.Country = append(row.Country, locale1.CountryName)
       }
    } else {
       var row OfferRow
-      row.Count = offer0.ElementCount
-      row.Country = []string{locale0.CountryName}
-      row.Monetization = offer0.MonetizationType
-      row.Url = offer0.StandardWebUrl[0]
+      row.Count = offer1.ElementCount
+      row.Country = []string{locale1.CountryName}
+      row.Monetization = offer1.MonetizationType
+      row.Url = offer1.StandardWebUrl[0]
       *o = append(*o, &row)
    }
 }
