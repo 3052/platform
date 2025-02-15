@@ -8,6 +8,30 @@ import (
    "strings"
 )
 
+const address = "http://127.0.0.1:4444/session"
+
+func (s *Session) New() error {
+   data, err := json.Marshal(map[string]any{
+      "capabilities": map[string]any{
+         "alwaysMatch": map[string]any{
+            "proxy": map[string]string{
+               "proxyType": "manual",
+               "sslProxy":  "res.proxy-seller.com:10000",
+            },
+         },
+      },
+   })
+   if err != nil {
+      return err
+   }
+   resp, err := http.Post(address, "application/json", bytes.NewReader(data))
+   if err != nil {
+      return err
+   }
+   defer resp.Body.Close()
+   return json.NewDecoder(resp.Body).Decode(s)
+}
+
 // w3c.github.io/webdriver#navigate-to
 func (s Session) Navigate(url string) error {
    data, err := json.Marshal(map[string]string{
@@ -40,44 +64,6 @@ func (s Session) Navigate(url string) error {
    return nil
 }
 
-const address = "http://127.0.0.1:4444/session"
-
-// w3c.github.io/webdriver#sessions
-type Session struct {
-   Value struct {
-      SessionId string
-   }
-}
-
-type Cookie struct {
-   Value []struct {
-      Name  string
-      Value string
-   }
-}
-
-func (s *Session) New() error {
-   data, err := json.Marshal(map[string]any{
-      "capabilities": map[string]any{
-         "alwaysMatch": map[string]any{
-            "proxy": map[string]string{
-               "proxyType": "manual",
-               "sslProxy":  "res.proxy-seller.com:10000",
-            },
-         },
-      },
-   })
-   if err != nil {
-      return err
-   }
-   resp, err := http.Post(address, "application/json", bytes.NewReader(data))
-   if err != nil {
-      return err
-   }
-   defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(s)
-}
-
 // w3c.github.io/webdriver#cookies
 func (s Session) Cookie() (*Cookie, error) {
    req, _ := http.NewRequest("", address, nil)
@@ -99,4 +85,18 @@ func (s Session) Cookie() (*Cookie, error) {
       return nil, err
    }
    return cookie1, nil
+}
+
+// w3c.github.io/webdriver#sessions
+type Session struct {
+   Value struct {
+      SessionId string
+   }
+}
+
+type Cookie struct {
+   Value []struct {
+      Name  string
+      Value string
+   }
 }
