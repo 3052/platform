@@ -12,86 +12,13 @@ import (
    "strings"
 )
 
-func (o Offer) Monetization() bool {
-   switch o.MonetizationType {
-   case "BUY":
-      return true
-   case "CINEMA":
-      return true
-   case "RENT":
-      return true
-   }
-   return false
-}
-
-type Content struct {
-   HrefLangTags []LangTag `json:"href_lang_tags"`
-}
-
-const fetcher_query = `
-query BackendConstantsFetcherQuery($language: Language!) {
-   locales {
-      country
-      countryName(language: $language)
-      fullLocale
-   }
-}
-`
-
-func (t *LangTag) Offers(locale1 *Locale) ([]Offer, error) {
-   var value struct {
-      Query string `json:"query"`
-      Variables struct {
-         Country string `json:"country"`
-         FullPath string `json:"fullPath"`
-      } `json:"variables"`
-   }
-   value.Query = graphql_compact(title_details)
-   value.Variables.Country = locale1.Country
-   value.Variables.FullPath = t.Href
-   data, err := json.Marshal(value)
-   if err != nil {
-      return nil, err
-   }
-   resp, err := http.Post(
-      "https://apis.justwatch.com/graphql", "application/json",
-      bytes.NewReader(data),
-   )
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      var data strings.Builder
-      resp.Write(&data)
-      return nil, errors.New(data.String())
-   }
-   var value1 struct {
-      Data struct {
-         Url struct {
-            Node struct {
-               Offers []Offer
-            }
-         }
-      }
-   }
-   err = json.NewDecoder(resp.Body).Decode(&value1)
-   if err != nil {
-      return nil, err
-   }
-   return value1.Data.Url.Node.Offers, nil
-}
-
 func (s *Locales) New(language string) error {
-   var value struct {
-      Query     string `json:"query"`
-      Variables struct {
-         Language string `json:"language"`
-      } `json:"variables"`
-   }
-   value.Query = graphql_compact(fetcher_query)
-   value.Variables.Language = language
-   data, err := json.Marshal(value)
+   data, err := json.Marshal(map[string]any{
+      "query": graphql_compact(fetcher_query),
+      "variables": map[string]string{
+         "language": language,
+      },
+   })
    if err != nil {
       return err
    }
@@ -417,4 +344,69 @@ func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
       row.Url = offer1.StandardWebUrl[0]
       *o = append(*o, &row)
    }
+}
+func (o Offer) Monetization() bool {
+   switch o.MonetizationType {
+   case "BUY":
+      return true
+   case "CINEMA":
+      return true
+   case "RENT":
+      return true
+   }
+   return false
+}
+
+type Content struct {
+   HrefLangTags []LangTag `json:"href_lang_tags"`
+}
+
+const fetcher_query = `
+query BackendConstantsFetcherQuery($language: Language!) {
+   locales {
+      country
+      countryName(language: $language)
+      fullLocale
+   }
+}
+`
+
+func (t *LangTag) Offers(locale1 *Locale) ([]Offer, error) {
+   data, err := json.Marshal(map[string]any{
+      "query": graphql_compact(title_details),
+      "variables": map[string]string{
+         "country": locale1.Country,
+         "fullPath": t.Href,
+      },
+   })
+   if err != nil {
+      return nil, err
+   }
+   resp, err := http.Post(
+      "https://apis.justwatch.com/graphql", "application/json",
+      bytes.NewReader(data),
+   )
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      var data strings.Builder
+      resp.Write(&data)
+      return nil, errors.New(data.String())
+   }
+   var value struct {
+      Data struct {
+         Url struct {
+            Node struct {
+               Offers []Offer
+            }
+         }
+      }
+   }
+   err = json.NewDecoder(resp.Body).Decode(&value)
+   if err != nil {
+      return nil, err
+   }
+   return value.Data.Url.Node.Offers, nil
 }
