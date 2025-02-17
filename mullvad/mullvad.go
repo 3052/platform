@@ -4,6 +4,7 @@ import (
    "encoding/json"
    "errors"
    "iter"
+   "log"
    "net/http"
    "os/exec"
    "strings"
@@ -12,12 +13,34 @@ import (
 
 var ErrTimeout = errors.New("timeout")
 
+func Connect(location string) error {
+   data, err := command(
+      "mullvad", "relay", "set", "location", location,
+   ).CombinedOutput()
+   if err != nil {
+      return errors.New(string(data))
+   }
+   err = command("mullvad", "connect").Run()
+   if err != nil {
+      return err
+   }
+   return status("Connected")
+}
+
+func Disconnect() error {
+   err := command("mullvad", "disconnect").Run()
+   if err != nil {
+      return err
+   }
+   return status("Disconnected")
+}
+
 func status(prefix string) error {
    after := time.After(30 * time.Second)
    for {
       select {
       case <-time.After(time.Second):
-         data, err := exec.Command("mullvad", "status").Output()
+         data, err := command("mullvad", "status").Output()
          if err != nil {
             return err
          }
@@ -33,18 +56,10 @@ func status(prefix string) error {
    }
 }
 
-func Connect(location string) error {
-   data, err := exec.Command(
-      "mullvad", "relay", "set", "location", location,
-   ).CombinedOutput()
-   if err != nil {
-      return errors.New(string(data))
-   }
-   err = exec.Command("mullvad", "connect").Run()
-   if err != nil {
-      return err
-   }
-   return status("Connected")
+func command(name string, arg ...string) *exec.Cmd {
+   cmd := exec.Command(name, arg...)
+   log.Print(cmd.Args)
+   return cmd
 }
 
 func (p *PublicRelays) OpenVpn() error {
@@ -54,14 +69,6 @@ func (p *PublicRelays) OpenVpn() error {
    }
    defer resp.Body.Close()
    return json.NewDecoder(resp.Body).Decode(p)
-}
-
-func Disconnect() error {
-   err := exec.Command("mullvad", "disconnect").Run()
-   if err != nil {
-      return err
-   }
-   return status("Disconnected")
 }
 
 type PublicRelays struct {
