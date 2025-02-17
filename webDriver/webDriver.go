@@ -45,11 +45,11 @@ func (s Session) Navigate(url string) error {
       return err
    }
    req.URL.Path += func() string {
-      var data strings.Builder
-      data.WriteByte('/')
-      data.WriteString(s.Value.SessionId)
-      data.WriteString("/url")
-      return data.String()
+      var b strings.Builder
+      b.WriteByte('/')
+      b.WriteString(s.Value.SessionId)
+      b.WriteString("/url")
+      return b.String()
    }()
    req.Header.Set("content-type", "application/json")
    resp, err := http.DefaultClient.Do(req)
@@ -68,11 +68,11 @@ func (s Session) Navigate(url string) error {
 func (s Session) Cookie() (*Cookie, error) {
    req, _ := http.NewRequest("", address, nil)
    req.URL.Path += func() string {
-      var data strings.Builder
-      data.WriteByte('/')
-      data.WriteString(s.Value.SessionId)
-      data.WriteString("/cookie")
-      return data.String()
+      var b strings.Builder
+      b.WriteByte('/')
+      b.WriteString(s.Value.SessionId)
+      b.WriteString("/cookie")
+      return b.String()
    }()
    resp, err := http.DefaultClient.Do(req)
    if err != nil {
