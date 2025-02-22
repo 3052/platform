@@ -13,28 +13,6 @@ import (
 
 var ErrTimeout = errors.New("timeout")
 
-func Connect(location string) error {
-   data, err := command(
-      "mullvad", "relay", "set", "location", location,
-   ).CombinedOutput()
-   if err != nil {
-      return errors.New(string(data))
-   }
-   err = command("mullvad", "connect").Run()
-   if err != nil {
-      return err
-   }
-   return status("Connected")
-}
-
-func Disconnect() error {
-   err := command("mullvad", "disconnect").Run()
-   if err != nil {
-      return err
-   }
-   return status("Disconnected")
-}
-
 func status(prefix string) error {
    after := time.After(30 * time.Second)
    for {
@@ -56,10 +34,44 @@ func status(prefix string) error {
    }
 }
 
+func Disconnect() error {
+   err := command("mullvad", "disconnect").Run()
+   if err != nil {
+      return err
+   }
+   return status("Disconnected")
+}
+
+func Connect(location string) error {
+   data, err := command(
+      "mullvad", "relay", "set", "location", location,
+   ).CombinedOutput()
+   if err != nil {
+      return errors.New(string(data))
+   }
+   err = command("mullvad", "connect").Run()
+   if err != nil {
+      return err
+   }
+   return status("Connected")
+}
+
 func command(name string, arg ...string) *exec.Cmd {
    cmd := exec.Command(name, arg...)
    log.Print(cmd.Args)
    return cmd
+}
+
+type Location string
+
+func (n Location) RoundTrip(req *http.Request) (*http.Response, error) {
+   err := Connect(string(n))
+   if err != nil {
+      return nil, err
+   }
+   defer Disconnect()
+   log.Println(req.Method, req.URL)
+   return http.DefaultTransport.RoundTrip(req)
 }
 
 func (p *PublicRelays) OpenVpn() error {
