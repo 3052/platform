@@ -1,9 +1,9 @@
 package mullvad
 
 import (
-   "encoding/json"
+   "bytes"
    "errors"
-   "iter"
+   "io"
    "log"
    "net/http"
    "os/exec"
@@ -12,28 +12,6 @@ import (
 )
 
 var ErrTimeout = errors.New("timeout")
-
-func Connect(location string) error {
-   data, err := command(
-      "mullvad", "relay", "set", "location", location,
-   ).CombinedOutput()
-   if err != nil {
-      return errors.New(string(data))
-   }
-   err = command("mullvad", "connect").Run()
-   if err != nil {
-      return err
-   }
-   return status("Connected")
-}
-
-func Disconnect() error {
-   err := command("mullvad", "disconnect").Run()
-   if err != nil {
-      return err
-   }
-   return status("Disconnected")
-}
 
 func status(prefix string) error {
    after := time.After(30 * time.Second)
@@ -56,54 +34,59 @@ func status(prefix string) error {
    }
 }
 
+func Relay(location ...string) error {
+   arg := []string{"relay", "set", "location"}
+   arg = append(arg, location...)
+   data, err := command("mullvad", arg...).CombinedOutput()
+   if err != nil {
+      return errors.New(string(data))
+   }
+   return nil
+}
+
 func command(name string, arg ...string) *exec.Cmd {
    cmd := exec.Command(name, arg...)
    log.Print(cmd.Args)
    return cmd
 }
 
-func (p *PublicRelays) OpenVpn() error {
-   resp, err := http.Get("https://api.mullvad.net/public/relays/v1")
+func Disconnect() error {
+   err := command("mullvad", "disconnect").Run()
    if err != nil {
       return err
    }
-   defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(p)
+   return status("Disconnected")
 }
 
-type PublicRelays struct {
-   Countries []struct {
-      Name string
-      Cities []struct {
-         Name string
-         Relays []struct {
-            Hostname string
-         }
-      }
-   }
-}
-
-func (p PublicRelays) Hostname(country string) iter.Seq[string] {
-   return func(yield func(string) bool) {
-      for _, country1 := range p.Countries {
-         if country1.Name == country {
-            for _, city := range country1.Cities {
-               for _, relay := range city.Relays {
-                  if !yield(relay.Hostname) {
-                     return
-                  }
-               }
-            }
-         }
-      }
-   }
-}
-
-func (p *PublicRelays) WireGuard() error {
-   resp, err := http.Get("https://api.mullvad.net/public/relays/wireguard/v1")
+func Connect() error {
+   err := command("mullvad", "connect").Run()
    if err != nil {
       return err
    }
-   defer resp.Body.Close()
-   return json.NewDecoder(resp.Body).Decode(p)
+   return status("Connected")
+}
+
+type Transport struct{}
+
+func (Transport) RoundTrip(req *http.Request) (*http.Response, error) {
+   err := Connect()
+   if err != nil {
+      return nil, err
+   }
+   defer Disconnect()
+   log.Println(req.Method, req.URL)
+   resp, err := http.DefaultTransport.RoundTrip(req)
+   if err != nil {
+      return nil, err
+   }
+   data, err := io.ReadAll(resp.Body)
+   if err != nil {
+      return nil, err
+   }
+   err = resp.Body.Close()
+   if err != nil {
+      return nil, err
+   }
+   resp.Body = io.NopCloser(bytes.NewReader(data))
+   return resp, nil
 }
