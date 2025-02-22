@@ -8,6 +8,30 @@ import (
    "net/http"
 )
 
+func (f *flags) connect(relays mullvad.PublicRelays) error {
+   for relay := range relays.Hostname(f.location) {
+      fmt.Print(relay)
+      err := mullvad.Location(relay).Connect()
+      switch err {
+      case nil:
+         fmt.Print(" GET")
+         resp, err := f.get()
+         if err != nil {
+            return err
+         }
+         fmt.Printf(" %v\n", resp.Status)
+         if resp.StatusCode == http.StatusOK {
+            return nil
+         }
+      case mullvad.ErrTimeout:
+         fmt.Printf(" %v\n", err)
+      default:
+         return err
+      }
+   }
+   return io.EOF
+}
+
 type flags struct {
    address  string
    location string
@@ -62,28 +86,4 @@ func (f *flags) relay() error {
    default:
       return err
    }
-}
-
-func (f *flags) connect(relays mullvad.PublicRelays) error {
-   for relay := range relays.Hostname(f.location) {
-      fmt.Print(relay)
-      err := mullvad.Connect(relay)
-      switch err {
-      case nil:
-         fmt.Print(" GET")
-         resp, err := f.get()
-         if err != nil {
-            return err
-         }
-         fmt.Printf(" %v\n", resp.Status)
-         if resp.StatusCode == http.StatusOK {
-            return nil
-         }
-      case mullvad.ErrTimeout:
-         fmt.Printf(" %v\n", err)
-      default:
-         return err
-      }
-   }
-   return io.EOF
 }
