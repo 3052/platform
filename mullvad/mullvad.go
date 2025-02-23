@@ -1,9 +1,7 @@
 package mullvad
 
 import (
-   "bytes"
    "errors"
-   "io"
    "log"
    "net/http"
    "os/exec"
@@ -66,27 +64,22 @@ func Connect() error {
    return status("Connected")
 }
 
-type Transport struct{}
+type Vpn bool
 
-func (Transport) RoundTrip(req *http.Request) (*http.Response, error) {
-   err := Connect()
+func (v *Vpn) RoundTrip(req *http.Request) (*http.Response, error) {
+   var err error
+   if req.Header.Get("vpn") != "" {
+      if !*v {
+         err = Connect()
+         *v = true
+      }
+   } else if *v {
+      err = Disconnect()
+      *v = false
+   }
    if err != nil {
       return nil, err
    }
-   defer Disconnect()
    log.Println(req.Method, req.URL)
-   resp, err := http.DefaultTransport.RoundTrip(req)
-   if err != nil {
-      return nil, err
-   }
-   data, err := io.ReadAll(resp.Body)
-   if err != nil {
-      return nil, err
-   }
-   err = resp.Body.Close()
-   if err != nil {
-      return nil, err
-   }
-   resp.Body = io.NopCloser(bytes.NewReader(data))
-   return resp, nil
+   return http.DefaultTransport.RoundTrip(req)
 }
