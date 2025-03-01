@@ -64,22 +64,26 @@ func Connect() error {
    return status("Connected")
 }
 
-type Vpn bool
+type Transport http.Transport
 
-func (v *Vpn) RoundTrip(req *http.Request) (*http.Response, error) {
+var connected bool
+
+func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
    var err error
    if req.Header.Get("vpn") != "" {
-      if !*v {
+      if !connected {
          err = Connect()
-         *v = true
+         connected = true
       }
-   } else if *v {
+   } else if connected {
       err = Disconnect()
-      *v = false
+      connected = false
    }
    if err != nil {
       return nil, err
    }
-   log.Println(req.Method, req.URL)
-   return http.DefaultTransport.RoundTrip(req)
+   if req.Header.Get("silent") == "" {
+      log.Println(req.Method, req.URL)
+   }
+   return (*http.Transport)(t).RoundTrip(req)
 }

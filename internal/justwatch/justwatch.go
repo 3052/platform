@@ -13,6 +13,23 @@ import (
    "time"
 )
 
+func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
+   if req.Body != nil {
+      data, err := io.ReadAll(req.Body)
+      if err != nil {
+         return nil, err
+      }
+      req.Body.Close()
+      req.Body = io.NopCloser(bytes.NewReader(data))
+      log.Print(string(data))
+   } else {
+      log.Print(req.URL)
+   }
+   return http.DefaultTransport.RoundTrip(req)
+}
+
+type transport struct{}
+
 func (f *flags) stream() error {
    content, err := f.address.Content()
    if err != nil {
@@ -54,23 +71,6 @@ func main() {
       flag.Usage()
    }
 }
-
-func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
-   if req.Body != nil {
-      data, err := io.ReadAll(req.Body)
-      if err != nil {
-         return nil, err
-      }
-      req.Body.Close()
-      req.Body = io.NopCloser(bytes.NewReader(data))
-      log.Print(string(data))
-   } else {
-      log.Print(req.URL)
-   }
-   return http.DefaultTransport.RoundTrip(req)
-}
-
-type transport struct{}
 
 type flags struct {
    address justwatch.Address
