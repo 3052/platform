@@ -20,9 +20,9 @@ each merchant for all future purchases. If you're concerned about the card's
 security, you can pause it between uses or set limits on it.
 ~~~
 
-## revolut.com
+## wise.com
 
-https://revolut.com
+https://wise.com/help/articles/6za75AGrPB4T9RfZhKa0zR/temporarily-pausing-issuing-new-wise-multi-currency-cards-in-the-us
 
 ## ironvest.com
 
@@ -30,6 +30,6 @@ $39/year
 
 https://ironvest.com/pricing
 
-## wise.com
+## revolut.com
 
-https://wise.com
+https://revolut.com
