@@ -1,4 +1,4 @@
-# kpn
+# tv.kpn.com
 
 1. inloggen (log in)
 2. Nieuwe inloggegevens aanvragen (Request new login details)
@@ -19,9 +19,3 @@
 14. Koppel je abonnement aan je account om ze in MijnKPN te beheren. (Coupl
    your subscription to your account to manage them in MijnKPN)
 15. Welk abonnement wil je koppelen? (Which subscription do you want to link?)
-16. Thuis (at home)
-17. Ben je nu thuis en verbonden met je wifi van KPN of XS4ALL? (Are you now at
-   home and connected to your WiFi from KPN or XS4ALL?)
-18. yes
-19. Wat zijn de laatste 3 cijfers van je rekeningnummer? (What are the last 3
-   digits of your account number?)
