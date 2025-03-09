@@ -107,9 +107,3 @@ https://russiaesim.com
 Calls & SMS 	No
 
 https://simoptions.com/esim-russia
-
-## 16
-
-SMS never received with taiwan
-
-https://smsonline.cloud/member
