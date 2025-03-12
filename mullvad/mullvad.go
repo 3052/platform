@@ -19,7 +19,7 @@ type Transport http.Transport
 
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
    var err error
-   if req.Header.Get("vpn") != "" {
+   if req.Header.Get("proxy") != "" {
       if !connected {
          err = Connect()
          connected = true
