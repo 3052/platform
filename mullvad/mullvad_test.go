@@ -17,7 +17,7 @@ func Test(t *testing.T) {
    if err != nil {
       t.Fatal(err)
    }
-   req.Header.Set("vpn", "true")
+   req.Header.Set("proxy", "true")
    resp, err := http.DefaultClient.Do(req)
    if err != nil {
       t.Fatal(err)
