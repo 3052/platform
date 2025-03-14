@@ -12,6 +12,26 @@ import (
    "strings"
 )
 
+const title_details = `
+query GetUrlTitleDetails(
+   $fullPath: String!
+   $country: Country!
+   $platform: Platform! = WEB
+) {
+   url(fullPath: $fullPath) {
+      node {
+         ... on MovieOrShowOrSeason {
+            offers(country: $country, platform: $platform) {
+               elementCount
+               monetizationType
+               standardWebURL
+            }
+         }
+      }
+   }
+}
+` // dont use `query(`
+
 func (s *Locales) New(language string) error {
    data, err := json.Marshal(map[string]any{
       "query": graphql_compact(fetcher_query),
@@ -196,27 +216,6 @@ var English = Locales{
    {"zh_HK", "HK", "Hong Kong"},
    {"zh_TW", "TW", "Taiwan"},
 }
-
-// NO ANONYMOUS QUERY
-const title_details = `
-query GetUrlTitleDetails(
-   $fullPath: String!
-   $country: Country!
-   $platform: Platform! = WEB
-) {
-   url(fullPath: $fullPath) {
-      node {
-         ... on MovieOrShowOrSeason {
-            offers(country: $country, platform: $platform) {
-               elementCount
-               monetizationType
-               standardWebURL
-            }
-         }
-      }
-   }
-}
-`
 
 // this is better than strings.Replace and strings.ReplaceAll
 func graphql_compact(data string) string {
