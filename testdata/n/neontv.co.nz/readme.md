@@ -12,6 +12,7 @@ country = New Zealand
 3. first name
 4. last name
 5. email
+   - mailsac.com
 6. confirm email
 7. password
 8. year of birth
