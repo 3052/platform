@@ -31,5 +31,18 @@ https://5sim.net
 7. paypal fail
 8. uber fail
 9. wechat fail
+10. other fail
 
-other
+https://grizzlysms.com
+
+by bank card
+
+- 1st method FAIL
+- 2nd method FAIL
+- 3rd method PASS
+
+if I try privacy card, I get:
+
+Hmm... we have had a problem creating your account. Please try again.
+
+what if I just use my own card? same result. geo payment?

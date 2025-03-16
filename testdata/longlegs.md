@@ -1,14 +1,6 @@
 # longlegs
 
 ~~~
-url = https://www.foxtel.com.au/watch/movies/longlegs.html
-monetization = FLATRATE
-country = Australia
-
-url = https://web.magentatv.de/film/longlegs/GN_MV021191820000
-monetization = FLATRATE
-country = Germany
-
 url = https://www.canalplus.com/pl/film/kod-zla/h/15874755_70026
 monetization = FLATRATE
 country = Poland
