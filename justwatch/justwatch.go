@@ -12,6 +12,36 @@ import (
    "strings"
 )
 
+type OfferRow struct {
+   Count        int64
+   Country      []string
+   Monetization string
+   Url          string
+}
+
+func (o OfferRows) String() string {
+   var data []byte
+   for i, row := range o {
+      if i >= 1 {
+         data = append(data, "\n\n"...)
+      }
+      data = append(data, "url = "...)
+      data = append(data, html.UnescapeString(row.Url)...)
+      data = append(data, "\nmonetization = "...)
+      data = append(data, row.Monetization...)
+      if row.Count >= 1 {
+         data = append(data, "\ncount = "...)
+         data = strconv.AppendInt(data, row.Count, 10)
+      }
+      slices.Sort(row.Country)
+      for _, country := range row.Country {
+         data = append(data, "\ncountry = "...)
+         data = append(data, country...)
+      }
+   }
+   return string(data)
+}
+
 const title_details = `
 query GetUrlTitleDetails(
    $fullPath: String!
@@ -245,40 +275,7 @@ func (s Locales) Locale(tag *LangTag) (*Locale, bool) {
    return nil, false
 }
 
-type OfferRow struct {
-   Count        int64
-   Country      []string
-   Monetization string
-   Url          string
-}
-
 type OfferRows []*OfferRow
-
-func (o OfferRows) String() string {
-   var data []byte
-   slices.SortFunc(o, func(a, b *OfferRow) int {
-      return len(a.Url) - len(b.Url)
-   })
-   for i, row := range o {
-      if i >= 1 {
-         data = append(data, "\n\n"...)
-      }
-      data = append(data, "url = "...)
-      data = append(data, html.UnescapeString(row.Url)...)
-      data = append(data, "\nmonetization = "...)
-      data = append(data, row.Monetization...)
-      if row.Count >= 1 {
-         data = append(data, "\ncount = "...)
-         data = strconv.AppendInt(data, row.Count, 10)
-      }
-      slices.Sort(row.Country)
-      for _, country := range row.Country {
-         data = append(data, "\ncountry = "...)
-         data = append(data, country...)
-      }
-   }
-   return string(data)
-}
 
 // `presentationType` data seems to be incorrect in some cases. For example,
 // JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
@@ -344,6 +341,7 @@ func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
       *o = append(*o, &row)
    }
 }
+
 func (o Offer) Monetization() bool {
    switch o.MonetizationType {
    case "BUY":

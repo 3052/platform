@@ -3,6 +3,7 @@ package main
 import (
    "41.neocities.org/platform/justwatch"
    "bytes"
+   "cmp"
    "errors"
    "flag"
    "fmt"
@@ -12,23 +13,6 @@ import (
    "slices"
    "time"
 )
-
-func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
-   if req.Body != nil {
-      data, err := io.ReadAll(req.Body)
-      if err != nil {
-         return nil, err
-      }
-      req.Body.Close()
-      req.Body = io.NopCloser(bytes.NewReader(data))
-      log.Print(string(data))
-   } else {
-      log.Print(req.URL)
-   }
-   return http.DefaultTransport.RoundTrip(req)
-}
-
-type transport struct{}
 
 func (f *flags) stream() error {
    content, err := f.address.Content()
@@ -51,8 +35,40 @@ func (f *flags) stream() error {
       }
       time.Sleep(f.sleep)
    }
+   if f.country {
+      slices.SortFunc(rows, func(a, b *justwatch.OfferRow) int {
+         return cmp.Compare(a.Country[0], b.Country[0])
+      })
+   } else {
+      slices.SortFunc(rows, func(a, b *justwatch.OfferRow) int {
+         return len(a.Url) - len(b.Url)
+      })
+   }
    fmt.Println(rows)
    return nil
+}
+
+func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
+   if req.Body != nil {
+      data, err := io.ReadAll(req.Body)
+      if err != nil {
+         return nil, err
+      }
+      req.Body.Close()
+      req.Body = io.NopCloser(bytes.NewReader(data))
+      log.Print(string(data))
+   } else {
+      log.Print(req.URL)
+   }
+   return http.DefaultTransport.RoundTrip(req)
+}
+
+type transport struct{}
+
+type flags struct {
+   address justwatch.Address
+   country bool
+   sleep   time.Duration
 }
 
 func main() {
@@ -60,6 +76,7 @@ func main() {
    log.SetFlags(log.Ltime)
    var f flags
    flag.Var(&f.address, "a", "address")
+   flag.BoolVar(&f.country, "c", false, "sort by country")
    flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
    flag.Parse()
    if f.address.String() != "" {
@@ -70,9 +87,4 @@ func main() {
    } else {
       flag.Usage()
    }
-}
-
-type flags struct {
-   address justwatch.Address
-   sleep   time.Duration
 }
