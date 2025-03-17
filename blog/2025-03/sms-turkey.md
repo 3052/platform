@@ -1,6 +1,6 @@
 # sms turkey
 
-## 1
+## 365sms.pro
 
 https://365sms.pro/blog/all
 
@@ -13,19 +13,19 @@ fail
 90 5314395864
 90 5062534577
 
-## 2
+## 5sim.net
 
 https://5sim.net
 
 no turkey
 
-## 3
+## chillaxsim.com
 
 Plan Type: 	Data Only
 
 https://chillaxsim.com/products/turkey-esim
 
-## 4
+## esim.holafly.com
 
 This virtual SIM only includes data. It does not allow you to make cell phone
 calls or send SMS messages. You can still use WhatsApp or Skype to call your
@@ -33,7 +33,7 @@ contacts.
 
 https://esim.holafly.com/esim-turkey
 
-## 5
+## esim.net
 
 Yes, these come with a +44 Vodafone UK mobile number. Calls and texts can be
 received free of charge in all 75 countries and you also have unlimited
@@ -41,40 +41,46 @@ outbound calls and texts within the country you are in.
 
 https://esim.net/esim-turkey
 
-## 6
+## esim.sm
 
 Phone Number: No
 
 https://esim.sm/en/travel-to/turkey
 
-## 7
+## esim4travel.com
 
 Voice Calls and SMSs
 No, only through apps (VOIP).
 
 https://esim4travel.com/turkey-esim
 
-## 8
+## etravelsim.com
 
 Mobile Number: UK based mobile number (+44) for plans with local calls, No
 number for data plans
 
 https://etravelsim.com/collections/all-products/products/turkey-esim
 
-## 9
+## getnomad.app
 
 No, Nomad’s eSIM are data-only and do not have a local number
 
 https://getnomad.app/turkey-eSIM
 
-## 10
+## globalesim.app
+
+Note: Numbers are from USA only with prefix +1
+
+https://globalesim.app/product/turkey
+
+## grizzlysms.com
 
 https://grizzlysms.com
 
 1. AnyOther
 2. Number is unavailable. Try again
 
-## 11
+## lk.hottelecom.biz
 
 https://lk.hottelecom.biz
 
@@ -96,26 +102,26 @@ calls:
 
 no matches found for turkey
 
-## 12
+## majorphones.com
 
 no turkey
 
 majorphones.com
 
-## 13
+## maya.net
 
 No, our Turkey eSIM plans are data only eSIM plans. They do not include a local
 number. However, you can continue to use your regular phone number.
 
 https://maya.net/esim/turkey
 
-## 14
+## microesim.com
 
 Text Message 	No
 
 https://microesim.com/products/turkey-esim
 
-## 15
+## onlinesim.io
 
 https://onlinesim.io/v2/numbers
 
@@ -136,13 +142,39 @@ number rent:
 
 $100 for three days
 
-## 16
+## roamic.com
+
+Service: Data Only
+
+https://roamic.com/products/turkey-esim
+
+## saily.com
+
+SMS: Not available
+
+https://saily.com/esim-turkey
+
+## simoptions.com
 
 Calls & SMS 	No
 
 https://simoptions.com/esim-turkey
 
-## 17
+## sms-activate.org
+
+no other
+
+https://sms-activate.org/en/country/turkey
+
+## sms-activation-service.net
+
+https://sms-activation-service.net/receive-free-sms-turkey
+
+not on list
+
+All Numbers Sold Out :(
+
+## sms-man.com
 
 https://sms-man.com
 
@@ -157,21 +189,40 @@ rent:
 
 turkey not available
 
-## 18
+## smsfast.net
+
+no other
+
+https://smsfast.net
+
+## smsonline.cloud
 
 no turkey
 
 https://smsonline.cloud/member
 
----------------------------------------------------------------------------------
+## smsPool.net
 
-https://sms-activation-service.net/en/?ref=1708159916
-
----------------------------------------------------------------------------------
-
-sms-activate.org
 smsPool.net
-smsbest.ru
+
+not listed
+
+stock 0
+
+## textverified.com
+
+Real US mobile numbers backed by physical SIMs – compatible with all platforms
+
 textverified.com
+
+## verifyWithSms.com
+
+Verify all your accounts with our real US based phones
+
 verifyWithSms.com
-zadarma.com
+
+## wraptel.com
+
+US, UK or Canadian number or no number for data only
+
+https://wraptel.com/Turkey-eSIM
