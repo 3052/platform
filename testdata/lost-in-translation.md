@@ -1,10 +1,6 @@
 # lost-in-translation
 
 ~~~
-url = https://globoplay.globo.com/encontros-e-desencontros/t/6h6Xg5WGYC/
-monetization = FLATRATE
-country = Brazil
-
 url = https://www.hotstar.com/in/1971000519
 monetization = FLATRATE
 country = India
