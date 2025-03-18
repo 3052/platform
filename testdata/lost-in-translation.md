@@ -3,38 +3,6 @@
 ## 12
 
 ~~~
-url = https://www.skyshowtime.com/bg/stream/movies/--/ffd338e2-36d9-3a9e-9abf-0af0660ae805
-monetization = FLATRATE
-country = Bulgaria
-
-url = https://www.skyshowtime.com/cz/stream/movies/ztraceno-v-prekladu/ffd338e2-36d9-3a9e-9abf-0af0660ae805
-monetization = FLATRATE
-country = Czech Republic
-
-url = https://www.skyshowtime.com/dk/stream/movies/lost-in-translation/ffd338e2-36d9-3a9e-9abf-0af0660ae805
-monetization = FLATRATE
-country = Denmark
-
-url = https://www.skyshowtime.com/es/stream/movies/lost-in-translation/ffd338e2-36d9-3a9e-9abf-0af0660ae805
-monetization = FLATRATE
-country = Spain
-
-url = https://www.skyshowtime.com/fi/stream/movies/lost-in-translation/ffd338e2-36d9-3a9e-9abf-0af0660ae805
-monetization = FLATRATE
-country = Finland
-
-url = https://www.skyshowtime.com/hu/stream/movies/elveszett-jelentes/ffd338e2-36d9-3a9e-9abf-0af0660ae805
-monetization = FLATRATE
-country = Hungary
-
-url = https://www.skyshowtime.com/no/stream/movies/lost-in-translation/ffd338e2-36d9-3a9e-9abf-0af0660ae805
-monetization = FLATRATE
-country = Norway
-
-url = https://www.skyshowtime.com/pl/stream/movies/miedzy-sowami/ffd338e2-36d9-3a9e-9abf-0af0660ae805
-monetization = FLATRATE
-country = Poland
-
 url = https://www.skyshowtime.com/pt/stream/movies/o-amor-e-um-lugar-estranho/ffd338e2-36d9-3a9e-9abf-0af0660ae805
 monetization = FLATRATE
 country = Portugal
