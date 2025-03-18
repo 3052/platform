@@ -1,12 +1,14 @@
 # nowtv.com
 
-United Kingdom
-
-https://www.nowtv.com/watch/jerry-maguire-1996/A5EK6sKrAayddfutL7bQG
+~~~
+url = https://www.nowtv.com/watch/lost-in-translation-2003/A5EK6sKrAaye3NVJ2dNsU
+monetization = FLATRATE
+country = United Kingdom
+~~~
 
 1. join now
-2. now cinema
-3. choose your membership
-4. fully flexible
-5. select
-6. Today's Total £9.99
+2. now cinema, choose your membership
+3. fully flexible, select
+4. skip upgrade
+
+no trial

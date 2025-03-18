@@ -1,12 +1,11 @@
-# play.movistar.com.ec
+# play.movistar.com.ar
 
 ~~~
-url = https://www.play.movistar.com.ar/details/movie/10451294
+url = https://www.play.movistar.com.ar/details/movie/17375556
+monetization = FLATRATE
 country = Argentina
 ~~~
 
-1. https://tv.movistar.com.ar/catalog/peliculas-618
-2. https://tv.movistar.com.ar/details/movie/priscilla-39510442
-3. play
+redirect to
 
-need residential proxy since Mullvad does not have argentina
+tv.movistar.com.ar
