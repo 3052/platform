@@ -1,7 +1,7 @@
 # canalplus.com
 
 ~~~
-url = https://canalplus.com/cinema/argylle/h/24060321_50001
+url = https://www.canalplus.com/cinema/argylle/h/24060321_50001
 monetization = FLATRATE
 country = France
 ~~~
@@ -15,3 +15,10 @@ country = France
 5. passer
 
 no trial
+
+## FR
+
+~~~
+SD@L3
+~~~
+

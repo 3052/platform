@@ -6,13 +6,9 @@ monetization = FLATRATE
 country = Poland
 ~~~
 
-## us
+https://justwatch.com/pl/serwis-streamingowy/canal-plus-online
 
-Access Denied
-
-## mullvad poland
-
-Access Denied
+993 titles
 
 ## nord poland
 
@@ -22,3 +18,9 @@ Access Denied
 4. Dalej (continue)
 
 no trial
+
+## L3
+
+~~~
+FHD@L3
+~~~
