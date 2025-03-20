@@ -12,6 +12,29 @@ import (
    "strings"
 )
 
+// `presentationType` data seems to be incorrect in some cases. For example,
+// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
+// when the site itself reports as HD
+type Offer struct {
+   ElementCount     int64
+   MonetizationType string
+   StandardWebUrl   WebUrl
+}
+
+func (o Offer) Monetization() bool {
+   switch o.MonetizationType {
+   case "BUY":
+      return true
+   case "CINEMA":
+      return true
+   case "FAST":
+      return true
+   case "RENT":
+      return true
+   }
+   return false
+}
+
 type OfferRow struct {
    Count        int64
    Country      []string
@@ -277,15 +300,6 @@ func (s Locales) Locale(tag *LangTag) (*Locale, bool) {
 
 type OfferRows []*OfferRow
 
-// `presentationType` data seems to be incorrect in some cases. For example,
-// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
-// when the site itself reports as HD
-type Offer struct {
-   ElementCount     int64
-   MonetizationType string
-   StandardWebUrl   WebUrl
-}
-
 func (a Address) String() string {
    return a[0]
 }
@@ -340,18 +354,6 @@ func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
       row.Url = offer1.StandardWebUrl[0]
       *o = append(*o, &row)
    }
-}
-
-func (o Offer) Monetization() bool {
-   switch o.MonetizationType {
-   case "BUY":
-      return true
-   case "CINEMA":
-      return true
-   case "RENT":
-      return true
-   }
-   return false
 }
 
 type Content struct {

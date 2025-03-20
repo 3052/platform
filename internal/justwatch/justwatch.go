@@ -10,9 +10,52 @@ import (
    "io"
    "log"
    "net/http"
+   "os"
    "slices"
    "time"
 )
+
+func (f *flags) stream() error {
+   content, err := f.address.Content()
+   if err != nil {
+      return err
+   }
+   var rows justwatch.OfferRows
+   for _, tag := range content.HrefLangTags {
+      locale, ok := justwatch.English.Locale(&tag)
+      if !ok {
+         return errors.New("Locale")
+      }
+      offers, err := tag.Offers(locale)
+      if err != nil {
+         return err
+      }
+      offers = slices.DeleteFunc(offers, justwatch.Offer.Monetization)
+      for _, offer := range offers {
+         rows.Add(locale, &offer)
+      }
+      time.Sleep(f.sleep)
+   }
+   if f.url {
+      slices.SortFunc(rows, func(a, b *justwatch.OfferRow) int {
+         return cmp.Compare(a.Url, b.Url)
+      })
+   } else {
+      slices.SortFunc(rows, func(a, b *justwatch.OfferRow) int {
+         return len(a.Url) - len(b.Url)
+      })
+   }
+   file, err := os.Create("justwatch.txt")
+   if err != nil {
+      return err
+   }
+   defer file.Close()
+   _, err = fmt.Fprintln(file, rows)
+   if err != nil {
+      return err
+   }
+   return nil
+}
 
 func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
    if req.Body != nil {
@@ -53,38 +96,4 @@ func main() {
    } else {
       flag.Usage()
    }
-}
-
-func (f *flags) stream() error {
-   content, err := f.address.Content()
-   if err != nil {
-      return err
-   }
-   var rows justwatch.OfferRows
-   for _, tag := range content.HrefLangTags {
-      locale, ok := justwatch.English.Locale(&tag)
-      if !ok {
-         return errors.New("Locale")
-      }
-      offers, err := tag.Offers(locale)
-      if err != nil {
-         return err
-      }
-      offers = slices.DeleteFunc(offers, justwatch.Offer.Monetization)
-      for _, offer := range offers {
-         rows.Add(locale, &offer)
-      }
-      time.Sleep(f.sleep)
-   }
-   if f.url {
-      slices.SortFunc(rows, func(a, b *justwatch.OfferRow) int {
-         return cmp.Compare(a.Url, b.Url)
-      })
-   } else {
-      slices.SortFunc(rows, func(a, b *justwatch.OfferRow) int {
-         return len(a.Url) - len(b.Url)
-      })
-   }
-   fmt.Println(rows)
-   return nil
 }
