@@ -11,6 +11,7 @@ import (
    "log"
    "net/http"
    "os"
+   "path"
    "slices"
    "time"
 )
@@ -45,7 +46,9 @@ func (f *flags) stream() error {
          return len(a.Url) - len(b.Url)
       })
    }
-   file, err := os.Create("justwatch.txt")
+   file, err := create(
+      path.Base(f.address[0]),
+   )
    if err != nil {
       return err
    }
@@ -55,6 +58,17 @@ func (f *flags) stream() error {
       return err
    }
    return nil
+}
+
+func create(name string) (*os.File, error) {
+   log.Println("Create", name)
+   return os.Create(name)
+}
+
+type flags struct {
+   address justwatch.Address
+   sleep   time.Duration
+   url     bool
 }
 
 func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
@@ -73,12 +87,6 @@ func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
 }
 
 type transport struct{}
-
-type flags struct {
-   address justwatch.Address
-   sleep   time.Duration
-   url bool
-}
 
 func main() {
    http.DefaultClient.Transport = transport{}

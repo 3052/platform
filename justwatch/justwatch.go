@@ -12,6 +12,19 @@ import (
    "strings"
 )
 
+func (a Address) String() string {
+   return a[0]
+}
+
+func (a *Address) Set(data string) error {
+   data = strings.TrimPrefix(data, "https://")
+   data = strings.TrimPrefix(data, "www.")
+   (*a)[0] = strings.TrimPrefix(data, "justwatch.com")
+   return nil
+}
+
+type Address [1]string
+
 // `presentationType` data seems to be incorrect in some cases. For example,
 // JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
 // when the site itself reports as HD
@@ -300,23 +313,10 @@ func (s Locales) Locale(tag *LangTag) (*Locale, bool) {
 
 type OfferRows []*OfferRow
 
-func (a Address) String() string {
-   return a[0]
-}
-
-func (a *Address) Set(data string) error {
-   data = strings.TrimPrefix(data, "https://")
-   data = strings.TrimPrefix(data, "www.")
-   (*a)[0] = strings.TrimPrefix(data, "justwatch.com")
-   return nil
-}
-
 func (w *WebUrl) UnmarshalText(data []byte) error {
    (*w)[0] = strings.TrimSuffix(string(data), "\n")
    return nil
 }
-
-type Address [1]string
 
 type WebUrl [1]string
 

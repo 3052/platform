@@ -26,6 +26,26 @@ https://justwatch.com/ch/Anbieter/canal-plus
 
 3,068 titles
 
+us:
+
+Access Denied
+
+mullvad:
+
+Contenu indisponible (content unavailable)
+
+nord:
+
+Contenu indisponible (content unavailable)
+
+smart proxy:
+
+The proxy server is refusing connections
+
+proxy seller:
+
+Contenu indisponible (content unavailable)
+
 ## poland
 
 ~~~
@@ -39,6 +59,8 @@ FHD@L3
 https://justwatch.com/pl/serwis-streamingowy/canal-plus-online
 
 993 titles
+
+---------------------------------------------------------------------------------
 
 ## country = Czech Republic
 
