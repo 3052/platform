@@ -16,6 +16,50 @@ import (
    "time"
 )
 
+func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
+   if req.Body != nil {
+      data, err := io.ReadAll(req.Body)
+      if err != nil {
+         return nil, err
+      }
+      req.Body.Close()
+      req.Body = io.NopCloser(bytes.NewReader(data))
+      log.Print(string(data))
+   } else {
+      log.Print(req.URL)
+   }
+   return http.DefaultTransport.RoundTrip(req)
+}
+
+type transport struct{}
+
+func create(name string) (*os.File, error) {
+   log.Println("Create", name)
+   return os.Create(name)
+}
+
+type flags struct {
+   address justwatch.Address
+   sleep   time.Duration
+}
+
+func main() {
+   http.DefaultClient.Transport = transport{}
+   log.SetFlags(log.Ltime)
+   var f flags
+   flag.Var(&f.address, "a", "address")
+   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
+   flag.Parse()
+   if f.address.String() != "" {
+      err := f.stream()
+      if err != nil {
+         panic(err)
+      }
+   } else {
+      flag.Usage()
+   }
+}
+
 func (f *flags) stream() error {
    content, err := f.address.Content()
    if err != nil {
@@ -37,15 +81,6 @@ func (f *flags) stream() error {
       }
       time.Sleep(f.sleep)
    }
-   if f.url {
-      slices.SortFunc(rows, func(a, b *justwatch.OfferRow) int {
-         return cmp.Compare(a.Url, b.Url)
-      })
-   } else {
-      slices.SortFunc(rows, func(a, b *justwatch.OfferRow) int {
-         return len(a.Url) - len(b.Url)
-      })
-   }
    file, err := create(
       path.Base(f.address[0]),
    )
@@ -53,55 +88,12 @@ func (f *flags) stream() error {
       return err
    }
    defer file.Close()
+   slices.SortFunc(rows, func(a, b *justwatch.OfferRow) int {
+      return cmp.Compare(a.Url, b.Url)
+   })
    _, err = fmt.Fprintln(file, rows)
    if err != nil {
       return err
    }
    return nil
-}
-
-func create(name string) (*os.File, error) {
-   log.Println("Create", name)
-   return os.Create(name)
-}
-
-type flags struct {
-   address justwatch.Address
-   sleep   time.Duration
-   url     bool
-}
-
-func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
-   if req.Body != nil {
-      data, err := io.ReadAll(req.Body)
-      if err != nil {
-         return nil, err
-      }
-      req.Body.Close()
-      req.Body = io.NopCloser(bytes.NewReader(data))
-      log.Print(string(data))
-   } else {
-      log.Print(req.URL)
-   }
-   return http.DefaultTransport.RoundTrip(req)
-}
-
-type transport struct{}
-
-func main() {
-   http.DefaultClient.Transport = transport{}
-   log.SetFlags(log.Ltime)
-   var f flags
-   flag.Var(&f.address, "a", "address")
-   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
-   flag.BoolVar(&f.url, "u", false, "url instead of len(url)")
-   flag.Parse()
-   if f.address.String() != "" {
-      err := f.stream()
-      if err != nil {
-         panic(err)
-      }
-   } else {
-      flag.Usage()
-   }
 }
