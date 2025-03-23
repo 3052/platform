@@ -9,14 +9,6 @@ import (
    "time"
 )
 
-func command(name string, arg ...string) *exec.Cmd {
-   cmd := exec.Command(name, arg...)
-   log.Print(cmd.Args)
-   return cmd
-}
-
-type Transport http.Transport
-
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
    var err error
    if req.Header.Get("proxy") != "" {
@@ -36,6 +28,14 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
    }
    return (*http.Transport)(t).RoundTrip(req)
 }
+
+func command(name string, arg ...string) *exec.Cmd {
+   cmd := exec.Command(name, arg...)
+   log.Print(cmd.Args)
+   return cmd
+}
+
+type Transport http.Transport
 
 var connected bool
 
