@@ -6,6 +6,20 @@ import (
    "testing"
 )
 
+func proxy_test(values ...bool) error {
+   http.DefaultClient.Transport = &Transport{
+      Protocols: &http.Protocols{}, // github.com/golang/go/issues/25793
+      Proxy: http.ProxyFromEnvironment,
+   }
+   for _, value := range values {
+      err := get(value)
+      if err != nil {
+         return err
+      }
+   }
+   return nil
+}
+
 func Test11(t *testing.T) {
    err := proxy_test(true, true)
    if err != nil {
@@ -32,20 +46,6 @@ func Test00(t *testing.T) {
    if err != nil {
       t.Fatal(err)
    }
-}
-
-func proxy_test(values ...bool) error {
-   http.DefaultClient.Transport = &Transport{
-      Protocols: &http.Protocols{},
-      Proxy: http.ProxyFromEnvironment,
-   }
-   for _, value := range values {
-      err := get(value)
-      if err != nil {
-         return err
-      }
-   }
-   return nil
 }
 
 func get(proxy bool) error {
