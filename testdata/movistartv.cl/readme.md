@@ -6,9 +6,7 @@ monetization = FLATRATE
 country = Chile
 ~~~
 
-website is just generally a piece of shit
-
-## without VPN
+## us
 
 The connection has timed out
 
@@ -18,4 +16,6 @@ redirects here:
 
 https://movistartv.cl
 
-and freezes.
+if you search a movie it just redirects to disney:
+
+https://disneyplus.com/movies/the-life-aquatic-with-steve-zissou/5mR8WrAw3dVa
