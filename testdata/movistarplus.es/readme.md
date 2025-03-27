@@ -1,12 +1,12 @@
 # movistarplus.es
 
-https://movistarplus.es/cine/barry-seal-el-traficante/ficha?id=1462514
-
 ~~~
 url = http://wl.movistarplus.es/ficha/?id=1462514
 monetization = FLATRATE
 country = Spain
 ~~~
+
+https://movistarplus.es/cine/barry-seal-el-traficante/ficha?id=1462514
 
 ## smart proxy
 
