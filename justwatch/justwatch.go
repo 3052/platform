@@ -12,15 +12,15 @@ import (
    "strings"
 )
 
-func (a Address) String() string {
-   return a[0]
-}
-
 func (a *Address) Set(data string) error {
    data = strings.TrimPrefix(data, "https://")
    data = strings.TrimPrefix(data, "www.")
    (*a)[0] = strings.TrimPrefix(data, "justwatch.com")
    return nil
+}
+
+func (a Address) String() string {
+   return a[0]
 }
 
 type Address [1]string
