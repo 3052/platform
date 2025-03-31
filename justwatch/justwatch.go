@@ -12,10 +12,98 @@ import (
    "strings"
 )
 
+func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
+   i := slices.IndexFunc(*o, func(row *OfferRow) bool {
+      return row.Url == offer1.StandardWebUrl[0]
+   })
+   if i >= 0 {
+      row := (*o)[i]
+      if !slices.Contains(row.Country, locale1.CountryName) {
+         row.Country = append(row.Country, locale1.CountryName)
+      }
+   } else {
+      var row OfferRow
+      row.Count = offer1.ElementCount
+      row.Country = []string{locale1.CountryName}
+      row.Monetization = offer1.MonetizationType
+      row.Url = offer1.StandardWebUrl[0]
+      *o = append(*o, &row)
+   }
+}
+
+type OfferRows []*OfferRow
+
+type OfferRow struct {
+   Count        int64
+   Country      []string
+   Monetization string
+   Url          string
+}
+
+type Content struct {
+   HrefLangTags []LangTag `json:"href_lang_tags"`
+}
+
+const fetcher_query = `
+query BackendConstantsFetcherQuery($language: Language!) {
+   locales {
+      country
+      countryName(language: $language)
+      fullLocale
+   }
+}
+`
+
+func (t *LangTag) Offers(locale1 *Locale) ([]Offer, error) {
+   data, err := json.Marshal(map[string]any{
+      "query": graphql_compact(title_details),
+      "variables": map[string]string{
+         "country": locale1.Country,
+         "fullPath": t.Href,
+      },
+   })
+   if err != nil {
+      return nil, err
+   }
+   resp, err := http.Post(
+      "https://apis.justwatch.com/graphql", "application/json",
+      bytes.NewReader(data),
+   )
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      var data strings.Builder
+      resp.Write(&data)
+      return nil, errors.New(data.String())
+   }
+   var value struct {
+      Data struct {
+         Url struct {
+            Node struct {
+               Offers []Offer
+            }
+         }
+      }
+   }
+   err = json.NewDecoder(resp.Body).Decode(&value)
+   if err != nil {
+      return nil, err
+   }
+   return value.Data.Url.Node.Offers, nil
+}
+func (w *WebUrl) UnmarshalText(data []byte) error {
+   w[0] = strings.TrimSuffix(string(data), "\n")
+   return nil
+}
+
+type WebUrl [1]string
+
 func (a *Address) Set(data string) error {
    data = strings.TrimPrefix(data, "https://")
    data = strings.TrimPrefix(data, "www.")
-   (*a)[0] = strings.TrimPrefix(data, "justwatch.com")
+   a[0] = strings.TrimPrefix(data, "justwatch.com")
    return nil
 }
 
@@ -46,13 +134,6 @@ func (o Offer) Monetization() bool {
       return true
    }
    return false
-}
-
-type OfferRow struct {
-   Count        int64
-   Country      []string
-   Monetization string
-   Url          string
 }
 
 func (o OfferRows) String() string {
@@ -311,15 +392,6 @@ func (s Locales) Locale(tag *LangTag) (*Locale, bool) {
    return nil, false
 }
 
-type OfferRows []*OfferRow
-
-func (w *WebUrl) UnmarshalText(data []byte) error {
-   (*w)[0] = strings.TrimSuffix(string(data), "\n")
-   return nil
-}
-
-type WebUrl [1]string
-
 func (a Address) Content() (*Content, error) {
    resp, err := http.Get("https://apis.justwatch.com/content/urls?path=" + a[0])
    if err != nil {
@@ -335,77 +407,4 @@ func (a Address) Content() (*Content, error) {
       return nil, err
    }
    return content1, nil
-}
-
-func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
-   i := slices.IndexFunc(*o, func(row *OfferRow) bool {
-      return row.Url == offer1.StandardWebUrl[0]
-   })
-   if i >= 0 {
-      row := (*o)[i]
-      if !slices.Contains(row.Country, locale1.CountryName) {
-         row.Country = append(row.Country, locale1.CountryName)
-      }
-   } else {
-      var row OfferRow
-      row.Count = offer1.ElementCount
-      row.Country = []string{locale1.CountryName}
-      row.Monetization = offer1.MonetizationType
-      row.Url = offer1.StandardWebUrl[0]
-      *o = append(*o, &row)
-   }
-}
-
-type Content struct {
-   HrefLangTags []LangTag `json:"href_lang_tags"`
-}
-
-const fetcher_query = `
-query BackendConstantsFetcherQuery($language: Language!) {
-   locales {
-      country
-      countryName(language: $language)
-      fullLocale
-   }
-}
-`
-
-func (t *LangTag) Offers(locale1 *Locale) ([]Offer, error) {
-   data, err := json.Marshal(map[string]any{
-      "query": graphql_compact(title_details),
-      "variables": map[string]string{
-         "country": locale1.Country,
-         "fullPath": t.Href,
-      },
-   })
-   if err != nil {
-      return nil, err
-   }
-   resp, err := http.Post(
-      "https://apis.justwatch.com/graphql", "application/json",
-      bytes.NewReader(data),
-   )
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      var data strings.Builder
-      resp.Write(&data)
-      return nil, errors.New(data.String())
-   }
-   var value struct {
-      Data struct {
-         Url struct {
-            Node struct {
-               Offers []Offer
-            }
-         }
-      }
-   }
-   err = json.NewDecoder(resp.Body).Decode(&value)
-   if err != nil {
-      return nil, err
-   }
-   return value.Data.Url.Node.Offers, nil
 }
