@@ -1,5 +1,7 @@
 # Smart proxy
 
+https://dashboard.smartproxy.com/register
+
 ~~~
 Residential Proxies
 $7 / 1 GB
