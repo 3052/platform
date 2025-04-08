@@ -1,17 +1,16 @@
 # player.pl
 
+## Heretic (2024)
+
 if they have this marker:
 
 WYPOŻYCZ
 
 that means RENT only - example:
 
-- https://player.pl/filmy-online,3/anora,11001955
-- https://player.pl/filmy-online,3/heretic,10960161
+https://player.pl/filmy-online,3/heretic,10960161
 
-some are free:
-
-https://player.pl/filmy-online,3/dziewczyna-moich-koszmarow,11122880
+## Longlegs (2024)
 
 ~~~
 url = https://player.pl/playerplus/filmy-online,3/kod-zla,10592056
