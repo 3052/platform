@@ -1,22 +1,22 @@
 # player.pl
 
-## Heretic (2024)
+country = Poland
 
 if they have this marker:
 
 WYPOŻYCZ
 
-that means RENT only - example:
-
-https://player.pl/filmy-online,3/heretic,10960161
+that means RENT only
 
 ## Longlegs (2024)
 
-~~~
-url = https://player.pl/playerplus/filmy-online,3/kod-zla,10592056
-monetization = FLATRATE
-country = Poland
-~~~
+rent only:
+
+https://player.pl/filmy-online,3/kod-zla,10346302
+
+stream:
+
+https://player.pl/playerplus/filmy-online,3/kod-zla,10592056
 
 1. VPN
 2. Wykup dostęp (buy access)
