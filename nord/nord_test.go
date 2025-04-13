@@ -6,29 +6,43 @@ import (
    "testing"
 )
 
-func TestRead(t *testing.T) {
+func TestServerLoad(t *testing.T) {
+   load := server_loads{
+      {Count:2, Country:"CA", City:"toronto", Hostname:"ca1788.nordvpn.com"},
+      {Count:3, Country:"CA", City:"toronto", Hostname:"ca1789.nordvpn.com"},
+   }
+   for range 9 {
+      fmt.Println(load.country("CA"))
+   }
+}
+
+func TestCountry(t *testing.T) {
    home, err := os.UserHomeDir()
    if err != nil {
       t.Fatal(err)
    }
-   data, err := os.ReadFile(home + "/platform/nord/servers")
+   data, err := os.ReadFile(home + "/platform/nord/server_loads")
    if err != nil {
       t.Fatal(err)
    }
-   var servers1 servers
-   err = servers1.unmarshal(data)
+   var loads server_loads
+   err = loads.unmarshal(data)
    if err != nil {
       t.Fatal(err)
    }
-   for _, server1 := range servers1 {
-      if server1.proxy_ssl() {
-         fmt.Printf("%+v\n", server1)
+   for _, load := range loads {
+      if load.Country == "CA" {
+         fmt.Printf("%+v\n\n", load)
       }
    }
 }
 
 func TestWrite(t *testing.T) {
-   data, err := get_servers(0)
+   servers, err := get_servers(0)
+   if err != nil {
+      t.Fatal(err)
+   }
+   data, err := get_server_loads(servers).marshal()
    if err != nil {
       t.Fatal(err)
    }
@@ -36,7 +50,7 @@ func TestWrite(t *testing.T) {
    if err != nil {
       t.Fatal(err)
    }
-   err = os.WriteFile(home + "/platform/nord/servers", data, os.ModePerm)
+   err = os.WriteFile(home+"/platform/nord/server_loads", data, os.ModePerm)
    if err != nil {
       t.Fatal(err)
    }
