@@ -6,24 +6,15 @@ import (
    "strconv"
 )
 
-// limit <= -1 for default
-// limit == 0 for all
-func GetServers(limit int) ([]Server, error) {
-   req, _ := http.NewRequest("", "https://api.nordvpn.com/v2/servers", nil)
-   if limit >= 0 {
-      req.URL.RawQuery = "limit=" + strconv.Itoa(limit)
-   }
-   resp, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   var servers []Server
-   err = json.NewDecoder(resp.Body).Decode(&servers)
-   if err != nil {
-      return nil, err
-   }
-   return servers, nil
+func Proxy(hostname string) string {
+   return "https://" + hostname + ":89"
+}
+
+type ServerLoad struct {
+   Count    int
+   Country  string
+   City     string
+   Hostname string
 }
 
 type Server struct {
@@ -42,11 +33,24 @@ type Server struct {
    }
 }
 
-type ServerLoad struct {
-   Count    int
-   Country  string
-   City     string
-   Hostname string
+// limit <= -1 for default
+// limit == 0 for all
+func GetServers(limit int) ([]Server, error) {
+   req, _ := http.NewRequest("", "https://api.nordvpn.com/v2/servers", nil)
+   if limit >= 0 {
+      req.URL.RawQuery = "limit=" + strconv.Itoa(limit)
+   }
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   var servers []Server
+   err = json.NewDecoder(resp.Body).Decode(&servers)
+   if err != nil {
+      return nil, err
+   }
+   return servers, nil
 }
 
 type ServerLoads []*ServerLoad
