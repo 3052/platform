@@ -4,10 +4,19 @@ import (
    "encoding/json"
    "net/http"
    "strconv"
+   "strings"
 )
 
-func Proxy(hostname string) string {
-   return "https://" + hostname + ":89"
+func Proxy(username, password, hostname string) string {
+   var b strings.Builder
+   b.WriteString("https://")
+   b.WriteString(username)
+   b.WriteByte(':')
+   b.WriteString(password)
+   b.WriteByte('@')
+   b.WriteString(hostname)
+   b.WriteString(":89")
+   return b.String()
 }
 
 type ServerLoad struct {
