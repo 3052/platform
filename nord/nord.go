@@ -15,11 +15,10 @@ type servers struct {
    }
 }
 
+// 0 for all
 func (s *servers) New(limit int) error {
    req, _ := http.NewRequest("", "https://api.nordvpn.com/v2/servers", nil)
-   if limit >= 1 {
-      req.URL.RawQuery = "limit=" + strconv.Itoa(limit)
-   }
+   req.URL.RawQuery = "limit=" + strconv.Itoa(limit)
    resp, err := http.DefaultClient.Do(req)
    if err != nil {
       return err

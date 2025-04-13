@@ -7,7 +7,7 @@ import (
 
 func Test(t *testing.T) {
    var servers1 servers
-   err := servers1.New(9999)
+   err := servers1.New(0)
    if err != nil {
       t.Fatal(err)
    }
