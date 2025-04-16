@@ -15,24 +15,6 @@ import (
    "time"
 )
 
-const month = 30 * 24 *time.Hour
-
-func read_file(name string) ([]byte, error) {
-   file, err := os.Open(name)
-   if err != nil {
-      return nil, err
-   }
-   defer file.Close()
-   info, err := file.Stat()
-   if err != nil {
-      return nil, err
-   }
-   if time.Since(info.ModTime()) >= month {
-      return nil, errors.New("ModTime")
-   }
-   return io.ReadAll(file)
-}
-
 func do_country(name, code string) error {
    data, err := exec.Command("password", "nordvpn.com#proxy").Output()
    if err != nil {
@@ -56,6 +38,24 @@ func do_country(name, code string) error {
       return err
    }
    return write_file(name, data)
+}
+
+const month = 30 * 24 *time.Hour
+
+func read_file(name string) ([]byte, error) {
+   file, err := os.Open(name)
+   if err != nil {
+      return nil, err
+   }
+   defer file.Close()
+   info, err := file.Stat()
+   if err != nil {
+      return nil, err
+   }
+   if time.Since(info.ModTime()) >= month {
+      return nil, errors.New("ModTime")
+   }
+   return io.ReadAll(file)
 }
 
 func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
