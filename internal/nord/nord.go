@@ -30,9 +30,9 @@ func do_country(name, code string) error {
    if err != nil {
       return err
    }
-   fmt.Println(
-      nord.Proxy(username, password, loads.Country(code)),
-   )
+   proxy := nord.Proxy(username, password, loads.Country(code))
+   fmt.Printf("$env:http_proxy = %q\n", proxy)
+   fmt.Printf("$env:https_proxy = %q\n", proxy)
    data, err = loads.Marshal()
    if err != nil {
       return err

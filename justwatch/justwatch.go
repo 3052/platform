@@ -13,22 +13,38 @@ import (
 )
 
 func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
+   country := locale1.String()
    i := slices.IndexFunc(*o, func(row *OfferRow) bool {
       return row.Url == offer1.StandardWebUrl[0]
    })
    if i >= 0 {
       row := (*o)[i]
-      if !slices.Contains(row.Country, locale1.CountryName) {
-         row.Country = append(row.Country, locale1.CountryName)
+      if !slices.Contains(row.Country, country) {
+         row.Country = append(row.Country, country)
       }
    } else {
       var row OfferRow
       row.Count = offer1.ElementCount
-      row.Country = []string{locale1.CountryName}
+      row.Country = []string{country}
       row.Monetization = offer1.MonetizationType
       row.Url = offer1.StandardWebUrl[0]
       *o = append(*o, &row)
    }
+}
+
+func (e *Locale) String() string {
+   var b strings.Builder
+   b.WriteString(e.Country)
+   b.WriteByte(' ')
+   b.WriteString(e.CountryName)
+   return b.String()
+}
+
+// keep order
+type Locale struct {
+   FullLocale  string
+   Country     string
+   CountryName string
 }
 
 type OfferRows []*OfferRow
@@ -370,13 +386,6 @@ func graphql_compact(data string) string {
 }
 
 type Locales []Locale
-
-// keep order
-type Locale struct {
-   FullLocale  string
-   Country     string
-   CountryName string
-}
 
 type LangTag struct {
    Locale string // es_AR
