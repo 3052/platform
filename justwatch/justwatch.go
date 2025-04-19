@@ -12,6 +12,21 @@ import (
    "strings"
 )
 
+func (v *Locale) String() string {
+   var b strings.Builder
+   b.WriteString(v.Country)
+   b.WriteByte(' ')
+   b.WriteString(v.CountryName)
+   return b.String()
+}
+
+// keep order
+type Locale struct {
+   FullLocale  string
+   Country     string
+   CountryName string
+}
+
 func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
    country := locale1.String()
    i := slices.IndexFunc(*o, func(row *OfferRow) bool {
@@ -32,20 +47,7 @@ func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
    }
 }
 
-func (e *Locale) String() string {
-   var b strings.Builder
-   b.WriteString(e.Country)
-   b.WriteByte(' ')
-   b.WriteString(e.CountryName)
-   return b.String()
-}
-
-// keep order
-type Locale struct {
-   FullLocale  string
-   Country     string
-   CountryName string
-}
+///
 
 type OfferRows []*OfferRow
 
