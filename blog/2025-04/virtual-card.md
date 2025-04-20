@@ -22,7 +22,9 @@ security, you can pause it between uses or set limits on it.
 
 ## wise.com
 
-https://wise.com/help/articles/6za75AGrPB4T9RfZhKa0zR/temporarily-pausing-issuing-new-wise-multi-currency-cards-in-the-us
+works with US now
+
+https://wise.com
 
 ## ironvest.com
 
