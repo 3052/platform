@@ -20,3 +20,12 @@ https://mullvad.net/account/create
 ## how to use the mullvad cli
 
 https://mullvad.net/help/how-use-mullvad-cli
+
+## quantum resistant tunnel
+
+1. settings
+2. vpn settings
+3. wireguard settings
+4. quantum resistant tunnel
+
+https://github.com/mullvad/mullvadvpn-app/issues/7937
