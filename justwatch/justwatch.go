@@ -27,6 +27,13 @@ type Locale struct {
    CountryName string
 }
 
+type OfferRow struct {
+   Count        int64
+   Country      []string
+   Monetization string
+   Url          string
+}
+
 func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
    country := locale1.String()
    i := slices.IndexFunc(*o, func(row *OfferRow) bool {
@@ -47,16 +54,9 @@ func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
    }
 }
 
-///
-
 type OfferRows []*OfferRow
 
-type OfferRow struct {
-   Count        int64
-   Country      []string
-   Monetization string
-   Url          string
-}
+///
 
 type Content struct {
    HrefLangTags []LangTag `json:"href_lang_tags"`
