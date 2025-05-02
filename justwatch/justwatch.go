@@ -12,6 +12,10 @@ import (
    "strings"
 )
 
+type Content struct {
+   HrefLangTags []LangTag `json:"href_lang_tags"`
+}
+
 func (v *Locale) String() string {
    var b strings.Builder
    b.WriteString(v.Country)
@@ -57,10 +61,6 @@ func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
 type OfferRows []*OfferRow
 
 ///
-
-type Content struct {
-   HrefLangTags []LangTag `json:"href_lang_tags"`
-}
 
 const fetcher_query = `
 query BackendConstantsFetcherQuery($language: Language!) {
