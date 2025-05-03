@@ -16,7 +16,7 @@ import (
 )
 
 func do_country(name, code string) error {
-   data, err := exec.Command("password", "nordvpn.com#proxy").Output()
+   data, err := exec.Command("password", "-e", "nordvpn.com").Output()
    if err != nil {
       return err
    }
