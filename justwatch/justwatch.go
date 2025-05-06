@@ -116,19 +116,6 @@ func (w *WebUrl) UnmarshalText(data []byte) error {
 
 type WebUrl [1]string
 
-func (a *Address) Set(data string) error {
-   data = strings.TrimPrefix(data, "https://")
-   data = strings.TrimPrefix(data, "www.")
-   a[0] = strings.TrimPrefix(data, "justwatch.com")
-   return nil
-}
-
-func (a Address) String() string {
-   return a[0]
-}
-
-type Address [1]string
-
 // `presentationType` data seems to be incorrect in some cases. For example,
 // JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
 // when the site itself reports as HD
@@ -400,6 +387,21 @@ func (s Locales) Locale(tag *LangTag) (*Locale, bool) {
    }
    return nil, false
 }
+
+///
+
+func (a *Address) Set(data string) error {
+   data = strings.TrimPrefix(data, "https://")
+   data = strings.TrimPrefix(data, "www.")
+   a[0] = strings.TrimPrefix(data, "justwatch.com")
+   return nil
+}
+
+func (a Address) String() string {
+   return a[0]
+}
+
+type Address [1]string
 
 func (a Address) Content() (*Content, error) {
    resp, err := http.Get("https://apis.justwatch.com/content/urls?path=" + a[0])
