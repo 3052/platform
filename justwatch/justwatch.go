@@ -60,8 +60,6 @@ func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
 
 type OfferRows []*OfferRow
 
-///
-
 const fetcher_query = `
 query BackendConstantsFetcherQuery($language: Language!) {
    locales {
