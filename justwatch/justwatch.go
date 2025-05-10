@@ -397,10 +397,6 @@ func (a *Address) Set(data string) error {
    return nil
 }
 
-func (a Address) String() string {
-   return a[0]
-}
-
 type Address [1]string
 
 func (a Address) Content() (*Content, error) {
