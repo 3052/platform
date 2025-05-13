@@ -12,6 +12,26 @@ import (
    "strings"
 )
 
+func (a Address) String() string {
+   return a[0]
+}
+
+type Address [1]string
+
+func (o Offer) Monetization() bool {
+   switch o.MonetizationType {
+   case "BUY":
+      return true
+   case "CINEMA":
+      return true
+   case "FAST":
+      return true
+   case "RENT":
+      return true
+   }
+   return false
+}
+
 type Content struct {
    HrefLangTags []LangTag `json:"href_lang_tags"`
 }
@@ -123,20 +143,6 @@ type Offer struct {
    ElementCount     int64
    MonetizationType string
    StandardWebUrl   WebUrl
-}
-
-func (o Offer) Monetization() bool {
-   switch o.MonetizationType {
-   case "BUY":
-      return true
-   case "CINEMA":
-      return true
-   case "FAST":
-      return true
-   case "RENT":
-      return true
-   }
-   return false
 }
 
 func (o OfferRows) String() string {
@@ -388,16 +394,12 @@ func (s Locales) Locale(tag *LangTag) (*Locale, bool) {
    return nil, false
 }
 
-///
-
 func (a *Address) Set(data string) error {
    data = strings.TrimPrefix(data, "https://")
    data = strings.TrimPrefix(data, "www.")
    a[0] = strings.TrimPrefix(data, "justwatch.com")
    return nil
 }
-
-type Address [1]string
 
 func (a Address) Content() (*Content, error) {
    resp, err := http.Get("https://apis.justwatch.com/content/urls?path=" + a[0])
