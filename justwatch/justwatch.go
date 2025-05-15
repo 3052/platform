@@ -18,6 +18,10 @@ func (a Address) String() string {
 
 type Address [1]string
 
+type Content struct {
+   HrefLangTags []LangTag `json:"href_lang_tags"`
+}
+
 func (o Offer) Monetization() bool {
    switch o.MonetizationType {
    case "BUY":
@@ -32,9 +36,7 @@ func (o Offer) Monetization() bool {
    return false
 }
 
-type Content struct {
-   HrefLangTags []LangTag `json:"href_lang_tags"`
-}
+///
 
 func (v *Locale) String() string {
    var b strings.Builder
