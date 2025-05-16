@@ -27,7 +27,7 @@ func command(name string, arg ...string) ([]byte, error) {
 }
 
 func do_country(name, code string) error {
-   data, err := exec.Command("password", "-e", "nordvpn.com").Output()
+   data, err := command("password", "-i", "nordvpn.com")
    if err != nil {
       return err
    }
