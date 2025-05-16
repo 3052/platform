@@ -15,6 +15,17 @@ import (
    "time"
 )
 
+func write_file(name string, data []byte) error {
+   log.Println("WriteFile", name)
+   return os.WriteFile(name, data, os.ModePerm)
+}
+
+func command(name string, arg ...string) ([]byte, error) {
+   c := exec.Command(name, arg...)
+   log.Println("Output", c.Args)
+   return c.Output()
+}
+
 func do_country(name, code string) error {
    data, err := exec.Command("password", "-e", "nordvpn.com").Output()
    if err != nil {
@@ -58,13 +69,6 @@ func read_file(name string) ([]byte, error) {
    return io.ReadAll(file)
 }
 
-func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
-   log.Println(req.Method, req.URL)
-   return http.DefaultTransport.RoundTrip(req)
-}
-
-type transport struct{}
-
 func main() {
    log.SetFlags(log.Ltime)
    http.DefaultClient.Transport = transport{}
@@ -92,10 +96,12 @@ func main() {
    }
 }
 
-func write_file(name string, data []byte) error {
-   log.Println("WriteFile", name)
-   return os.WriteFile(name, data, os.ModePerm)
+func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
+   log.Println(req.Method, req.URL)
+   return http.DefaultTransport.RoundTrip(req)
 }
+
+type transport struct{}
 
 func do_write(name string) error {
    servers, err := nord.GetServers(0)
