@@ -7,10 +7,32 @@ import (
    "errors"
    "html"
    "net/http"
+   "net/url"
    "slices"
    "strconv"
    "strings"
 )
+
+func (a Address) Content() (*Content, error) {
+   req, _ := http.NewRequest(
+      "", "https://apis.justwatch.com/content/urls", nil,
+   )
+   req.URL.RawQuery = "path=" + url.QueryEscape(a[0])
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      return nil, errors.New(resp.Status)
+   }
+   content1 := &Content{}
+   err = json.NewDecoder(resp.Body).Decode(content1)
+   if err != nil {
+      return nil, err
+   }
+   return content1, nil
+}
 
 func (a Address) String() string {
    return a[0]
@@ -35,8 +57,6 @@ func (o Offer) Monetization() bool {
    }
    return false
 }
-
-///
 
 func (v *Locale) String() string {
    var b strings.Builder
@@ -131,6 +151,7 @@ func (t *LangTag) Offers(locale1 *Locale) ([]Offer, error) {
    }
    return value.Data.Url.Node.Offers, nil
 }
+
 func (w *WebUrl) UnmarshalText(data []byte) error {
    w[0] = strings.TrimSuffix(string(data), "\n")
    return nil
@@ -401,21 +422,4 @@ func (a *Address) Set(data string) error {
    data = strings.TrimPrefix(data, "www.")
    a[0] = strings.TrimPrefix(data, "justwatch.com")
    return nil
-}
-
-func (a Address) Content() (*Content, error) {
-   resp, err := http.Get("https://apis.justwatch.com/content/urls?path=" + a[0])
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      return nil, errors.New(resp.Status)
-   }
-   content1 := &Content{}
-   err = json.NewDecoder(resp.Body).Decode(content1)
-   if err != nil {
-      return nil, err
-   }
-   return content1, nil
 }
