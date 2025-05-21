@@ -44,20 +44,6 @@ type Content struct {
    HrefLangTags []LangTag `json:"href_lang_tags"`
 }
 
-func (o Offer) Monetization() bool {
-   switch o.MonetizationType {
-   case "BUY":
-      return true
-   case "CINEMA":
-      return true
-   case "FAST":
-      return true
-   case "RENT":
-      return true
-   }
-   return false
-}
-
 func (v *Locale) String() string {
    var b strings.Builder
    b.WriteString(v.Country)
@@ -72,6 +58,22 @@ type Locale struct {
    Country     string
    CountryName string
 }
+
+func (o Offer) Monetization() bool {
+   switch o.MonetizationType {
+   case "BUY":
+      return true
+   case "CINEMA":
+      return true
+   case "FAST":
+      return true
+   case "RENT":
+      return true
+   }
+   return false
+}
+
+///
 
 type OfferRow struct {
    Count        int64
