@@ -225,6 +225,7 @@ func (a *Address) Set(data string) error {
    a[0] = strings.TrimPrefix(data, "justwatch.com")
    return nil
 }
+
 func (a Address) Content() (*Content, error) {
    req, _ := http.NewRequest(
       "", "https://apis.justwatch.com/content/urls", nil,
