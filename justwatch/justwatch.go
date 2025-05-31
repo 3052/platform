@@ -13,6 +13,11 @@ import (
    "strings"
 )
 
+// this is better than strings.Replace and strings.ReplaceAll
+func graphql_compact(data string) string {
+   return strings.Join(strings.Fields(data), " ")
+}
+
 func (s *Locales) New(language string) error {
    data, err := json.Marshal(map[string]any{
       "query": graphql_compact(fetcher_query),
@@ -198,10 +203,7 @@ var English = Locales{
    {"zh_TW", "TW", "Taiwan"},
 }
 
-// this is better than strings.Replace and strings.ReplaceAll
-func graphql_compact(data string) string {
-   return strings.Join(strings.Fields(data), " ")
-}
+///
 
 type Locales []Locale
 
