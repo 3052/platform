@@ -18,7 +18,12 @@ func graphql_compact(data string) string {
    return strings.Join(strings.Fields(data), " ")
 }
 
-func (s *Locales) New(language string) error {
+type LangTag struct {
+   Locale string // es_AR
+   Href   string // /ar/pelicula/mulholland-drive
+}
+
+func (v *Locales) New(language string) error {
    data, err := json.Marshal(map[string]any{
       "query": graphql_compact(fetcher_query),
       "variables": map[string]string{
@@ -57,7 +62,7 @@ func (s *Locales) New(language string) error {
    if err != nil {
       return err
    }
-   *s = value1.Data.Locales
+   *v = value1.Data.Locales
    return nil
 }
 
@@ -203,23 +208,18 @@ var English = Locales{
    {"zh_TW", "TW", "Taiwan"},
 }
 
-///
-
 type Locales []Locale
 
-type LangTag struct {
-   Locale string // es_AR
-   Href   string // /ar/pelicula/mulholland-drive
-}
-
-func (s Locales) Locale(tag *LangTag) (*Locale, bool) {
-   for _, locale1 := range s {
+func (v Locales) Locale(tag *LangTag) (*Locale, bool) {
+   for _, locale1 := range v {
       if locale1.FullLocale == tag.Locale {
          return &locale1, true
       }
    }
    return nil, false
 }
+
+///
 
 func (a *Address) Set(data string) error {
    data = strings.TrimPrefix(data, "https://")
