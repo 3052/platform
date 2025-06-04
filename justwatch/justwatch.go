@@ -18,6 +18,40 @@ func graphql_compact(data string) string {
    return strings.Join(strings.Fields(data), " ")
 }
 
+func (a *Address) Set(data string) error {
+   data = strings.TrimPrefix(data, "https://")
+   data = strings.TrimPrefix(data, "www.")
+   a[0] = strings.TrimPrefix(data, "justwatch.com")
+   return nil
+}
+
+func (a Address) Content() (*Content, error) {
+   req, _ := http.NewRequest(
+      "", "https://apis.justwatch.com/content/urls", nil,
+   )
+   req.URL.RawQuery = "path=" + url.QueryEscape(a[0])
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      return nil, errors.New(resp.Status)
+   }
+   content1 := &Content{}
+   err = json.NewDecoder(resp.Body).Decode(content1)
+   if err != nil {
+      return nil, err
+   }
+   return content1, nil
+}
+
+func (a Address) String() string {
+   return a[0]
+}
+
+type Address [1]string
+
 type LangTag struct {
    Locale string // es_AR
    Href   string // /ar/pelicula/mulholland-drive
@@ -220,40 +254,6 @@ func (v Locales) Locale(tag *LangTag) (*Locale, bool) {
 }
 
 ///
-
-func (a *Address) Set(data string) error {
-   data = strings.TrimPrefix(data, "https://")
-   data = strings.TrimPrefix(data, "www.")
-   a[0] = strings.TrimPrefix(data, "justwatch.com")
-   return nil
-}
-
-func (a Address) Content() (*Content, error) {
-   req, _ := http.NewRequest(
-      "", "https://apis.justwatch.com/content/urls", nil,
-   )
-   req.URL.RawQuery = "path=" + url.QueryEscape(a[0])
-   resp, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      return nil, errors.New(resp.Status)
-   }
-   content1 := &Content{}
-   err = json.NewDecoder(resp.Body).Decode(content1)
-   if err != nil {
-      return nil, err
-   }
-   return content1, nil
-}
-
-func (a Address) String() string {
-   return a[0]
-}
-
-type Address [1]string
 
 type Content struct {
    HrefLangTags []LangTag `json:"href_lang_tags"`
