@@ -52,6 +52,10 @@ func (a Address) String() string {
 
 type Address [1]string
 
+type Content struct {
+   HrefLangTags []LangTag `json:"href_lang_tags"`
+}
+
 type LangTag struct {
    Locale string // es_AR
    Href   string // /ar/pelicula/mulholland-drive
@@ -254,10 +258,6 @@ func (v Locales) Locale(tag *LangTag) (*Locale, bool) {
 }
 
 ///
-
-type Content struct {
-   HrefLangTags []LangTag `json:"href_lang_tags"`
-}
 
 func (v *Locale) String() string {
    var b strings.Builder
