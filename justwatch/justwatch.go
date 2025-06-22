@@ -61,7 +61,7 @@ type LangTag struct {
    Href   string // /ar/pelicula/mulholland-drive
 }
 
-func (v *Locales) New(language string) error {
+func (l *Locales) New(language string) error {
    data, err := json.Marshal(map[string]any{
       "query": graphql_compact(fetcher_query),
       "variables": map[string]string{
@@ -100,7 +100,7 @@ func (v *Locales) New(language string) error {
    if err != nil {
       return err
    }
-   *v = value1.Data.Locales
+   *l = value1.Data.Locales
    return nil
 }
 
@@ -248,8 +248,8 @@ var English = Locales{
 
 type Locales []Locale
 
-func (v Locales) Locale(tag *LangTag) (*Locale, bool) {
-   for _, locale1 := range v {
+func (l Locales) Locale(tag *LangTag) (*Locale, bool) {
+   for _, locale1 := range l {
       if locale1.FullLocale == tag.Locale {
          return &locale1, true
       }
@@ -259,11 +259,11 @@ func (v Locales) Locale(tag *LangTag) (*Locale, bool) {
 
 ///
 
-func (v *Locale) String() string {
+func (l *Locale) String() string {
    var b strings.Builder
-   b.WriteString(v.Country)
+   b.WriteString(l.Country)
    b.WriteByte(' ')
-   b.WriteString(v.CountryName)
+   b.WriteString(l.CountryName)
    return b.String()
 }
 
