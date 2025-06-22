@@ -13,6 +13,60 @@ import (
    "strings"
 )
 
+func (o *Offer) Monetization() bool {
+   switch o.MonetizationType {
+   case "BUY":
+      return false
+   case "CINEMA":
+      return false
+   case "FAST":
+      return false
+   case "RENT":
+      return false
+   }
+   return true
+}
+
+func (t *LangTag) Offers(locale1 *Locale) ([]*Offer, error) {
+   data, err := json.Marshal(map[string]any{
+      "query": graphql_compact(title_details),
+      "variables": map[string]string{
+         "country": locale1.Country,
+         "fullPath": t.Href,
+      },
+   })
+   if err != nil {
+      return nil, err
+   }
+   resp, err := http.Post(
+      "https://apis.justwatch.com/graphql", "application/json",
+      bytes.NewReader(data),
+   )
+   if err != nil {
+      return nil, err
+   }
+   if resp.StatusCode != http.StatusOK {
+      var data strings.Builder
+      resp.Write(&data)
+      return nil, errors.New(data.String())
+   }
+   defer resp.Body.Close()
+   var value struct {
+      Data struct {
+         Url struct {
+            Node struct {
+               Offers []*Offer
+            }
+         }
+      }
+   }
+   err = json.NewDecoder(resp.Body).Decode(&value)
+   if err != nil {
+      return nil, err
+   }
+   return value.Data.Url.Node.Offers, nil
+}
+
 // this is better than strings.Replace and strings.ReplaceAll
 func graphql_compact(data string) string {
    return strings.Join(strings.Fields(data), " ")
@@ -257,8 +311,6 @@ func (l Locales) Locale(tag *LangTag) (*Locale, bool) {
    return nil, false
 }
 
-///
-
 func (l *Locale) String() string {
    var b strings.Builder
    b.WriteString(l.Country)
@@ -273,22 +325,6 @@ type Locale struct {
    Country     string
    CountryName string
 }
-
-func (o Offer) Monetization() bool {
-   switch o.MonetizationType {
-   case "BUY":
-      return true
-   case "CINEMA":
-      return true
-   case "FAST":
-      return true
-   case "RENT":
-      return true
-   }
-   return false
-}
-
-///
 
 type OfferRow struct {
    Count        int64
@@ -328,45 +364,6 @@ query BackendConstantsFetcherQuery($language: Language!) {
    }
 }
 `
-func (t *LangTag) Offers(locale1 *Locale) ([]Offer, error) {
-   data, err := json.Marshal(map[string]any{
-      "query": graphql_compact(title_details),
-      "variables": map[string]string{
-         "country": locale1.Country,
-         "fullPath": t.Href,
-      },
-   })
-   if err != nil {
-      return nil, err
-   }
-   resp, err := http.Post(
-      "https://apis.justwatch.com/graphql", "application/json",
-      bytes.NewReader(data),
-   )
-   if err != nil {
-      return nil, err
-   }
-   if resp.StatusCode != http.StatusOK {
-      var data strings.Builder
-      resp.Write(&data)
-      return nil, errors.New(data.String())
-   }
-   defer resp.Body.Close()
-   var value struct {
-      Data struct {
-         Url struct {
-            Node struct {
-               Offers []Offer
-            }
-         }
-      }
-   }
-   err = json.NewDecoder(resp.Body).Decode(&value)
-   if err != nil {
-      return nil, err
-   }
-   return value.Data.Url.Node.Offers, nil
-}
 
 func (w *WebUrl) UnmarshalText(data []byte) error {
    w[0] = strings.TrimSuffix(string(data), "\n")
@@ -374,15 +371,6 @@ func (w *WebUrl) UnmarshalText(data []byte) error {
 }
 
 type WebUrl [1]string
-
-// `presentationType` data seems to be incorrect in some cases. For example,
-// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
-// when the site itself reports as HD
-type Offer struct {
-   ElementCount     int64
-   MonetizationType string
-   StandardWebUrl   WebUrl
-}
 
 func (o OfferRows) String() string {
    var data []byte
@@ -426,3 +414,12 @@ query GetUrlTitleDetails(
    }
 }
 ` // dont use `query(`
+
+// `presentationType` data seems to be incorrect in some cases. For example,
+// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
+// when the site itself reports as HD
+type Offer struct {
+   ElementCount     int64
+   MonetizationType string
+   StandardWebUrl   WebUrl
+}
