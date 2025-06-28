@@ -27,12 +27,12 @@ func (o *Offer) Monetization() bool {
    return true
 }
 
-func (t *LangTag) Offers(locale1 *Locale) ([]*Offer, error) {
+func (l *LangTag) Offers(locale1 *Locale) ([]*Offer, error) {
    data, err := json.Marshal(map[string]any{
       "query": graphql_compact(title_details),
       "variables": map[string]string{
          "country": locale1.Country,
-         "fullPath": t.Href,
+         "fullPath": l.Href,
       },
    })
    if err != nil {
