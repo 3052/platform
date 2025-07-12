@@ -38,20 +38,6 @@ no trial
 
 https://play.google.com/store/apps/details?id=cz.iprima.app
 
-~~~
-> play -i cz.iprima.app -s
-details[6] = FTV Prima, spol. s r.o.
-details[8] = 0 USD
-details[13][1][4] = 2.10.2
-details[13][1][16] = Feb 23, 2024
-details[13][1][17] = APK
-details[13][1][82][1][1] = 6.0 and up
-downloads = 575.94 thousand
-name = prima+ filmy a TV seriály
-size = 56.88 megabyte
-version code = 3154
-~~~
-
 Create Android 6 device. Install user certificate
 
 ## android tv

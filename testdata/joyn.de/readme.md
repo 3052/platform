@@ -43,20 +43,6 @@ x-api-key is hard coded in JavaScript
 
 https://play.google.com/store/apps/details?id=de.prosiebensat1digital.seventv
 
-~~~
-> play -i de.prosiebensat1digital.seventv
-details[6] = Joyn GmbH
-details[8] = 0 USD
-details[13][1][4] = 5.59.0-AOS-559092432
-details[13][1][16] = May 3, 2024
-details[13][1][17] = APK APK APK
-details[13][1][82][1][1] = 7.0 and up
-downloads = 15.76 million
-name = Joyn | deine Streaming App
-size = 94.26 megabyte
-version code = 559092432
-~~~
-
 Create Android 7 device. Install system certificate
 
 https://apkmirror.com/apk/joyn-gmbh/joyn-deine-streaming-app

@@ -25,8 +25,8 @@ type ReportParams struct {
    Itype string `json:"i_type"`
 }
 
-func (r *ReportParams) New(url2 string) error {
-   resp, err := http.Get(url2)
+func (r *ReportParams) New(urlVar string) error {
+   resp, err := http.Get(urlVar)
    if err != nil {
       return err
    }

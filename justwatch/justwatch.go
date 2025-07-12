@@ -27,11 +27,11 @@ func (o *Offer) Monetization() bool {
    return true
 }
 
-func (l *LangTag) Offers(locale1 *Locale) ([]*Offer, error) {
+func (l *LangTag) Offers(localeVar *Locale) ([]*Offer, error) {
    data, err := json.Marshal(map[string]any{
       "query": graphql_compact(title_details),
       "variables": map[string]string{
-         "country": locale1.Country,
+         "country": localeVar.Country,
          "fullPath": l.Href,
       },
    })
@@ -92,12 +92,12 @@ func (a Address) Content() (*Content, error) {
    if resp.StatusCode != http.StatusOK {
       return nil, errors.New(resp.Status)
    }
-   content1 := &Content{}
-   err = json.NewDecoder(resp.Body).Decode(content1)
+   contentVar := &Content{}
+   err = json.NewDecoder(resp.Body).Decode(contentVar)
    if err != nil {
       return nil, err
    }
-   return content1, nil
+   return contentVar, nil
 }
 
 func (a Address) String() string {
@@ -145,16 +145,16 @@ func (l *Locales) New(language string) error {
       return errors.New(data.String())
    }
    defer resp.Body.Close()
-   var value1 struct {
+   var value struct {
       Data struct {
          Locales Locales
       }
    }
-   err = json.NewDecoder(resp.Body).Decode(&value1)
+   err = json.NewDecoder(resp.Body).Decode(&value)
    if err != nil {
       return err
    }
-   *l = value1.Data.Locales
+   *l = value.Data.Locales
    return nil
 }
 
@@ -303,9 +303,9 @@ var English = Locales{
 type Locales []Locale
 
 func (l Locales) Locale(tag *LangTag) (*Locale, bool) {
-   for _, locale1 := range l {
-      if locale1.FullLocale == tag.Locale {
-         return &locale1, true
+   for _, localeVar := range l {
+      if localeVar.FullLocale == tag.Locale {
+         return &localeVar, true
       }
    }
    return nil, false
@@ -333,10 +333,10 @@ type OfferRow struct {
    Url          string
 }
 
-func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
-   country := locale1.String()
+func (o *OfferRows) Add(localeVar *Locale, offerVar *Offer) {
+   country := localeVar.String()
    i := slices.IndexFunc(*o, func(row *OfferRow) bool {
-      return row.Url == offer1.StandardWebUrl[0]
+      return row.Url == offerVar.StandardWebUrl[0]
    })
    if i >= 0 {
       row := (*o)[i]
@@ -345,10 +345,10 @@ func (o *OfferRows) Add(locale1 *Locale, offer1 *Offer) {
       }
    } else {
       var row OfferRow
-      row.Count = offer1.ElementCount
+      row.Count = offerVar.ElementCount
       row.Country = []string{country}
-      row.Monetization = offer1.MonetizationType
-      row.Url = offer1.StandardWebUrl[0]
+      row.Monetization = offerVar.MonetizationType
+      row.Url = offerVar.StandardWebUrl[0]
       *o = append(*o, &row)
    }
 }

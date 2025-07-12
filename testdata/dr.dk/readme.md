@@ -12,22 +12,8 @@ country = Denmark
 
 https://play.google.com/store/apps/details?id=dk.dr.tvplayer
 
-~~~
-> play -i dk.dr.webplayer
-details[8] = 0 USD
-details[13][1][4] = 4.7.0
-details[13][1][16] = Nov 18, 2024
-details[13][1][17] = APK APK APK
-details[13][1][82][1][1] = 5.0 and up
-details[15][18] = http://www.dr.dk/service/privatlivspolitik/
-downloads = 2.09 million
-name = DRTV
-size = 56.60 megabyte
-version code = 180121
-~~~
-
-output is wrong - at least Android 7 is required to get to home screen,
-Android 10 for login. install system certificate
+at least Android 7 is required to get to home screen, Android 10 for login.
+install system certificate
 
 ~~~
 adb install-multiple (Get-ChildItem *.apk)
