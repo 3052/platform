@@ -1,81 +1,70 @@
-package main
+package moonshot
 
 import (
    "bytes"
-   "flag"
-   "mime/multipart"
+   "encoding/json"
    "net/http"
-   "os"
-   "os/exec"
-   "path/filepath"
 )
 
-func main() {
-   name := flag.String("n", "", "name")
-   flag.Parse()
-   if *name != "" {
-      err := post(*name)
-      if err != nil {
-         panic(err)
-      }
-   } else {
-      flag.Usage()
+func completions(bearer string, messages []message) (*http.Response, error) {
+   var value struct {
+      Model string `json:"model"`
+      Messages []message `json:"messages"`
    }
-}
-
-func (f *form_data) New(name string) error {
-   writer := multipart.NewWriter(&f.body)
-   defer writer.Close()
-   field, err := writer.CreateFormField("purpose")
+   value.Model = "moonshot-v1-8k"
+   value.Messages = messages
+   data, err := json.Marshal(value)
    if err != nil {
-      return err
-   }
-   _, err = field.Write([]byte("file-extract"))
-   if err != nil {
-      return err
-   }
-   file, err := writer.CreateFormFile("file", filepath.Base(name))
-   if err != nil {
-      return err
-   }
-   data, err := os.ReadFile(name)
-   if err != nil {
-      return err
-   }
-   _, err = file.Write(data)
-   if err != nil {
-      return err
-   }
-   f.content_type = writer.FormDataContentType()
-   return nil
-}
-
-type form_data struct {
-   body bytes.Buffer
-   content_type string
-}
-
-func post(name string) error {
-   bearer, err := exec.Command("password", "-i", "moonshot.ai").Output()
-   if err != nil {
-      return err
-   }
-   var form form_data
-   err = form.New(name)
-   if err != nil {
-      return err
+      return nil, err
    }
    req, err := http.NewRequest(
-      "POST", "https://api.moonshot.ai/v1/files", &form.body,
+      "POST", "https://api.moonshot.ai/v1/chat/completions",
+      bytes.NewReader(data),
    )
    if err != nil {
-      return err
+      return nil, err
    }
-   req.Header.Set("authorization", "Bearer " + string(bearer))
-   req.Header.Set("content-type", form.content_type)
-   resp, err := http.DefaultClient.Do(req)
+   req.Header.Set("authorization", "Bearer " + bearer)
+   return http.DefaultClient.Do(req)
+}
+
+type content struct {
+   Content string `json:"content"`
+   FileName string `json:"file_name"`
+}
+
+type message struct {
+   Role string `json:"role"`
+   Content string `json:"content"`
+}
+
+func caching(bearer string, contents []content) (*http.Response, error) {
+   var value struct {
+      Model string `json:"model"`
+      Messages []message `json:"messages"`
+   }
+   value.Model = "moonshot-v1"
+   value.Messages = make([]message, len(contents))
+   for i, contentVar := range contents {
+      data, err := json.Marshal(contentVar)
+      if err != nil {
+         return nil, err
+      }
+      value.Messages[i] = message{
+         Role: "user",
+         Content: string(data),
+      }
+   }
+   data, err := json.Marshal(value)
    if err != nil {
-      return err
+      return nil, err
    }
-   return resp.Write(os.Stdout)
+   req, err := http.NewRequest(
+      "POST", "https://api.moonshot.ai/v1/caching", bytes.NewReader(data),
+   )
+   if err != nil {
+      return nil, err
+   }
+   req.Header.Set("authorization", "Bearer " + bearer)
+   return http.DefaultClient.Do(req)
 }
