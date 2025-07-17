@@ -12,3 +12,7 @@ country = United Kingdom
 4. skip upgrade
 
 no trial
+
+- https://apkmirror.com/apk/sky-uk-limited/now-android-tv-2
+- https://apkmirror.com/apk/sky-uk-limited/now-tv-2
+- https://play.google.com/store/apps/details?id=com.bskyb.nowtv.beta
