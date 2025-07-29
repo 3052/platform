@@ -13,6 +13,11 @@ import (
    "strings"
 )
 
+// this is better than strings.Replace and strings.ReplaceAll
+func graphql_compact(data string) string {
+   return strings.Join(strings.Fields(data), " ")
+}
+
 func (l *LangTag) Offers(localeVar *Locale) ([]*Offer, error) {
    data, err := json.Marshal(map[string]any{
       "query": graphql_compact(title_details),
@@ -68,11 +73,6 @@ func (o *Offer) Monetization() bool {
 }
 
 ///
-
-// this is better than strings.Replace and strings.ReplaceAll
-func graphql_compact(data string) string {
-   return strings.Join(strings.Fields(data), " ")
-}
 
 func (a *Address) Set(data string) error {
    data = strings.TrimPrefix(data, "https://")
