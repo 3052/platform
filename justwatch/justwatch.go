@@ -18,6 +18,49 @@ func graphql_compact(data string) string {
    return strings.Join(strings.Fields(data), " ")
 }
 
+func (a *Address) Set(data string) error {
+   data = strings.TrimPrefix(data, "https://")
+   data = strings.TrimPrefix(data, "www.")
+   a[0] = strings.TrimPrefix(data, "justwatch.com")
+   return nil
+}
+
+func (a Address) Content() (*Content, error) {
+   req, _ := http.NewRequest(
+      "", "https://apis.justwatch.com/content/urls", nil,
+   )
+   req.URL.RawQuery = "path=" + url.QueryEscape(a[0])
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return nil, err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      return nil, errors.New(resp.Status)
+   }
+   contentVar := &Content{}
+   err = json.NewDecoder(resp.Body).Decode(contentVar)
+   if err != nil {
+      return nil, err
+   }
+   return contentVar, nil
+}
+
+func (a Address) String() string {
+   return a[0]
+}
+
+type Address [1]string
+
+type Content struct {
+   HrefLangTags []LangTag `json:"href_lang_tags"`
+}
+
+type LangTag struct {
+   Locale string // es_AR
+   Href   string // /ar/pelicula/mulholland-drive
+}
+
 func (l *LangTag) Offers(localeVar *Locale) ([]*Offer, error) {
    data, err := json.Marshal(map[string]any{
       "query": graphql_compact(title_details),
@@ -73,49 +116,6 @@ func (o *Offer) Monetization() bool {
 }
 
 ///
-
-func (a *Address) Set(data string) error {
-   data = strings.TrimPrefix(data, "https://")
-   data = strings.TrimPrefix(data, "www.")
-   a[0] = strings.TrimPrefix(data, "justwatch.com")
-   return nil
-}
-
-func (a Address) Content() (*Content, error) {
-   req, _ := http.NewRequest(
-      "", "https://apis.justwatch.com/content/urls", nil,
-   )
-   req.URL.RawQuery = "path=" + url.QueryEscape(a[0])
-   resp, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      return nil, errors.New(resp.Status)
-   }
-   contentVar := &Content{}
-   err = json.NewDecoder(resp.Body).Decode(contentVar)
-   if err != nil {
-      return nil, err
-   }
-   return contentVar, nil
-}
-
-func (a Address) String() string {
-   return a[0]
-}
-
-type Address [1]string
-
-type Content struct {
-   HrefLangTags []LangTag `json:"href_lang_tags"`
-}
-
-type LangTag struct {
-   Locale string // es_AR
-   Href   string // /ar/pelicula/mulholland-drive
-}
 
 func (l *Locales) New(language string) error {
    data, err := json.Marshal(map[string]any{
