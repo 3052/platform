@@ -101,22 +101,6 @@ func (l *LangTag) Offers(localeVar *Locale) ([]*Offer, error) {
    return value.Data.Url.Node.Offers, nil
 }
 
-func (o *Offer) Monetization() bool {
-   switch o.MonetizationType {
-   case "BUY":
-      return false
-   case "CINEMA":
-      return false
-   case "FAST":
-      return false
-   case "RENT":
-      return false
-   }
-   return true
-}
-
-///
-
 func (l *Locales) New(language string) error {
    data, err := json.Marshal(map[string]any{
       "query": graphql_compact(fetcher_query),
@@ -312,6 +296,22 @@ func (l Locales) Locale(tag *LangTag) (*Locale, bool) {
    }
    return nil, false
 }
+
+func (o *Offer) Monetization() bool {
+   switch o.MonetizationType {
+   case "BUY":
+      return false
+   case "CINEMA":
+      return false
+   case "FAST":
+      return false
+   case "RENT":
+      return false
+   }
+   return true
+}
+
+///
 
 func (l *Locale) String() string {
    var b strings.Builder
