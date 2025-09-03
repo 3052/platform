@@ -3,7 +3,6 @@ package main
 import (
    "41.neocities.org/platform/justwatch"
    "bytes"
-   "cmp"
    "errors"
    "flag"
    "fmt"
@@ -13,6 +12,7 @@ import (
    "os"
    "path"
    "slices"
+   "strings"
    "time"
 )
 
@@ -46,7 +46,7 @@ func (f *flags) stream() error {
    }
    defer file.Close()
    slices.SortFunc(rows, func(a, b *justwatch.OfferRow) int {
-      return cmp.Compare(a.Url, b.Url)
+      return strings.Compare(a.Url, b.Url)
    })
    _, err = fmt.Fprintln(file, rows)
    if err != nil {
