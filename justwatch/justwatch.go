@@ -101,6 +101,21 @@ func (l *LangTag) Offers(localeVar *Locale) ([]*Offer, error) {
    return value.Data.Url.Node.Offers, nil
 }
 
+func (l *Locale) String() string {
+   var b strings.Builder
+   b.WriteString(l.Country)
+   b.WriteByte(' ')
+   b.WriteString(l.CountryName)
+   return b.String()
+}
+
+// keep order
+type Locale struct {
+   FullLocale  string
+   Country     string
+   CountryName string
+}
+
 func (l *Locales) New(language string) error {
    data, err := json.Marshal(map[string]any{
       "query": graphql_compact(fetcher_query),
@@ -312,21 +327,6 @@ func (o *Offer) Monetization() bool {
 }
 
 ///
-
-func (l *Locale) String() string {
-   var b strings.Builder
-   b.WriteString(l.Country)
-   b.WriteByte(' ')
-   b.WriteString(l.CountryName)
-   return b.String()
-}
-
-// keep order
-type Locale struct {
-   FullLocale  string
-   Country     string
-   CountryName string
-}
 
 type OfferRow struct {
    Count        int64
