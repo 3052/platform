@@ -13,6 +13,20 @@ import (
    "strings"
 )
 
+func (o *Offer) Monetization() bool {
+   switch o.MonetizationType {
+   case "BUY":
+      return false
+   case "CINEMA":
+      return false
+   case "FAST":
+      return false
+   case "RENT":
+      return false
+   }
+   return true
+}
+
 // this is better than strings.Replace and strings.ReplaceAll
 func graphql_compact(data string) string {
    return strings.Join(strings.Fields(data), " ")
@@ -311,22 +325,6 @@ func (l Locales) Locale(tag *LangTag) (*Locale, bool) {
    }
    return nil, false
 }
-
-func (o *Offer) Monetization() bool {
-   switch o.MonetizationType {
-   case "BUY":
-      return false
-   case "CINEMA":
-      return false
-   case "FAST":
-      return false
-   case "RENT":
-      return false
-   }
-   return true
-}
-
-///
 
 type OfferRow struct {
    Count        int64
