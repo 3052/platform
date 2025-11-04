@@ -23,7 +23,7 @@ func (f *flags) stream() error {
    }
    var rows justwatch.OfferRows
    for _, tag := range content.HrefLangTags {
-      locale, ok := justwatch.English.Locale(&tag)
+      locale, ok := justwatch.EnUs.Locale(&tag)
       if !ok {
          return errors.New("Locale")
       }
