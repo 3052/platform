@@ -2,11 +2,9 @@ package main
 
 import (
    "41.neocities.org/platform/justwatch"
-   "bytes"
    "errors"
    "flag"
    "fmt"
-   "io"
    "log"
    "net/http"
    "os"
@@ -16,8 +14,13 @@ import (
    "time"
 )
 
-func (f *flags) stream() error {
-   content, err := f.address.Content()
+func (f *flag_set) do_address() error {
+   url_path, err := justwatch.GetPath(f.address)
+   if err != nil {
+      return err
+   }
+   var content justwatch.Content
+   err = content.Fetch(url_path)
    if err != nil {
       return err
    }
@@ -38,9 +41,7 @@ func (f *flags) stream() error {
       }
       time.Sleep(f.sleep)
    }
-   file, err := create(
-      path.Base(f.address[0]),
-   )
+   file, err := create(path.Base(url_path))
    if err != nil {
       return err
    }
@@ -55,42 +56,25 @@ func (f *flags) stream() error {
    return nil
 }
 
-func (transport) RoundTrip(req *http.Request) (*http.Response, error) {
-   if req.Body != nil {
-      data, err := io.ReadAll(req.Body)
-      if err != nil {
-         return nil, err
-      }
-      req.Body.Close()
-      req.Body = io.NopCloser(bytes.NewReader(data))
-      log.Print(string(data))
-   } else {
-      log.Print(req.URL)
-   }
-   return http.DefaultTransport.RoundTrip(req)
-}
-
-type transport struct{}
-
 func create(name string) (*os.File, error) {
    log.Println("Create", name)
    return os.Create(name)
 }
 
-type flags struct {
-   address justwatch.Address
+type flag_set struct {
+   address string
    sleep   time.Duration
 }
 
 func main() {
-   http.DefaultClient.Transport = transport{}
+   http.DefaultClient.Transport = &justwatch.Transport
    log.SetFlags(log.Ltime)
-   var f flags
-   flag.Var(&f.address, "a", "address")
-   flag.DurationVar(&f.sleep, "s", 99*time.Millisecond, "sleep")
+   var set flag_set
+   flag.StringVar(&set.address, "a", "", "address")
+   flag.DurationVar(&set.sleep, "s", 99*time.Millisecond, "sleep")
    flag.Parse()
-   if f.address.String() != "" {
-      err := f.stream()
+   if set.address != "" {
+      err := set.do_address()
       if err != nil {
          panic(err)
       }

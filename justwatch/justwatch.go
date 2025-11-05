@@ -5,13 +5,166 @@ import (
    "encoding/base64"
    "encoding/json"
    "errors"
-   "html"
+   "io"
+   "log"
    "net/http"
    "net/url"
-   "slices"
-   "strconv"
    "strings"
 )
+
+func FetchLocales(language string) (Locales, error) {
+   data, err := json.Marshal(map[string]any{
+      "query": graphql_compact(fetcher_query),
+      "variables": map[string]string{
+         "language": language,
+      },
+   })
+   if err != nil {
+      return nil, err
+   }
+   req, err := http.NewRequest(
+      "POST", "https://apis.justwatch.com/graphql", bytes.NewReader(data),
+   )
+   if err != nil {
+      return nil, err
+   }
+   req.Header.Set("content-type", "application/json")
+   req.Header.Set(
+      "device-id", base64.RawStdEncoding.EncodeToString(make([]byte, 16)),
+   )
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return nil, err
+   }
+   if resp.StatusCode != http.StatusOK {
+      var data bytes.Buffer
+      err = resp.Write(&data)
+      if err != nil {
+         return nil, err
+      }
+      return nil, errors.New(data.String())
+   }
+   defer resp.Body.Close()
+   var value struct {
+      Data struct {
+         Locales Locales
+      }
+   }
+   err = json.NewDecoder(resp.Body).Decode(&value)
+   if err != nil {
+      return nil, err
+   }
+   return value.Data.Locales, nil
+}
+
+func (h *HrefLangTag) Offers(localeVar *Locale) ([]Offer, error) {
+   data, err := json.Marshal(map[string]any{
+      "query": graphql_compact(title_details),
+      "variables": map[string]string{
+         "country": localeVar.Country,
+         "fullPath": h.Href,
+      },
+   })
+   if err != nil {
+      return nil, err
+   }
+   resp, err := http.Post(
+      "https://apis.justwatch.com/graphql", "application/json",
+      bytes.NewReader(data),
+   )
+   if err != nil {
+      return nil, err
+   }
+   if resp.StatusCode != http.StatusOK {
+      var data strings.Builder
+      resp.Write(&data)
+      return nil, errors.New(data.String())
+   }
+   defer resp.Body.Close()
+   var value struct {
+      Data struct {
+         Url struct {
+            Node struct {
+               Offers []Offer
+            }
+         }
+      }
+   }
+   err = json.NewDecoder(resp.Body).Decode(&value)
+   if err != nil {
+      return nil, err
+   }
+   return value.Data.Url.Node.Offers, nil
+}
+func (l Locales) Locale(tag *HrefLangTag) (*Locale, bool) {
+   for _, localeVar := range l {
+      if localeVar.FullLocale == tag.Locale {
+         return &localeVar, true
+      }
+   }
+   return nil, false
+}
+
+func (s *StandardWebUrl) UnmarshalText(data []byte) error {
+   data1 := strings.TrimSuffix(string(data), "\n")
+   *s = StandardWebUrl(data1)
+   return nil
+}
+
+func (c *Content) Fetch(path string) error {
+   req, _ := http.NewRequest("", "https://apis.justwatch.com", nil)
+   req.URL.Path = "/content/urls"
+   req.URL.RawQuery = url.Values{
+      "path": {path},
+   }.Encode()
+   resp, err := http.DefaultClient.Do(req)
+   if err != nil {
+      return err
+   }
+   defer resp.Body.Close()
+   if resp.StatusCode != http.StatusOK {
+      return errors.New(resp.Status)
+   }
+   return json.NewDecoder(resp.Body).Decode(c)
+}
+
+var Transport = http.Transport{
+   Proxy: func(req *http.Request) (*url.URL, error) {
+      if req.Body != nil {
+         data, err := io.ReadAll(req.Body)
+         if err != nil {
+            return nil, err
+         }
+         err = req.Body.Close()
+         if err != nil {
+            return nil, err
+         }
+         req.Body = io.NopCloser(bytes.NewReader(data))
+         log.Print(string(data))
+      } else {
+         log.Print(req.URL)
+      }
+      return nil, nil
+   },
+}
+
+// https://justwatch.com/us/movie/goodfellas
+func GetPath(rawUrl string) (string, error) {
+   parsed_url, err := url.Parse(rawUrl)
+   if err != nil {
+      return "", err
+   }
+   return parsed_url.Path, nil
+}
+
+// keep order
+type Locale struct {
+   FullLocale  string
+   Country     string
+   CountryName string
+}
+
+type StandardWebUrl string
 
 const fetcher_query = `
 query BackendConstantsFetcherQuery($language: Language!) {
@@ -57,25 +210,13 @@ type Content struct {
    HrefLangTags []HrefLangTag `json:"href_lang_tags"`
 }
 
-func (o *Offer) Monetization() bool {
-   switch o.MonetizationType {
-   case "BUY":
-      return false
-   case "CINEMA":
-      return false
-   case "FAST":
-      return false
-   case "RENT":
-      return false
-   }
-   return true
-}
-
-// keep order
-type Locale struct {
-   FullLocale  string
-   Country     string
-   CountryName string
+// `presentationType` data seems to be incorrect in some cases. For example,
+// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
+// when the site itself reports as HD
+type Offer struct {
+   ElementCount     int64
+   MonetizationType string
+   StandardWebUrl   StandardWebUrl
 }
 
 var EnUs = Locales{
@@ -221,208 +362,3 @@ var EnUs = Locales{
 }
 
 type Locales []Locale
-
-func (h *HrefLangTag) Offers(localeVar *Locale) ([]*Offer, error) {
-   data, err := json.Marshal(map[string]any{
-      "query": graphql_compact(title_details),
-      "variables": map[string]string{
-         "country": localeVar.Country,
-         "fullPath": h.Href,
-      },
-   })
-   if err != nil {
-      return nil, err
-   }
-   resp, err := http.Post(
-      "https://apis.justwatch.com/graphql", "application/json",
-      bytes.NewReader(data),
-   )
-   if err != nil {
-      return nil, err
-   }
-   if resp.StatusCode != http.StatusOK {
-      var data strings.Builder
-      resp.Write(&data)
-      return nil, errors.New(data.String())
-   }
-   defer resp.Body.Close()
-   var value struct {
-      Data struct {
-         Url struct {
-            Node struct {
-               Offers []*Offer
-            }
-         }
-      }
-   }
-   err = json.NewDecoder(resp.Body).Decode(&value)
-   if err != nil {
-      return nil, err
-   }
-   return value.Data.Url.Node.Offers, nil
-}
-
-func (l *Locales) New(language string) error {
-   data, err := json.Marshal(map[string]any{
-      "query": graphql_compact(fetcher_query),
-      "variables": map[string]string{
-         "language": language,
-      },
-   })
-   if err != nil {
-      return err
-   }
-   req, err := http.NewRequest(
-      "POST", "https://apis.justwatch.com/graphql", bytes.NewReader(data),
-   )
-   if err != nil {
-      return err
-   }
-   req.Header.Set("content-type", "application/json")
-   req.Header.Set(
-      "device-id", base64.RawStdEncoding.EncodeToString(make([]byte, 16)),
-   )
-   resp, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return err
-   }
-   if resp.StatusCode != http.StatusOK {
-      var data bytes.Buffer
-      resp.Write(&data)
-      return errors.New(data.String())
-   }
-   defer resp.Body.Close()
-   var value struct {
-      Data struct {
-         Locales Locales
-      }
-   }
-   err = json.NewDecoder(resp.Body).Decode(&value)
-   if err != nil {
-      return err
-   }
-   *l = value.Data.Locales
-   return nil
-}
-
-func (l Locales) Locale(tag *HrefLangTag) (*Locale, bool) {
-   for _, localeVar := range l {
-      if localeVar.FullLocale == tag.Locale {
-         return &localeVar, true
-      }
-   }
-   return nil, false
-}
-
-func (l *Locale) String() string {
-   var b strings.Builder
-   b.WriteString(l.Country)
-   b.WriteByte(' ')
-   b.WriteString(l.CountryName)
-   return b.String()
-}
-
-// `presentationType` data seems to be incorrect in some cases. For example,
-// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
-// when the site itself reports as HD
-type Offer struct {
-   ElementCount     int64
-   MonetizationType string
-   StandardWebUrl   StandardWebUrl
-}
-
-type StandardWebUrl string
-
-func (s *StandardWebUrl) UnmarshalText(data []byte) error {
-   data1 := strings.TrimSuffix(string(data), "\n")
-   *s = StandardWebUrl(data1)
-   return nil
-}
-
-///
-
-func (a *Address) Set(data string) error {
-   data = strings.TrimPrefix(data, "https://")
-   data = strings.TrimPrefix(data, "www.")
-   a[0] = strings.TrimPrefix(data, "justwatch.com")
-   return nil
-}
-
-func (a Address) Content() (*Content, error) {
-   req, _ := http.NewRequest(
-      "", "https://apis.justwatch.com/content/urls", nil,
-   )
-   req.URL.RawQuery = "path=" + url.QueryEscape(a[0])
-   resp, err := http.DefaultClient.Do(req)
-   if err != nil {
-      return nil, err
-   }
-   defer resp.Body.Close()
-   if resp.StatusCode != http.StatusOK {
-      return nil, errors.New(resp.Status)
-   }
-   contentVar := &Content{}
-   err = json.NewDecoder(resp.Body).Decode(contentVar)
-   if err != nil {
-      return nil, err
-   }
-   return contentVar, nil
-}
-
-func (a Address) String() string {
-   return a[0]
-}
-
-type Address [1]string
-
-type OfferRow struct {
-   Count        int64
-   Country      []string
-   Monetization string
-   Url          string
-}
-
-func (o *OfferRows) Add(localeVar *Locale, offerVar *Offer) {
-   country := localeVar.String()
-   i := slices.IndexFunc(*o, func(row *OfferRow) bool {
-      return row.Url == string(offerVar.StandardWebUrl)
-   })
-   if i >= 0 {
-      row := (*o)[i]
-      if !slices.Contains(row.Country, country) {
-         row.Country = append(row.Country, country)
-      }
-   } else {
-      var row OfferRow
-      row.Count = offerVar.ElementCount
-      row.Country = []string{country}
-      row.Monetization = offerVar.MonetizationType
-      row.Url = string(offerVar.StandardWebUrl)
-      *o = append(*o, &row)
-   }
-}
-
-type OfferRows []*OfferRow
-
-func (o OfferRows) String() string {
-   var data []byte
-   for i, row := range o {
-      if i >= 1 {
-         data = append(data, "\n\n"...)
-      }
-      data = append(data, "url = "...)
-      data = append(data, html.UnescapeString(row.Url)...)
-      data = append(data, "\nmonetization = "...)
-      data = append(data, row.Monetization...)
-      if row.Count >= 1 {
-         data = append(data, "\ncount = "...)
-         data = strconv.AppendInt(data, row.Count, 10)
-      }
-      slices.Sort(row.Country)
-      for _, country := range row.Country {
-         data = append(data, "\ncountry = "...)
-         data = append(data, country...)
-      }
-   }
-   return string(data)
-}
