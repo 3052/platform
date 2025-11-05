@@ -9,8 +9,6 @@ import (
    "net/http"
    "os"
    "path"
-   "slices"
-   "strings"
    "time"
 )
 
@@ -24,41 +22,48 @@ func (f *flag_set) do_address() error {
    if err != nil {
       return err
    }
-   var rows justwatch.OfferRows
+   rawResults := map[*justwatch.Locale][]justwatch.Offer{}
    for _, tag := range content.HrefLangTags {
       locale, ok := justwatch.EnUs.Locale(&tag)
       if !ok {
          return errors.New("Locale")
       }
-      offers, err := tag.Offers(locale)
+      log.Print(locale)
+      rawResults[locale], err = tag.Offers(locale)
       if err != nil {
          return err
       }
-      for _, offer := range offers {
-         if offer.Monetization() {
-            rows.Add(locale, offer)
-         }
-      }
       time.Sleep(f.sleep)
    }
-   file, err := create(path.Base(url_path))
-   if err != nil {
-      return err
+   enrichedOffers := justwatch.UniqueEnrichedOffers(rawResults)
+   enrichedOffers = justwatch.FilterOffers(
+      enrichedOffers, "BUY", "CINEMA", "FAST", "RENT",
+   )
+   sortedUrls, groupedOffers := justwatch.GroupAndSort(enrichedOffers)
+   var data []byte
+   for i, url := range sortedUrls {
+      if i >= 1 {
+         data = append(data, '\n')
+      }
+      data = fmt.Appendln(data, url)
+      for i, v := range groupedOffers[url] {
+         if i >= 1 {
+            data = append(data, '\n')
+         }
+         data = fmt.Appendln(data, "country =", v.Locale.Country)
+         data = fmt.Appendln(data, "name =", v.Locale.CountryName)
+         data = fmt.Appendln(data, "monetization =", v.Offer.MonetizationType)
+         if v.Offer.ElementCount >= 1 {
+            data = fmt.Appendln(data, "count =", v.Offer.ElementCount)
+         }
+      }
    }
-   defer file.Close()
-   slices.SortFunc(rows, func(a, b *justwatch.OfferRow) int {
-      return strings.Compare(a.Url, b.Url)
-   })
-   _, err = fmt.Fprintln(file, rows)
-   if err != nil {
-      return err
-   }
-   return nil
+   return write_file(path.Base(url_path), data)
 }
 
-func create(name string) (*os.File, error) {
-   log.Println("Create", name)
-   return os.Create(name)
+func write_file(name string, data []byte) error {
+   log.Println("WriteFile", name)
+   return os.WriteFile(name, data, os.ModePerm)
 }
 
 type flag_set struct {

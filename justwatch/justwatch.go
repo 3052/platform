@@ -6,7 +6,6 @@ import (
    "encoding/base64"
    "encoding/json"
    "errors"
-   "io"
    "log"
    "maps"
    "net/http"
@@ -14,6 +13,33 @@ import (
    "slices"
    "strings"
 )
+
+var Transport = http.Transport{
+   Protocols: &http.Protocols{}, // github.com/golang/go/issues/25793
+   Proxy: func(req *http.Request) (*url.URL, error) {
+      if req.URL.Path != "/graphql" {
+         log.Println(req.Method, req.URL)
+      }
+      return http.ProxyFromEnvironment(req)
+   },
+}
+
+func GroupAndSort(offers []EnrichedOffer) ([]StandardWebUrl, map[StandardWebUrl][]EnrichedOffer) {
+   // 1. Group the offers by URL.
+   groupedOffers := make(map[StandardWebUrl][]EnrichedOffer)
+   for _, offerVar := range offers {
+      key := offerVar.Offer.StandardWebUrl
+      groupedOffers[key] = append(groupedOffers[key], offerVar)
+   }
+   // 2. Sort the offers within each group by Country.
+   for _, offerGroup := range groupedOffers {
+      slices.SortFunc(offerGroup, func(a, b EnrichedOffer) int {
+         return cmp.Compare(a.Locale.Country, b.Locale.Country)
+      })
+   }
+   // 3. Return the grouped map and a new, sorted slice of its keys.
+   return slices.Sorted(maps.Keys(groupedOffers)), groupedOffers
+}
 
 const fetcher_query = `
 query BackendConstantsFetcherQuery($language: Language!) {
@@ -57,60 +83,6 @@ type HrefLangTag struct {
 
 type Content struct {
    HrefLangTags []HrefLangTag `json:"href_lang_tags"`
-}
-
-// keep order
-type Locale struct {
-   FullLocale  string
-   Country     string
-   CountryName string
-}
-
-type StandardWebUrl string
-
-type EnrichedOffer struct {
-   Offer  Offer
-   Locale *Locale
-}
-
-// `presentationType` data seems to be incorrect in some cases. For example,
-// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
-// when the site itself reports as HD
-type Offer struct {
-   ElementCount     int64
-   MonetizationType string
-   StandardWebUrl   StandardWebUrl
-}
-
-func FilterOffers(offers []EnrichedOffer, unwantedTypes ...string) []EnrichedOffer {
-   unwantedSet := make(map[string]struct{}, len(unwantedTypes))
-   for _, t := range unwantedTypes {
-      unwantedSet[t] = struct{}{}
-   }
-   var filteredOffers []EnrichedOffer
-   for _, offerVar := range offers {
-      if _, found := unwantedSet[offerVar.Offer.MonetizationType]; !found {
-         filteredOffers = append(filteredOffers, offerVar)
-      }
-   }
-   return filteredOffers
-}
-
-func GroupAndSort(offers []EnrichedOffer) ([]StandardWebUrl, map[StandardWebUrl][]EnrichedOffer) {
-   // 1. Group the offers by URL.
-   groupedOffers := make(map[StandardWebUrl][]EnrichedOffer)
-   for _, offerVar := range offers {
-      key := offerVar.Offer.StandardWebUrl
-      groupedOffers[key] = append(groupedOffers[key], offerVar)
-   }
-   // 2. Sort the offers within each group by Country.
-   for _, offerGroup := range groupedOffers {
-      slices.SortFunc(offerGroup, func(a, b EnrichedOffer) int {
-         return cmp.Compare(a.Locale.Country, b.Locale.Country)
-      })
-   }
-   // 3. Return the grouped map and a new, sorted slice of its keys.
-   return slices.Sorted(maps.Keys(groupedOffers)), groupedOffers
 }
 
 func FetchLocales(language string) (Locales, error) {
@@ -228,26 +200,6 @@ func (c *Content) Fetch(path string) error {
       return errors.New(resp.Status)
    }
    return json.NewDecoder(resp.Body).Decode(c)
-}
-
-var Transport = http.Transport{
-   Proxy: func(req *http.Request) (*url.URL, error) {
-      if req.Body != nil {
-         data, err := io.ReadAll(req.Body)
-         if err != nil {
-            return nil, err
-         }
-         err = req.Body.Close()
-         if err != nil {
-            return nil, err
-         }
-         req.Body = io.NopCloser(bytes.NewReader(data))
-         log.Print(string(data))
-      } else {
-         log.Print(req.URL)
-      }
-      return nil, nil
-   },
 }
 
 // https://justwatch.com/us/movie/goodfellas
