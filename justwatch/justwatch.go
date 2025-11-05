@@ -2,15 +2,12 @@ package justwatch
 
 import (
    "bytes"
-   "cmp"
    "encoding/base64"
    "encoding/json"
    "errors"
    "log"
-   "maps"
    "net/http"
    "net/url"
-   "slices"
    "strings"
 )
 
@@ -22,23 +19,6 @@ var Transport = http.Transport{
       }
       return http.ProxyFromEnvironment(req)
    },
-}
-
-func GroupAndSort(offers []EnrichedOffer) ([]StandardWebUrl, map[StandardWebUrl][]EnrichedOffer) {
-   // 1. Group the offers by URL.
-   groupedOffers := make(map[StandardWebUrl][]EnrichedOffer)
-   for _, offerVar := range offers {
-      key := offerVar.Offer.StandardWebUrl
-      groupedOffers[key] = append(groupedOffers[key], offerVar)
-   }
-   // 2. Sort the offers within each group by Country.
-   for _, offerGroup := range groupedOffers {
-      slices.SortFunc(offerGroup, func(a, b EnrichedOffer) int {
-         return cmp.Compare(a.Locale.Country, b.Locale.Country)
-      })
-   }
-   // 3. Return the grouped map and a new, sorted slice of its keys.
-   return slices.Sorted(maps.Keys(groupedOffers)), groupedOffers
 }
 
 const fetcher_query = `
@@ -211,6 +191,7 @@ func GetPath(rawUrl string) (string, error) {
    return parsed_url.Path, nil
 }
 
+// 2025-11-04
 var EnUs = Locales{
    {"ar_AE", "AE", "United Arab Emirates"},
    {"ar_BH", "BH", "Bahrain"},

@@ -54,7 +54,6 @@ func UniqueEnrichedOffers(rawOffersByLocale map[*Locale][]Offer) []EnrichedOffer
    return enrichedOffers
 }
 
-// FilterOffers function
 func FilterOffers(offers []EnrichedOffer, unwantedTypes ...string) []EnrichedOffer {
    unwantedSet := make(map[string]struct{}, len(unwantedTypes))
    for _, t := range unwantedTypes {
@@ -69,18 +68,19 @@ func FilterOffers(offers []EnrichedOffer, unwantedTypes ...string) []EnrichedOff
    return filteredOffers
 }
 
-// GroupAndSortByURL function
-func GroupAndSortByURL(offers []EnrichedOffer) ([]StandardWebUrl, map[StandardWebUrl][]EnrichedOffer) {
+func GroupAndSort(offers []EnrichedOffer) ([]StandardWebUrl, map[StandardWebUrl][]EnrichedOffer) {
+   // 1. Group the offers by URL.
    groupedOffers := make(map[StandardWebUrl][]EnrichedOffer)
-   for _, offer := range offers {
-      key := offer.Offer.StandardWebUrl
-      groupedOffers[key] = append(groupedOffers[key], offer)
+   for _, offerVar := range offers {
+      key := offerVar.Offer.StandardWebUrl
+      groupedOffers[key] = append(groupedOffers[key], offerVar)
    }
-   // Secondary sort within each group by Country is necessary.
+   // 2. Sort the offers within each group by Country.
    for _, offerGroup := range groupedOffers {
       slices.SortFunc(offerGroup, func(a, b EnrichedOffer) int {
          return cmp.Compare(a.Locale.Country, b.Locale.Country)
       })
    }
+   // 3. Return the grouped map and a new, sorted slice of its keys.
    return slices.Sorted(maps.Keys(groupedOffers)), groupedOffers
 }
