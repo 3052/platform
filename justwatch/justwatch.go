@@ -2,15 +2,116 @@ package justwatch
 
 import (
    "bytes"
+   "cmp"
    "encoding/base64"
    "encoding/json"
    "errors"
    "io"
    "log"
+   "maps"
    "net/http"
    "net/url"
+   "slices"
    "strings"
 )
+
+const fetcher_query = `
+query BackendConstantsFetcherQuery($language: Language!) {
+   locales {
+      country
+      countryName(language: $language)
+      fullLocale
+   }
+}
+`
+
+const title_details = `
+query GetUrlTitleDetails(
+   $fullPath: String!
+   $country: Country!
+   $platform: Platform! = WEB
+) {
+   url(fullPath: $fullPath) {
+      node {
+         ... on MovieOrShowOrSeason {
+            offers(country: $country, platform: $platform) {
+               elementCount
+               monetizationType
+               standardWebURL
+            }
+         }
+      }
+   }
+}
+` // dont use `query(`
+
+// this is better than strings.Replace and strings.ReplaceAll
+func graphql_compact(data string) string {
+   return strings.Join(strings.Fields(data), " ")
+}
+
+type HrefLangTag struct {
+   Href   string // /ar/pelicula/mulholland-drive
+   Locale string // es_AR
+}
+
+type Content struct {
+   HrefLangTags []HrefLangTag `json:"href_lang_tags"`
+}
+
+// keep order
+type Locale struct {
+   FullLocale  string
+   Country     string
+   CountryName string
+}
+
+type StandardWebUrl string
+
+type EnrichedOffer struct {
+   Offer  Offer
+   Locale *Locale
+}
+
+// `presentationType` data seems to be incorrect in some cases. For example,
+// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
+// when the site itself reports as HD
+type Offer struct {
+   ElementCount     int64
+   MonetizationType string
+   StandardWebUrl   StandardWebUrl
+}
+
+func FilterOffers(offers []EnrichedOffer, unwantedTypes ...string) []EnrichedOffer {
+   unwantedSet := make(map[string]struct{}, len(unwantedTypes))
+   for _, t := range unwantedTypes {
+      unwantedSet[t] = struct{}{}
+   }
+   var filteredOffers []EnrichedOffer
+   for _, offerVar := range offers {
+      if _, found := unwantedSet[offerVar.Offer.MonetizationType]; !found {
+         filteredOffers = append(filteredOffers, offerVar)
+      }
+   }
+   return filteredOffers
+}
+
+func GroupAndSort(offers []EnrichedOffer) ([]StandardWebUrl, map[StandardWebUrl][]EnrichedOffer) {
+   // 1. Group the offers by URL.
+   groupedOffers := make(map[StandardWebUrl][]EnrichedOffer)
+   for _, offerVar := range offers {
+      key := offerVar.Offer.StandardWebUrl
+      groupedOffers[key] = append(groupedOffers[key], offerVar)
+   }
+   // 2. Sort the offers within each group by Country.
+   for _, offerGroup := range groupedOffers {
+      slices.SortFunc(offerGroup, func(a, b EnrichedOffer) int {
+         return cmp.Compare(a.Locale.Country, b.Locale.Country)
+      })
+   }
+   // 3. Return the grouped map and a new, sorted slice of its keys.
+   return slices.Sorted(maps.Keys(groupedOffers)), groupedOffers
+}
 
 func FetchLocales(language string) (Locales, error) {
    data, err := json.Marshal(map[string]any{
@@ -96,6 +197,7 @@ func (h *HrefLangTag) Offers(localeVar *Locale) ([]Offer, error) {
    }
    return value.Data.Url.Node.Offers, nil
 }
+
 func (l Locales) Locale(tag *HrefLangTag) (*Locale, bool) {
    for _, localeVar := range l {
       if localeVar.FullLocale == tag.Locale {
@@ -155,68 +257,6 @@ func GetPath(rawUrl string) (string, error) {
       return "", err
    }
    return parsed_url.Path, nil
-}
-
-// keep order
-type Locale struct {
-   FullLocale  string
-   Country     string
-   CountryName string
-}
-
-type StandardWebUrl string
-
-const fetcher_query = `
-query BackendConstantsFetcherQuery($language: Language!) {
-   locales {
-      country
-      countryName(language: $language)
-      fullLocale
-   }
-}
-`
-
-const title_details = `
-query GetUrlTitleDetails(
-   $fullPath: String!
-   $country: Country!
-   $platform: Platform! = WEB
-) {
-   url(fullPath: $fullPath) {
-      node {
-         ... on MovieOrShowOrSeason {
-            offers(country: $country, platform: $platform) {
-               elementCount
-               monetizationType
-               standardWebURL
-            }
-         }
-      }
-   }
-}
-` // dont use `query(`
-
-// this is better than strings.Replace and strings.ReplaceAll
-func graphql_compact(data string) string {
-   return strings.Join(strings.Fields(data), " ")
-}
-
-type HrefLangTag struct {
-   Href   string // /ar/pelicula/mulholland-drive
-   Locale string // es_AR
-}
-
-type Content struct {
-   HrefLangTags []HrefLangTag `json:"href_lang_tags"`
-}
-
-// `presentationType` data seems to be incorrect in some cases. For example,
-// JustWatch reports this as SD: fetchtv.com.au/movie/details/19285
-// when the site itself reports as HD
-type Offer struct {
-   ElementCount     int64
-   MonetizationType string
-   StandardWebUrl   StandardWebUrl
 }
 
 var EnUs = Locales{
