@@ -1,26 +1,5 @@
 # joyn
 
-~~~
-url = https://www.joyn.de/filme/side-effects-toedliche-nebenwirkungen-bpfifg67qmh4
-monetization = FLATRATE
-country = Germany
-~~~
-
-## paid
-
-1. VPN
-2. joyn.de
-3. email
-   - mailsac.com fail
-   - gmail.com pass
-4. vorname (first name)
-
-even with regular card its rejected, so it must be a country thing
-
-cannot link privacy.com to paypal because privacy is a piece of shit
-
-so just use paypal and cancel? fails also
-
 ## prior art
 
 <https://github.com/Maven85/plugin.video.joyn/blob/master/resources/lib/submodules/libjoyn_video.py>
