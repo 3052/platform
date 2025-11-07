@@ -1,4 +1,4 @@
-package justwatch
+package justWatch
 
 import (
    "cmp"

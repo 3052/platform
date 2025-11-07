@@ -1,7 +1,7 @@
 package main
 
 import (
-   "41.neocities.org/platform/justwatch"
+   "41.neocities.org/service/justWatch"
    "errors"
    "flag"
    "fmt"
@@ -13,18 +13,18 @@ import (
 )
 
 func (f *flag_set) do_address() error {
-   url_path, err := justwatch.GetPath(f.address)
+   url_path, err := justWatch.GetPath(f.address)
    if err != nil {
       return err
    }
-   var content justwatch.Content
+   var content justWatch.Content
    err = content.Fetch(url_path)
    if err != nil {
       return err
    }
-   rawResults := map[*justwatch.Locale][]justwatch.Offer{}
+   rawResults := map[*justWatch.Locale][]justWatch.Offer{}
    for _, tag := range content.HrefLangTags {
-      locale, ok := justwatch.EnUs.Locale(&tag)
+      locale, ok := justWatch.EnUs.Locale(&tag)
       if !ok {
          return errors.New("Locale")
       }
@@ -35,11 +35,11 @@ func (f *flag_set) do_address() error {
       }
       time.Sleep(f.sleep)
    }
-   enrichedOffers := justwatch.UniqueEnrichedOffers(rawResults)
-   enrichedOffers = justwatch.FilterOffers(
+   enrichedOffers := justWatch.UniqueEnrichedOffers(rawResults)
+   enrichedOffers = justWatch.FilterOffers(
       enrichedOffers, "BUY", "CINEMA", "RENT",
    )
-   sortedUrls, groupedOffers := justwatch.GroupAndSort(enrichedOffers)
+   sortedUrls, groupedOffers := justWatch.GroupAndSort(enrichedOffers)
    var data []byte
    for i, url := range sortedUrls {
       if i >= 1 {
@@ -72,7 +72,7 @@ type flag_set struct {
 }
 
 func main() {
-   http.DefaultClient.Transport = &justwatch.Transport
+   http.DefaultClient.Transport = &justWatch.Transport
    log.SetFlags(log.Ltime)
    var set flag_set
    flag.StringVar(&set.address, "a", "", "address")
