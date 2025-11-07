@@ -37,7 +37,7 @@ func (f *flag_set) do_address() error {
    }
    enrichedOffers := justwatch.UniqueEnrichedOffers(rawResults)
    enrichedOffers = justwatch.FilterOffers(
-      enrichedOffers, "BUY", "CINEMA", "FAST", "RENT",
+      enrichedOffers, "BUY", "CINEMA", "RENT",
    )
    sortedUrls, groupedOffers := justwatch.GroupAndSort(enrichedOffers)
    var data []byte
