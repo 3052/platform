@@ -10,8 +10,8 @@ func Test(t *testing.T) {
    if err != nil {
       t.Fatal(err)
    }
-   for _, l := range localesVar {
-      fmt.Printf("{%q, %q, %q},\n", l.FullLocale, l.Country, l.CountryName)
+   for _, localeVar := range localesVar {
+      fmt.Printf("%#v,\n", localeVar)
    }
    localeVar, ok := localesVar.Locale(&HrefLangTag{Locale: "en_US"})
    if !ok {
