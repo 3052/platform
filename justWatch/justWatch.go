@@ -14,6 +14,18 @@ import (
    "strings"
 )
 
+// https://justwatch.com/us/movie/goodfellas
+func GetPath(rawUrl string) (string, error) {
+   u, err := url.Parse(rawUrl)
+   if err != nil {
+      return "", err
+   }
+   if u.Scheme == "" {
+      return "", errors.New("invalid URL: scheme is missing")
+   }
+   return u.Path, nil
+}
+
 type Locale struct {
    FullLocale  string
    Country     string
@@ -405,13 +417,4 @@ func (c *Content) Fetch(path string) error {
       return errors.New(resp.Status)
    }
    return json.NewDecoder(resp.Body).Decode(c)
-}
-
-// https://justwatch.com/us/movie/goodfellas
-func GetPath(rawUrl string) (string, error) {
-   parsed_url, err := url.Parse(rawUrl)
-   if err != nil {
-      return "", err
-   }
-   return parsed_url.Path, nil
 }
