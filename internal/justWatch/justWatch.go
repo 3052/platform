@@ -22,24 +22,29 @@ func (f *flag_set) do_address() error {
    if err != nil {
       return err
    }
-   rawResults := map[*justWatch.Locale][]justWatch.Offer{}
+   var allEnrichedOffers []justWatch.EnrichedOffer
    for _, tag := range content.HrefLangTags {
       locale, ok := justWatch.EnUs.Locale(&tag)
       if !ok {
          return errors.New("Locale")
       }
       log.Print(locale)
-      rawResults[locale], err = tag.Offers(locale)
+      offers, err := tag.Offers(locale)
       if err != nil {
          return err
       }
+      for _, offer := range offers {
+         allEnrichedOffers = append(allEnrichedOffers,
+            justWatch.EnrichedOffer{Offer: offer, Locale: locale},
+         )
+      }
       time.Sleep(f.sleep)
    }
-   enrichedOffers := justWatch.UniqueEnrichedOffers(rawResults)
+   enrichedOffers := justWatch.Deduplicate(allEnrichedOffers)
    enrichedOffers = justWatch.FilterOffers(
       enrichedOffers, "BUY", "CINEMA", "RENT",
    )
-   sortedUrls, groupedOffers := justWatch.GroupAndSort(enrichedOffers)
+   sortedUrls, groupedOffers := justWatch.GroupAndSortByURL(enrichedOffers)
    var data []byte
    for i, url := range sortedUrls {
       if i >= 1 {
