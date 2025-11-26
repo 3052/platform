@@ -63,11 +63,11 @@ type ServerLoad struct {
 
 func GetServerLoads(servers []Server) ServerLoads {
    loads := make(ServerLoads, 0, len(servers))
-   for _, serverVar := range servers {
-      if serverVar.proxy_ssl() {
+   for _, server_var := range servers {
+      if server_var.proxy_ssl() {
          var load ServerLoad
-         load.Hostname = serverVar.Hostname
-         for _, location := range serverVar.Locations {
+         load.Hostname = server_var.Hostname
+         for _, location := range server_var.Locations {
             load.Country = location.Country.Code
             load.City = location.Country.City.DnsName
          }
