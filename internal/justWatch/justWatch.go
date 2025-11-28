@@ -9,6 +9,7 @@ import (
    "net/http"
    "os"
    "path"
+   "strings"
    "time"
 )
 
@@ -42,24 +43,24 @@ func (f *flag_set) do_address() error {
    }
    enrichedOffers := justWatch.Deduplicate(allEnrichedOffers)
    enrichedOffers = justWatch.FilterOffers(
-      enrichedOffers, "BUY", "CINEMA", "RENT",
+      enrichedOffers, strings.Split(f.filters, ",")...,
    )
    sortedUrls, groupedOffers := justWatch.GroupAndSortByURL(enrichedOffers)
    var data []byte
-   for i, url := range sortedUrls {
-      if i >= 1 {
+   for index, url := range sortedUrls {
+      if index >= 1 {
          data = append(data, '\n')
       }
       data = fmt.Appendln(data, url)
-      for i, v := range groupedOffers[url] {
-         if i >= 1 {
+      for offerIndex, enrichedOffer := range groupedOffers[url] {
+         if offerIndex >= 1 {
             data = append(data, '\n')
          }
-         data = fmt.Appendln(data, "country =", v.Locale.Country)
-         data = fmt.Appendln(data, "name =", v.Locale.CountryName)
-         data = fmt.Appendln(data, "monetization =", v.Offer.MonetizationType)
-         if v.Offer.ElementCount >= 1 {
-            data = fmt.Appendln(data, "count =", v.Offer.ElementCount)
+         data = fmt.Appendln(data, "country =", enrichedOffer.Locale.Country)
+         data = fmt.Appendln(data, "name =", enrichedOffer.Locale.CountryName)
+         data = fmt.Appendln(data, "monetization =", enrichedOffer.Offer.MonetizationType)
+         if enrichedOffer.Offer.ElementCount >= 1 {
+            data = fmt.Appendln(data, "count =", enrichedOffer.Offer.ElementCount)
          }
       }
    }
@@ -74,6 +75,7 @@ func write_file(name string, data []byte) error {
 type flag_set struct {
    address string
    sleep   time.Duration
+   filters string
 }
 
 func main() {
@@ -82,6 +84,7 @@ func main() {
    var set flag_set
    flag.StringVar(&set.address, "a", "", "address")
    flag.DurationVar(&set.sleep, "s", 99*time.Millisecond, "sleep")
+   flag.StringVar(&set.filters, "f", "BUY,CINEMA,RENT", "filters")
    flag.Parse()
    if set.address != "" {
       err := set.do_address()
