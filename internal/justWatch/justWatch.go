@@ -13,6 +13,24 @@ import (
    "time"
 )
 
+func main() {
+   log.SetFlags(log.Ltime)
+   http.DefaultClient.Transport = &justWatch.Transport
+   var set flag_set
+   flag.StringVar(&set.address, "a", "", "address")
+   flag.DurationVar(&set.sleep, "s", 99*time.Millisecond, "sleep")
+   flag.StringVar(&set.filters, "f", "BUY,CINEMA,FAST,RENT", "filters")
+   flag.Parse()
+   if set.address != "" {
+      err := set.do_address()
+      if err != nil {
+         panic(err)
+      }
+   } else {
+      flag.Usage()
+   }
+}
+
 func (f *flag_set) do_address() error {
    url_path, err := justWatch.GetPath(f.address)
    if err != nil {
@@ -76,22 +94,4 @@ type flag_set struct {
    address string
    sleep   time.Duration
    filters string
-}
-
-func main() {
-   http.DefaultClient.Transport = &justWatch.Transport
-   log.SetFlags(log.Ltime)
-   var set flag_set
-   flag.StringVar(&set.address, "a", "", "address")
-   flag.DurationVar(&set.sleep, "s", 99*time.Millisecond, "sleep")
-   flag.StringVar(&set.filters, "f", "BUY,CINEMA,RENT", "filters")
-   flag.Parse()
-   if set.address != "" {
-      err := set.do_address()
-      if err != nil {
-         panic(err)
-      }
-   } else {
-      flag.Usage()
-   }
 }
